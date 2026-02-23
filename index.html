@@ -1235,9 +1235,20 @@ function sessionResult(success) {
   document.getElementById('sessionModal').classList.remove('show');
   stopSound();
   if (success) {
-    adjustCounter('inspiration', 1);
+    const duration = state.currentSession ? state.currentSession.totalMinutes : Math.round(state.timerTotal / 60);
+    let bonus = 0;
+    if (duration >= 40) bonus = 3;
+    else if (duration >= 35) bonus = 2;
+    else if (duration >= 30) bonus = 1;
+
+    adjustCounter('inspiration', 1 + bonus);
     flashInspiration();
-    showToast('+1 Inspiration — Session Complete!');
+
+    if (bonus > 0) {
+      showToast(`+${1 + bonus} Inspiration — ${duration}m session bonus!`);
+    } else {
+      showToast('+1 Inspiration — Session Complete!');
+    }
   }
   // Log the session
   const session = state.currentSession || {};
