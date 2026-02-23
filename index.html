@@ -653,6 +653,23 @@
   }
   .btn-status-reset:hover { border-color: var(--red); color: var(--red2); }
 
+  .btn-import-csv {
+    font-family: 'Cinzel', serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    padding: 3px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .btn-import-csv:hover { border-color: var(--teal); color: var(--teal); }
+
   /* MODAL */
   .modal-overlay {
     display: none;
@@ -925,7 +942,10 @@
 
   <!-- Soundtrack Table -->
   <div class="card">
-    <div class="card-title">Soundtrack Table</div>
+    <div class="card-title">Soundtrack Table
+      <label class="btn-import-csv" for="soundtrackCsvInput" title="Import CSV with columns: Roll, Soundtrack">↑ Import CSV</label>
+      <input type="file" id="soundtrackCsvInput" accept=".csv" onchange="importSoundtrackCSV(event)">
+    </div>
     <table class="soundtrack-table">
       <thead>
         <tr>
@@ -983,17 +1003,16 @@ const DEFAULT_SOUNDTRACKS = [
   "Launchy – SomaFM Suburbs of Goa",
   "Launchy – SomaFM GrooveSalad",
   "Spotify – Energico OR ADHD + Energico",
+  "Spotify – Focus Groove",
+  "Launchy – SomaFM GrooveSalad",
+  "Launchy – SomaFM GrooveSalad",
+  "Launchy – Dannic Groove Cruise OR SomaFM thetrip",
+  "Podcast OR Roll Again",
   "Podcast OR Roll Again",
   "Your Choice!",
-  // 13–20: repeat rows 1–8
-  "Binaural Focus Cafe",
-  "MyNoise – Pure Tones for Focus",
-  "Spotify – World Music for Focus",
-  "Spotify – Focus Groove",
-  "Spotify – Focus Mix",
-  "Launchy – Dannic Groove Cruise OR SomaFM thetrip",
-  "Launchy – Lifescapes Forest OR SomaFM Thistle (Celtic)",
-  "Launchy – SomaFM Suburbs of Goa",
+  "Your Choice!",
+  "Your Choice!",
+  "Your Choice!",
 ];
 
 let state = {
@@ -1280,6 +1299,36 @@ function saveSettings() {
     if (input) state.soundtracks[i] = input.value;
   });
   saveState();
+}
+
+function importSoundtrackCSV(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const lines = e.target.result.split('\n').map(l => l.trim()).filter(l => l);
+    // Skip header row if it contains non-numeric first column
+    const dataLines = lines.filter(l => {
+      const first = l.split(',')[0].replace(/"/g,'').trim();
+      return !isNaN(parseInt(first));
+    });
+    if (dataLines.length === 0) { showToast('No valid rows found in CSV'); return; }
+    dataLines.forEach(line => {
+      // Handle quoted fields
+      const match = line.match(/^"?(\d+)"?,(.+)$/);
+      if (!match) return;
+      const idx = parseInt(match[1]) - 1;
+      const name = match[2].replace(/^"|"$/g, '').replace(/""/g, '"').trim();
+      if (idx >= 0 && idx < state.soundtracks.length) {
+        state.soundtracks[idx] = name;
+      }
+    });
+    buildSoundtrackTable();
+    saveState();
+    showToast(`Imported ${dataLines.length} soundtrack(s)`);
+    event.target.value = '';
+  };
+  reader.readAsText(file);
 }
 
 function buildSoundtrackTable() {
