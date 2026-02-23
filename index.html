@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roll 4 Focus Timer</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,5 95,30 95,70 50,95 5,70 5,30' fill='%231e1929' stroke='%23c8963e' stroke-width='4'/%3E%3Cpolygon points='50,5 75,35 50,42 25,35' fill='%23c8963e' opacity='0.25'/%3E%3Cpolygon points='50,95 75,65 50,58 25,65' fill='%23c8963e' opacity='0.15'/%3E%3Cline x1='50' y1='5' x2='50' y2='42' stroke='%23c8963e' stroke-width='1.5' opacity='0.4'/%3E%3Cline x1='95' y1='30' x2='75' y2='35' stroke='%23c8963e' stroke-width='1.5' opacity='0.4'/%3E%3Cline x1='95' y1='70' x2='75' y2='65' stroke='%23c8963e' stroke-width='1.5' opacity='0.4'/%3E%3Cline x1='50' y1='95' x2='50' y2='58' stroke='%23c8963e' stroke-width='1.5' opacity='0.4'/%3E%3Cline x1='5' y1='70' x2='25' y2='65' stroke='%23c8963e' stroke-width='1.5' opacity='0.4'/%3E%3Cline x1='5' y1='30' x2='25' y2='35' stroke='%23c8963e' stroke-width='1.5' opacity='0.4'/%3E%3Ctext x='50' y='62' text-anchor='middle' font-family='serif' font-weight='bold' font-size='28' fill='%23e8b85a'%3E20%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0b0e;
+    --bg2: #131018;
+    --bg3: #1a1622;
+    --card: #1e1929;
+    --border: #2e2640;
+    --border2: #3d3458;
+    --gold: #c8963e;
+    --gold2: #e8b85a;
+    --gold3: #f5d07a;
+    --amber: #d4813a;
+    --red: #c0392b;
+    --red2: #e74c3c;
+    --teal: #2eada8;
+    --text: #e8dfc8;
+    --text2: #b8a990;
+    --text3: #7a6e5e;
+    --success: #4caf82;
+    --shadow: rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'EB Garamond', Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(200,150,62,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(46,173,168,0.04) 0%, transparent 50%);
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* APP HEADER */
+  .app-header {
+    text-align: center;
+    padding: 24px 20px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .app-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    color: var(--gold2);
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 30px rgba(200,150,62,0.4), 0 2px 4px rgba(0,0,0,0.6);
+  }
+  .app-subtitle {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    color: var(--text3);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .header-divider {
+    width: 180px; height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    margin: 12px auto 0;
+    opacity: 0.5;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    padding: 16px 20px 0;
+    position: relative; z-index: 1;
+  }
+  .tab-btn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    padding: 9px 22px;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+  }
+  .tab-btn:first-child { border-radius: 4px 0 0 4px; }
+  .tab-btn:last-child { border-radius: 0 4px 4px 0; }
+  .tab-btn + .tab-btn { border-left: none; }
+  .tab-btn:hover { color: var(--gold2); border-color: var(--border2); background: rgba(200,150,62,0.04); }
+  .tab-btn.active {
+    color: var(--gold2);
+    background: rgba(200,150,62,0.08);
+    border-color: var(--gold);
+    box-shadow: 0 0 12px rgba(200,150,62,0.15);
+  }
+
+  /* MAIN CONTENT */
+  .tab-content { display: none; padding: 24px 20px 40px; max-width: 680px; margin: 0 auto; position: relative; z-index: 1; }
+  .tab-content.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(to right, transparent, rgba(200,150,62,0.3), transparent);
+  }
+  .card-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--border2), transparent);
+  }
+
+  /* ROLLS LAYOUT */
+  .rolls-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .rolls-top-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .rolls-bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-items: end;
+  }
+  .roll-submit-cell {
+    display: flex;
+    align-items: flex-end;
+  }
+  .roll-submit-cell .btn-submit {
+    width: 100%;
+    margin-top: 0;
+  }
+
+  /* ROLL FIELDS */
+  .roll-field label {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .roll-field.hope label { color: var(--teal); }
+  .roll-field.fear label { color: var(--red2); }
+  .roll-field.soundtrack label { color: var(--gold); }
+
+  .die-input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.5rem;
+    text-align: center;
+    padding: 10px 8px;
+    transition: all 0.2s;
+    -moz-appearance: textfield;
+  }
+  .die-input::-webkit-inner-spin-button,
+  .die-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .die-input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 2px rgba(200,150,62,0.15); }
+  .die-input.hope:focus { border-color: var(--teal); box-shadow: 0 0 0 2px rgba(46,173,168,0.15); }
+  .die-input.fear:focus { border-color: var(--red2); box-shadow: 0 0 0 2px rgba(231,76,60,0.15); }
+
+  .btn-submit {
+    width: 100%;
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, rgba(200,150,62,0.15), rgba(200,150,62,0.08));
+    border: 1px solid var(--gold);
+    color: var(--gold2);
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.25s;
+    margin-top: 4px;
+  }
+  .btn-submit:hover {
+    background: linear-gradient(135deg, rgba(200,150,62,0.25), rgba(200,150,62,0.15));
+    box-shadow: 0 0 16px rgba(200,150,62,0.2);
+    transform: translateY(-1px);
+  }
+  .btn-submit:active { transform: translateY(0); }
+
+  .btn-roll-for-me {
+    font-family: 'Cinzel', serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    padding: 3px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .btn-roll-for-me:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+    box-shadow: none;
+    transform: none;
+  }
+
+  /* SOUNDTRACK DISPLAY */
+  .soundtrack-display {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-style: italic;
+    color: var(--text2);
+    font-size: 0.95rem;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+  }
+  .soundtrack-display.populated {
+    color: var(--gold3);
+    border-color: rgba(200,150,62,0.3);
+  }
+
+  /* TIMER — THE CENTREPIECE */
+  .timer-centrepiece {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
+    position: relative;
+  }
+
+  .timer-ring-container {
+    position: relative;
+    width: 220px; height: 220px;
+    margin-bottom: 20px;
+  }
+  .timer-ring-svg {
+    position: absolute; inset: 0;
+    transform: rotate(-90deg);
+  }
+  .timer-ring-bg { fill: none; stroke: var(--border); stroke-width: 4; }
+  .timer-ring-progress {
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 628;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear, stroke 0.5s;
+    filter: drop-shadow(0 0 6px rgba(200,150,62,0.5));
+  }
+  .timer-ring-progress.low { stroke: var(--red2); filter: drop-shadow(0 0 6px rgba(231,76,60,0.5)); }
+
+  .timer-inner {
+    position: absolute; inset: 12px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: radial-gradient(circle, var(--bg3) 60%, var(--bg2) 100%);
+    border-radius: 50%;
+  }
+  .timer-display {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 2.6rem;
+    color: var(--gold2);
+    text-shadow: 0 0 20px rgba(200,150,62,0.4);
+    line-height: 1;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+  }
+  .timer-display:hover { color: var(--gold3); }
+  .timer-edit {
+    display: none;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 2rem;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--gold);
+    color: var(--gold2);
+    text-align: center;
+    width: 160px;
+    -moz-appearance: textfield;
+    outline: none;
+  }
+  .timer-edit::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .timer-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-top: 4px;
+  }
+
+  .timer-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .btn-timer {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-radius: 50px;
+    padding: 10px 24px;
+    cursor: pointer;
+    border: 1px solid;
+    transition: all 0.2s;
+  }
+  .btn-start {
+    background: linear-gradient(135deg, rgba(76,175,130,0.2), rgba(76,175,130,0.1));
+    border-color: var(--success);
+    color: var(--success);
+  }
+  .btn-start:hover { background: rgba(76,175,130,0.25); box-shadow: 0 0 16px rgba(76,175,130,0.2); }
+  .btn-pause {
+    background: linear-gradient(135deg, rgba(200,150,62,0.2), rgba(200,150,62,0.1));
+    border-color: var(--gold);
+    color: var(--gold2);
+  }
+  .btn-pause:hover { background: rgba(200,150,62,0.25); box-shadow: 0 0 16px rgba(200,150,62,0.2); }
+  .btn-reset {
+    background: none;
+    border-color: var(--border2);
+    color: var(--text3);
+    font-size: 0.65rem;
+    padding: 8px 16px;
+  }
+  .btn-reset:hover { border-color: var(--red); color: var(--red2); }
+
+  /* COUNTERS ROW */
+  .counters-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+  .counter-field {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    text-align: center;
+  }
+  .counter-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+  .counter-label.inspiration { color: var(--gold); }
+  .counter-label.dc { color: var(--teal); }
+  .counter-label.penalty { color: var(--red2); }
+  .counter-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .counter-btn {
+    width: 26px; height: 26px;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    color: var(--text2);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+  }
+  .counter-btn:hover { border-color: var(--gold); color: var(--gold2); }
+  .counter-value {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.3rem;
+    color: var(--text);
+    min-width: 32px;
+    text-align: center;
+  }
+  .counter-value.inspiration { color: var(--gold2); }
+  .dc-value {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.3rem;
+    color: var(--teal);
+  }
+
+  /* SETTINGS */
+  .setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .setting-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .setting-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text2);
+  }
+  .setting-sub {
+    font-family: 'EB Garamond', serif;
+    font-size: 0.82rem;
+    color: var(--text3);
+    font-style: italic;
+    margin-top: 2px;
+  }
+  .setting-control input[type="number"] {
+    width: 80px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1rem;
+    text-align: center;
+    padding: 8px;
+    -moz-appearance: textfield;
+  }
+  .setting-control input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .setting-control input[type="number"]:focus { outline: none; border-color: var(--gold); }
+
+  .file-btn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .file-btn:hover { border-color: var(--gold); color: var(--gold2); }
+  #soundFileName {
+    font-style: italic;
+    color: var(--text3);
+    font-size: 0.82rem;
+    margin-top: 4px;
+    text-align: right;
+  }
+
+  /* SOUNDTRACK TABLE */
+  .soundtrack-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  .soundtrack-table thead tr {
+    border-bottom: 1px solid var(--border2);
+  }
+  .soundtrack-table th {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding: 8px 12px;
+    text-align: left;
+  }
+  .soundtrack-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    vertical-align: middle;
+  }
+  .soundtrack-table tbody tr:last-child td { border-bottom: none; }
+  .soundtrack-table tbody tr:hover td { background: rgba(200,150,62,0.04); }
+  .soundtrack-table td:first-child {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1rem;
+    color: var(--gold3);
+    text-align: center;
+    width: 60px;
+  }
+  .soundtrack-table input[type="text"] {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid transparent;
+    color: var(--text2);
+    font-family: 'EB Garamond', serif;
+    font-size: 0.9rem;
+    padding: 2px 4px;
+    transition: all 0.2s;
+  }
+  .soundtrack-table input[type="text"]:focus {
+    outline: none;
+    border-bottom-color: var(--gold);
+    color: var(--text);
+    background: rgba(200,150,62,0.04);
+  }
+
+  /* LOGS */
+  .logs-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text3);
+    font-style: italic;
+  }
+  .log-entry {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    align-items: start;
+    animation: logIn 0.3s ease;
+  }
+  @keyframes logIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .log-entry.success { border-left: 3px solid var(--success); }
+  .log-entry.fail { border-left: 3px solid var(--red); }
+  .log-dice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .log-die {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1rem;
+    line-height: 1;
+  }
+  .log-die.hope { color: var(--teal); }
+  .log-die.fear { color: var(--red2); }
+  .log-die.sound { color: var(--gold); font-size: 0.8rem; }
+  .log-details { font-size: 0.88rem; }
+  .log-soundtrack { color: var(--text2); font-style: italic; margin-bottom: 4px; }
+  .log-duration {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+  .log-timestamp { font-size: 0.75rem; color: var(--text3); text-align: right; }
+  .log-result {
+    display: inline-block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    padding: 2px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .log-result.success { background: rgba(76,175,130,0.15); color: var(--success); border: 1px solid rgba(76,175,130,0.3); }
+  .log-result.fail { background: rgba(192,57,43,0.15); color: var(--red2); border: 1px solid rgba(192,57,43,0.3); }
+
+  .btn-clear-logs {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: all 0.2s;
+  }
+  .btn-clear-logs:hover { border-color: var(--red); color: var(--red2); }
+
+  .btn-export-csv {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: all 0.2s;
+  }
+  .btn-export-csv:hover { border-color: var(--teal); color: var(--teal); }
+
+  .btn-status-reset {
+    font-family: 'Cinzel', serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    padding: 3px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .btn-status-reset:hover { border-color: var(--red); color: var(--red2); }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s ease;
+  }
+  .modal-overlay.show { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    padding: 32px 28px;
+    max-width: 360px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 0 60px rgba(200,150,62,0.2), 0 20px 60px rgba(0,0,0,0.5);
+    animation: modalIn 0.25s ease;
+    position: relative;
+  }
+  .modal::before {
+    content: '';
+    position: absolute; top: 0; left: 20%; right: 20%; height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold2), transparent);
+  }
+  @keyframes modalIn { from { transform: scale(0.9) translateY(20px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .modal-icon {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+  }
+  .modal-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.2rem;
+    color: var(--gold2);
+    margin-bottom: 8px;
+  }
+  .modal-subtitle {
+    color: var(--text3);
+    font-style: italic;
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+  }
+  .modal-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .btn-yes {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, rgba(76,175,130,0.25), rgba(76,175,130,0.1));
+    border: 1px solid var(--success);
+    color: var(--success);
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-yes:hover { background: rgba(76,175,130,0.3); box-shadow: 0 0 16px rgba(76,175,130,0.2); }
+  .btn-no {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, rgba(192,57,43,0.2), rgba(192,57,43,0.08));
+    border: 1px solid var(--red);
+    color: var(--red2);
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-no:hover { background: rgba(192,57,43,0.25); box-shadow: 0 0 16px rgba(192,57,43,0.2); }
+
+  /* INSPIRATION FLASH */
+  .inspiration-flash {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 200;
+    background: radial-gradient(ellipse at center, rgba(200,150,62,0.12) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .inspiration-flash.show { opacity: 1; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--card);
+    border: 1px solid var(--gold);
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--gold2);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 300;
+    pointer-events: none;
+    text-transform: uppercase;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  input[type="file"] { display: none; }
+
+  .inline-counter {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .inline-counter .counter-btn {
+    width: 28px; height: 28px;
+  }
+  .inline-counter .counter-value {
+    font-size: 1.1rem;
+    min-width: 28px;
+  }
+</style>
+</head>
+<body>
+
+<div class="inspiration-flash" id="inspFlash"></div>
+
+<header class="app-header">
+  <div class="app-title">Roll 4 Focus</div>
+  <div class="app-subtitle">Gamified Pomodoro Timer</div>
+  <div class="header-divider"></div>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" onclick="switchTab('timer')">Timer</button>
+  <button class="tab-btn" onclick="switchTab('settings')">Settings</button>
+  <button class="tab-btn" onclick="switchTab('logs')">Logs</button>
+</nav>
+
+<!-- ======================== TIMER TAB ======================== -->
+<div id="tab-timer" class="tab-content active">
+
+  <!-- Rolls Card -->
+  <div class="card">
+    <div class="card-title">Roll the Dice <button class="btn-roll-for-me" onclick="rollForMe()">🎲 Roll for Me</button></div>
+    <div class="rolls-layout">
+      <div class="rolls-top-row">
+        <div class="roll-field hope">
+          <label>d20 Hope</label>
+          <input type="number" class="die-input hope" id="hopeRoll" min="1" max="20" placeholder="—">
+        </div>
+        <div class="roll-field fear">
+          <label>d20 Fear</label>
+          <input type="number" class="die-input fear" id="fearRoll" min="1" max="20" placeholder="—">
+        </div>
+      </div>
+      <div class="rolls-bottom-row">
+        <div class="roll-field soundtrack">
+          <label>d20 Soundtrack</label>
+          <input type="number" class="die-input" id="soundRoll" min="1" max="20" placeholder="—">
+        </div>
+        <div class="roll-submit-cell">
+          <button class="btn-submit" onclick="submitRolls()">⚔ Submit Rolls</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timer Centrepiece -->
+  <div class="card">
+    <div class="card-title">Session</div>
+    <div class="timer-centrepiece">
+      <div class="timer-ring-container">
+        <svg class="timer-ring-svg" viewBox="0 0 220 220">
+          <circle class="timer-ring-bg" cx="110" cy="110" r="100"/>
+          <circle class="timer-ring-progress" id="timerRing" cx="110" cy="110" r="100"/>
+        </svg>
+        <div class="timer-inner">
+          <div class="timer-display" id="timerDisplay" onclick="startEdit()" title="Click to edit">—:——</div>
+          <input type="text" class="timer-edit" id="timerEdit" placeholder="MM:SS" onblur="finishEdit()" onkeydown="editKeydown(event)">
+          <div class="timer-label">Click to adjust</div>
+        </div>
+      </div>
+      <div class="timer-controls">
+        <button class="btn-timer btn-start" id="btnStart" onclick="startTimer()">▶ Start</button>
+        <button class="btn-timer btn-pause" id="btnPause" onclick="pauseTimer()" style="display:none">⏸ Pause</button>
+        <button class="btn-timer btn-reset" onclick="resetTimer()">↺ Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Soundtrack Display -->
+  <div class="card">
+    <div class="card-title">Soundtrack</div>
+    <div class="soundtrack-display" id="soundtrackDisplay">— Roll the dice to reveal your soundtrack —</div>
+  </div>
+
+  <!-- Counters -->
+  <div class="card">
+    <div class="card-title">Status <button class="btn-status-reset" onclick="resetStatus()" title="Reset inspiration, penalty & DC to defaults">↺ Reset</button></div>
+    <div class="counters-row">
+      <div class="counter-field">
+        <div class="counter-label inspiration">Inspiration</div>
+        <div class="counter-controls">
+          <button class="counter-btn" onclick="adjustCounter('inspiration', -1)">−</button>
+          <div class="counter-value inspiration" id="inspirationVal">0</div>
+          <button class="counter-btn" onclick="adjustCounter('inspiration', 1)">+</button>
+        </div>
+      </div>
+      <div class="counter-field">
+        <div class="counter-label dc">Break DC</div>
+        <div class="dc-value" id="breakDCVal">24</div>
+      </div>
+      <div class="counter-field">
+        <div class="counter-label penalty">Penalty</div>
+        <div class="counter-controls">
+          <button class="counter-btn" onclick="adjustCounter('penalty', -1)">−</button>
+          <div class="counter-value" id="penaltyVal">0</div>
+          <button class="counter-btn" onclick="adjustCounter('penalty', 1)">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ======================== SETTINGS TAB ======================== -->
+<div id="tab-settings" class="tab-content">
+
+  <div class="card">
+    <div class="card-title">Timer Settings</div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Base Time</div>
+        <div class="setting-sub">Minimum session length added to all rolls</div>
+      </div>
+      <div class="setting-control">
+        <input type="number" id="baseTimeSetting" value="10" min="1" max="60" onchange="saveSettings()"> <span style="color:var(--text3);font-size:0.8rem;margin-left:4px;">min</span>
+      </div>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Frivolous Break DC</div>
+        <div class="setting-sub">Default DC before inspiration/penalty modifiers</div>
+      </div>
+      <div class="setting-control">
+        <input type="number" id="dcDefaultSetting" value="24" min="1" max="30" onchange="saveSettings()">
+      </div>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Timer Sound</div>
+        <div class="setting-sub" id="soundFileName">No file selected</div>
+      </div>
+      <div class="setting-control">
+        <label class="file-btn" for="soundFileInput">Choose File</label>
+        <input type="file" id="soundFileInput" accept=".mp3,.wav" onchange="loadSoundFile(event)">
+      </div>
+    </div>
+  </div>
+
+  <!-- Soundtrack Table -->
+  <div class="card">
+    <div class="card-title">Soundtrack Table</div>
+    <table class="soundtrack-table">
+      <thead>
+        <tr>
+          <th>Roll</th>
+          <th>Soundtrack</th>
+        </tr>
+      </thead>
+      <tbody id="soundtrackTableBody">
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ======================== LOGS TAB ======================== -->
+<div id="tab-logs" class="tab-content">
+  <div style="display:flex;gap:10px;margin-bottom:16px;">
+    <button class="btn-clear-logs" onclick="clearLogs()">✕ Clear All Logs</button>
+    <button class="btn-export-csv" onclick="exportCSV()">↓ Export CSV</button>
+  </div>
+  <div id="logsContainer">
+    <div class="logs-empty">No sessions logged yet.<br>Complete a session to see it here.</div>
+  </div>
+</div>
+
+<!-- ======================== MODAL ======================== -->
+<div class="modal-overlay" id="sessionModal">
+  <div class="modal">
+    <div class="modal-icon">⚔</div>
+    <div class="modal-title">Session Success?</div>
+    <div class="modal-subtitle">Did you complete this session?</div>
+    <div class="modal-buttons">
+      <button class="btn-yes" onclick="sessionResult(true)">✓ Yes!</button>
+      <button class="btn-no" onclick="sessionResult(false)">✗ No</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<audio id="timerSound"></audio>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+const DEFAULT_SOUNDTRACKS = [
+  "Binaural Focus Cafe",
+  "MyNoise – Pure Tones for Focus",
+  "Spotify – World Music for Focus",
+  "Spotify – Focus Groove",
+  "Spotify – Focus Mix",
+  "Launchy – Dannic Groove Cruise OR SomaFM thetrip",
+  "Launchy – Lifescapes Forest OR SomaFM Thistle (Celtic)",
+  "Launchy – SomaFM Suburbs of Goa",
+  "Launchy – SomaFM GrooveSalad",
+  "Spotify – Energico OR ADHD + Energico",
+  "Podcast OR Roll Again",
+  "Your Choice!",
+  // 13–20: repeat rows 1–8
+  "Binaural Focus Cafe",
+  "MyNoise – Pure Tones for Focus",
+  "Spotify – World Music for Focus",
+  "Spotify – Focus Groove",
+  "Spotify – Focus Mix",
+  "Launchy – Dannic Groove Cruise OR SomaFM thetrip",
+  "Launchy – Lifescapes Forest OR SomaFM Thistle (Celtic)",
+  "Launchy – SomaFM Suburbs of Goa",
+];
+
+let state = {
+  inspiration: 0,
+  penalty: 0,
+  baseTime: 10,
+  dcDefault: 24,
+  soundtracks: [...DEFAULT_SOUNDTRACKS],
+  logs: [],
+  timerSeconds: 0,
+  timerTotal: 0,
+  timerRunning: false,
+  timerInterval: null,
+  currentSession: null,
+  soundFileURL: null,
+};
+
+// ============================================================
+// PERSISTENCE
+// ============================================================
+function saveState() {
+  const toSave = {
+    inspiration: state.inspiration,
+    penalty: state.penalty,
+    baseTime: state.baseTime,
+    dcDefault: state.dcDefault,
+    soundtracks: state.soundtracks,
+    logs: state.logs,
+  };
+  localStorage.setItem('r4f_state', JSON.stringify(toSave));
+}
+
+function loadState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('r4f_state') || '{}');
+    if (saved.inspiration !== undefined) state.inspiration = saved.inspiration;
+    if (saved.penalty !== undefined) state.penalty = saved.penalty;
+    if (saved.baseTime !== undefined) state.baseTime = saved.baseTime;
+    if (saved.dcDefault !== undefined) state.dcDefault = saved.dcDefault;
+    if (saved.soundtracks) state.soundtracks = saved.soundtracks;
+    if (saved.logs) state.logs = saved.logs;
+  } catch(e) {}
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+  if (name === 'logs') renderLogs();
+}
+
+// ============================================================
+// ROLLS & SESSION SETUP
+// ============================================================
+function rollForMe() {
+  const hope = Math.ceil(Math.random() * 20);
+  const fear = Math.ceil(Math.random() * 20);
+  const sound = Math.ceil(Math.random() * 20);
+  document.getElementById('hopeRoll').value = hope;
+  document.getElementById('fearRoll').value = fear;
+  document.getElementById('soundRoll').value = sound;
+  // Animate inputs briefly
+  ['hopeRoll','fearRoll','soundRoll'].forEach(id => {
+    const el = document.getElementById(id);
+    el.style.transition = 'box-shadow 0.1s';
+    el.style.boxShadow = '0 0 0 3px rgba(46,173,168,0.3)';
+    setTimeout(() => el.style.boxShadow = '', 400);
+  });
+}
+
+function submitRolls() {
+  const hope = parseInt(document.getElementById('hopeRoll').value);
+  const fear = parseInt(document.getElementById('fearRoll').value);
+  const sound = parseInt(document.getElementById('soundRoll').value);
+
+  if (!hope || hope < 1 || hope > 20) { showToast('Enter a valid Hope roll (1–20)'); return; }
+  if (!fear || fear < 1 || fear > 20) { showToast('Enter a valid Fear roll (1–20)'); return; }
+  if (!sound || sound < 1 || sound > 20) { showToast('Enter a valid Soundtrack roll (1–20)'); return; }
+
+  let totalMinutes;
+  if (hope === fear) {
+    totalMinutes = hope + state.baseTime;
+    adjustCounter('inspiration', 1);
+    showToast('Hope = Fear — +1 Inspiration!');
+  } else if (hope > fear) {
+    totalMinutes = hope + state.baseTime;
+  } else {
+    totalMinutes = hope + fear + state.baseTime;
+  }
+
+  const soundtrackName = state.soundtracks[sound - 1] || `Track ${sound}`;
+  document.getElementById('soundtrackDisplay').textContent = soundtrackName;
+  document.getElementById('soundtrackDisplay').classList.add('populated');
+
+  state.currentSession = { hope, fear, sound, soundtrackName, totalMinutes };
+  setTimer(totalMinutes * 60);
+}
+
+// ============================================================
+// TIMER
+// ============================================================
+function setTimer(seconds) {
+  state.timerSeconds = seconds;
+  state.timerTotal = seconds;
+  updateTimerDisplay();
+  updateRing();
+}
+
+function updateTimerDisplay() {
+  const mins = Math.floor(state.timerSeconds / 60);
+  const secs = state.timerSeconds % 60;
+  const str = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  document.getElementById('timerDisplay').textContent = str;
+}
+
+function updateRing() {
+  const ring = document.getElementById('timerRing');
+  const circumference = 628;
+  if (state.timerTotal === 0) {
+    ring.style.strokeDashoffset = 0;
+    ring.classList.remove('low');
+    return;
+  }
+  const frac = state.timerSeconds / state.timerTotal;
+  ring.style.strokeDashoffset = circumference * (1 - frac);
+  if (frac < 0.2) ring.classList.add('low');
+  else ring.classList.remove('low');
+}
+
+function startTimer() {
+  if (state.timerSeconds <= 0) { showToast('Set a session time first'); return; }
+  state.timerRunning = true;
+  document.getElementById('btnStart').style.display = 'none';
+  document.getElementById('btnPause').style.display = 'inline-flex';
+  state.timerInterval = setInterval(() => {
+    state.timerSeconds--;
+    updateTimerDisplay();
+    updateRing();
+    if (state.timerSeconds <= 0) {
+      clearInterval(state.timerInterval);
+      state.timerRunning = false;
+      playSound();
+      document.getElementById('btnPause').style.display = 'none';
+      document.getElementById('btnStart').style.display = 'inline-flex';
+      setTimeout(() => document.getElementById('sessionModal').classList.add('show'), 500);
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  if (state.timerInterval) clearInterval(state.timerInterval);
+  state.timerRunning = false;
+  document.getElementById('btnPause').style.display = 'none';
+  document.getElementById('btnStart').style.display = 'inline-flex';
+}
+
+function resetTimer() {
+  pauseTimer();
+  if (state.currentSession) {
+    setTimer(state.currentSession.totalMinutes * 60);
+  } else {
+    state.timerSeconds = 0;
+    state.timerTotal = 0;
+    document.getElementById('timerDisplay').textContent = '—:——';
+    updateRing();
+  }
+}
+
+// Manual edit
+function startEdit() {
+  if (state.timerRunning) return;
+  const disp = document.getElementById('timerDisplay');
+  const edit = document.getElementById('timerEdit');
+  disp.style.display = 'none';
+  edit.style.display = 'block';
+  edit.value = disp.textContent === '—:——' ? '' : disp.textContent;
+  edit.focus();
+  edit.select();
+}
+
+function finishEdit() {
+  const disp = document.getElementById('timerDisplay');
+  const edit = document.getElementById('timerEdit');
+  const val = edit.value.trim();
+  if (val) {
+    let secs = 0;
+    if (val.includes(':')) {
+      const parts = val.split(':');
+      secs = parseInt(parts[0] || 0) * 60 + parseInt(parts[1] || 0);
+    } else {
+      secs = parseInt(val) * 60;
+    }
+    if (!isNaN(secs) && secs > 0) {
+      state.timerSeconds = secs;
+      state.timerTotal = secs;
+      updateRing();
+    }
+  }
+  updateTimerDisplay();
+  edit.style.display = 'none';
+  disp.style.display = 'block';
+}
+
+function editKeydown(e) {
+  if (e.key === 'Enter') finishEdit();
+  if (e.key === 'Escape') {
+    document.getElementById('timerEdit').style.display = 'none';
+    document.getElementById('timerDisplay').style.display = 'block';
+  }
+}
+
+// ============================================================
+// SESSION RESULT MODAL
+// ============================================================
+function sessionResult(success) {
+  document.getElementById('sessionModal').classList.remove('show');
+  stopSound();
+  if (success) {
+    adjustCounter('inspiration', 1);
+    flashInspiration();
+    showToast('+1 Inspiration — Session Complete!');
+  }
+  // Log the session
+  const session = state.currentSession || {};
+  const log = {
+    hope: session.hope || '—',
+    fear: session.fear || '—',
+    sound: session.sound || '—',
+    soundtrack: session.soundtrackName || '—',
+    duration: session.totalMinutes || Math.round(state.timerTotal / 60),
+    success,
+    timestamp: new Date().toLocaleString(),
+  };
+  state.logs.unshift(log);
+  saveState();
+}
+
+// ============================================================
+// COUNTERS
+// ============================================================
+function resetStatus() {
+  state.inspiration = 0;
+  state.penalty = 0;
+  document.getElementById('inspirationVal').textContent = 0;
+  document.getElementById('penaltyVal').textContent = 0;
+  updateBreakDC();
+  saveState();
+  showToast('Status reset');
+}
+
+function adjustCounter(which, delta) {
+  if (which === 'inspiration') {
+    state.inspiration = Math.max(0, state.inspiration + delta);
+    document.getElementById('inspirationVal').textContent = state.inspiration;
+  } else if (which === 'penalty') {
+    state.penalty = Math.max(0, state.penalty + delta);
+    document.getElementById('penaltyVal').textContent = state.penalty;
+  }
+  updateBreakDC();
+  saveState();
+}
+
+function updateBreakDC() {
+  const dc = state.dcDefault - state.inspiration + state.penalty;
+  document.getElementById('breakDCVal').textContent = dc;
+}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+function saveSettings() {
+  state.baseTime = parseInt(document.getElementById('baseTimeSetting').value) || 10;
+  state.dcDefault = parseInt(document.getElementById('dcDefaultSetting').value) || 24;
+  updateBreakDC();
+
+  // Save soundtracks from table
+  const rows = document.querySelectorAll('#soundtrackTableBody tr');
+  rows.forEach((row, i) => {
+    const input = row.querySelector('input[type="text"]');
+    if (input) state.soundtracks[i] = input.value;
+  });
+  saveState();
+}
+
+function buildSoundtrackTable() {
+  const tbody = document.getElementById('soundtrackTableBody');
+  tbody.innerHTML = '';
+  for (let i = 0; i < state.soundtracks.length; i++) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${i+1}</td><td><input type="text" value="${escapeHtml(state.soundtracks[i])}" onblur="saveSettings()"></td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+}
+
+function loadSoundFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  document.getElementById('soundFileName').textContent = file.name;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataURL = e.target.result;
+    state.soundFileURL = dataURL;
+    state.soundFileName = file.name;
+    document.getElementById('timerSound').src = dataURL;
+    // Persist to localStorage (only if small enough — warn if too large)
+    try {
+      localStorage.setItem('r4f_sound', JSON.stringify({ name: file.name, data: dataURL }));
+    } catch(err) {
+      showToast('File too large to persist — re-select on next open');
+    }
+    saveState();
+  };
+  reader.readAsDataURL(file);
+}
+
+function stopSound() {
+  const audio = document.getElementById('timerSound');
+  audio.pause();
+  audio.currentTime = 0;
+}
+
+function playSound() {
+  const audio = document.getElementById('timerSound');
+  if (audio.src && audio.src !== window.location.href) {
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+  } else {
+    // Fallback beep using Web Audio
+    try {
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 1.5);
+    } catch(e) {}
+  }
+}
+
+// ============================================================
+// LOGS
+// ============================================================
+function renderLogs() {
+  const container = document.getElementById('logsContainer');
+  if (state.logs.length === 0) {
+    container.innerHTML = '<div class="logs-empty">No sessions logged yet.<br>Complete a session to see it here.</div>';
+    return;
+  }
+  container.innerHTML = state.logs.map(log => `
+    <div class="log-entry ${log.success ? 'success' : 'fail'}">
+      <div class="log-dice">
+        <div class="log-die hope" title="Hope">⚐ ${log.hope}</div>
+        <div class="log-die fear" title="Fear">⚑ ${log.fear}</div>
+        <div class="log-die sound" title="Soundtrack">♪ ${log.sound}</div>
+      </div>
+      <div class="log-details">
+        <span class="log-result ${log.success ? 'success' : 'fail'}">${log.success ? 'Success' : 'Incomplete'}</span>
+        <div class="log-soundtrack">${escapeHtml(log.soundtrack)}</div>
+        <div class="log-duration">${log.duration} minutes</div>
+      </div>
+      <div class="log-timestamp">${escapeHtml(log.timestamp)}</div>
+    </div>
+  `).join('');
+}
+
+function exportCSV() {
+  if (state.logs.length === 0) { showToast('No logs to export'); return; }
+  const headers = ['Timestamp','Hope Roll','Fear Roll','Soundtrack Roll','Soundtrack','Duration (min)','Success'];
+  const rows = state.logs.map(log => [
+    `"${log.timestamp}"`,
+    log.hope,
+    log.fear,
+    log.sound,
+    `"${(log.soundtrack || '').replace(/"/g,'""')}"`,
+    log.duration,
+    log.success ? 'Yes' : 'No'
+  ]);
+  const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `roll4focus-logs-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Logs exported!');
+}
+
+function clearLogs() {
+  if (confirm('Clear all session logs?')) {
+    state.logs = [];
+    saveState();
+    renderLogs();
+  }
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function flashInspiration() {
+  const el = document.getElementById('inspFlash');
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 600);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  loadState();
+  document.getElementById('inspirationVal').textContent = state.inspiration;
+  document.getElementById('penaltyVal').textContent = state.penalty;
+  document.getElementById('baseTimeSetting').value = state.baseTime;
+  document.getElementById('dcDefaultSetting').value = state.dcDefault;
+  updateBreakDC();
+  buildSoundtrackTable();
+
+  // Restore persisted sound file
+  try {
+    const saved = JSON.parse(localStorage.getItem('r4f_sound') || 'null');
+    if (saved && saved.data) {
+      document.getElementById('timerSound').src = saved.data;
+      document.getElementById('soundFileName').textContent = saved.name;
+      state.soundFileURL = saved.data;
+    }
+  } catch(e) {}
+}
+
+init();
+</script>
+</body>
+</html>
