@@ -923,6 +923,84 @@
     font-size: 1.1rem;
     min-width: 28px;
   }
+
+  /* NOTES */
+  .notes-textarea {
+    width: 100%;
+    min-height: 140px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    padding: 12px 14px;
+    resize: vertical;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .notes-textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(200,150,62,0.1); }
+  .notes-textarea::placeholder { color: var(--text3); font-style: italic; }
+
+  .notes-preview {
+    min-height: 80px;
+    padding: 12px 14px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--text2);
+  }
+  .notes-preview h1,.notes-preview h2,.notes-preview h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold2);
+    margin: 0.8em 0 0.3em;
+    letter-spacing: 0.05em;
+  }
+  .notes-preview h1 { font-size: 1.15rem; }
+  .notes-preview h2 { font-size: 1rem; }
+  .notes-preview h3 { font-size: 0.9rem; }
+  .notes-preview p { margin: 0.4em 0; }
+  .notes-preview strong { color: var(--gold3); font-weight: 600; }
+  .notes-preview em { color: var(--text); font-style: italic; }
+  .notes-preview code {
+    font-family: monospace;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 0.85rem;
+    color: var(--teal);
+  }
+  .notes-preview pre {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    overflow-x: auto;
+    margin: 0.6em 0;
+  }
+  .notes-preview pre code { background: none; border: none; padding: 0; }
+  .notes-preview ul,.notes-preview ol {
+    padding-left: 1.4em;
+    margin: 0.4em 0;
+  }
+  .notes-preview li { margin: 0.2em 0; }
+  .notes-preview blockquote {
+    border-left: 3px solid var(--gold);
+    margin: 0.6em 0;
+    padding: 4px 0 4px 14px;
+    color: var(--text3);
+    font-style: italic;
+  }
+  .notes-preview hr {
+    border: none;
+    border-top: 1px solid var(--border2);
+    margin: 0.8em 0;
+  }
+  .notes-preview a { color: var(--teal); }
 </style>
 </head>
 <body>
@@ -939,6 +1017,7 @@
   <button class="tab-btn active" onclick="switchTab('timer')">Timer</button>
   <button class="tab-btn" onclick="switchTab('settings')">Settings</button>
   <button class="tab-btn" onclick="switchTab('logs')">Logs</button>
+  <button class="tab-btn" onclick="switchTab('notes')">Notes</button>
 </nav>
 
 <!-- ======================== TIMER TAB ======================== -->
@@ -982,6 +1061,12 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Soundtrack Display (moved here, right below Roll the Dice) -->
+  <div class="card">
+    <div class="card-title">Soundtrack</div>
+    <div class="soundtrack-display" id="soundtrackDisplay">— Roll the dice to reveal your soundtrack —</div>
   </div>
 
   <!-- Session + Stats side by side -->
@@ -1043,10 +1128,16 @@
 
   </div>
 
-  <!-- Soundtrack Display -->
+  <!-- Notes -->
   <div class="card">
-    <div class="card-title">Soundtrack</div>
-    <div class="soundtrack-display" id="soundtrackDisplay">— Roll the dice to reveal your soundtrack —</div>
+    <div class="card-title">
+      Notes
+      <button class="btn-status-reset" onclick="toggleNotesMode()" id="notesModeBtn" title="Toggle edit/preview">✎ Edit</button>
+    </div>
+    <div id="notesEditor">
+      <textarea id="notesInput" class="notes-textarea" placeholder="Session notes... (supports **bold**, *italic*, # headings, - lists, `code`, etc.)" oninput="saveNotes()"></textarea>
+    </div>
+    <div id="notesPreview" class="notes-preview" style="display:none"></div>
   </div>
 
 </div>
@@ -1163,6 +1254,20 @@
   </div>
 </div>
 
+<!-- ======================== NOTES TAB ======================== -->
+<div id="tab-notes" class="tab-content">
+  <div class="card">
+    <div class="card-title">
+      Notes
+      <button class="btn-status-reset" onclick="toggleNotesModeTab()" id="notesModeTabBtn" title="Toggle edit/preview">👁 Preview</button>
+    </div>
+    <div id="notesEditorTab">
+      <textarea id="notesInputTab" class="notes-textarea" style="min-height:400px;" placeholder="Your notes... (supports **bold**, *italic*, # headings, - lists, `code`, etc.)" oninput="saveNotesTab()"></textarea>
+    </div>
+    <div id="notesPreviewTab" class="notes-preview" style="display:none; min-height:400px;"></div>
+  </div>
+</div>
+
 <!-- ======================== MODAL ======================== -->
 <div class="modal-overlay" id="sessionModal">
   <div class="modal">
@@ -1260,6 +1365,119 @@ function loadState() {
     if (saved.soundtracks) state.soundtracks = saved.soundtracks;
     if (saved.logs) state.logs = saved.logs;
   } catch(e) {}
+}
+
+// ============================================================
+// NOTES & MARKDOWN
+// ============================================================
+let notesMode = 'edit';
+let notesModeTab = 'edit';
+
+function saveNotes() {
+  localStorage.setItem('r4f_notes', document.getElementById('notesInput').value);
+}
+
+function loadNotes() {
+  const saved = localStorage.getItem('r4f_notes') || '';
+  document.getElementById('notesInput').value = saved;
+}
+
+function toggleNotesMode() {
+  const btn = document.getElementById('notesModeBtn');
+  if (notesMode === 'edit') {
+    notesMode = 'preview';
+    const md = document.getElementById('notesInput').value;
+    document.getElementById('notesPreview').innerHTML = parseMarkdown(md);
+    document.getElementById('notesEditor').style.display = 'none';
+    document.getElementById('notesPreview').style.display = 'block';
+    btn.textContent = '✎ Edit';
+  } else {
+    notesMode = 'edit';
+    document.getElementById('notesEditor').style.display = 'block';
+    document.getElementById('notesPreview').style.display = 'none';
+    btn.textContent = '👁 Preview';
+  }
+}
+
+function saveNotesTab() {
+  localStorage.setItem('r4f_notes_tab', document.getElementById('notesInputTab').value);
+}
+
+function loadNotesTab() {
+  const saved = localStorage.getItem('r4f_notes_tab') || '';
+  document.getElementById('notesInputTab').value = saved;
+}
+
+function toggleNotesModeTab() {
+  const btn = document.getElementById('notesModeTabBtn');
+  if (notesModeTab === 'edit') {
+    notesModeTab = 'preview';
+    const md = document.getElementById('notesInputTab').value;
+    document.getElementById('notesPreviewTab').innerHTML = parseMarkdown(md);
+    document.getElementById('notesEditorTab').style.display = 'none';
+    document.getElementById('notesPreviewTab').style.display = 'block';
+    btn.textContent = '✎ Edit';
+  } else {
+    notesModeTab = 'edit';
+    document.getElementById('notesEditorTab').style.display = 'block';
+    document.getElementById('notesPreviewTab').style.display = 'none';
+    btn.textContent = '👁 Preview';
+  }
+}
+
+function parseMarkdown(md) {
+  // Escape HTML first
+  let html = md
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  // Code blocks (``` ... ```)
+  html = html.replace(/```([\s\S]*?)```/g, (_, code) =>
+    `<pre><code>${code.trim()}</code></pre>`);
+
+  // Inline code
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  // Headings
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+  // Horizontal rule
+  html = html.replace(/^---$/gm, '<hr>');
+
+  // Blockquote
+  html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+
+  // Bold & italic
+  html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  html = html.replace(/_(.+?)_/g, '<em>$1</em>');
+
+  // Unordered lists
+  html = html.replace(/((?:^[-*] .+\n?)+)/gm, (block) => {
+    const items = block.trim().split('\n').map(l => `<li>${l.replace(/^[-*] /, '')}</li>`).join('');
+    return `<ul>${items}</ul>`;
+  });
+
+  // Ordered lists
+  html = html.replace(/((?:^\d+\. .+\n?)+)/gm, (block) => {
+    const items = block.trim().split('\n').map(l => `<li>${l.replace(/^\d+\. /, '')}</li>`).join('');
+    return `<ol>${items}</ol>`;
+  });
+
+  // Links
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+
+  // Paragraphs — wrap lines that aren't already block elements
+  html = html.replace(/^(?!<[a-z]|$)(.+)$/gm, '<p>$1</p>');
+
+  // Clean up extra blank lines
+  html = html.replace(/\n{2,}/g, '\n');
+
+  return html;
 }
 
 // ============================================================
@@ -1770,6 +1988,8 @@ function init() {
   document.getElementById('tickingToggle').checked = state.tickingEnabled;
   updateBreakDC();
   buildSoundtrackTable();
+  loadNotes();
+  loadNotesTab();
 
   // Restore persisted sound file
   try {
