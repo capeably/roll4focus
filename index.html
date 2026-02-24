@@ -1071,7 +1071,7 @@
 
   <!-- Soundtrack Display (moved here, right below Roll the Dice) -->
   <div class="card">
-    <div class="card-title">Soundtrack</div>
+    <div class="card-title">Soundtrack <button class="btn-roll-for-me" onclick="rerollSoundtrack()">🎲 Reroll Soundtrack</button></div>
     <div class="soundtrack-display" id="soundtrackDisplay">— Roll the dice to reveal your soundtrack —</div>
   </div>
 
@@ -1556,6 +1556,17 @@ function switchTab(name) {
 // ============================================================
 // ROLLS & SESSION SETUP
 // ============================================================
+function rerollSoundtrack() {
+  const sound = Math.ceil(Math.random() * state.soundtrackDie);
+  const el = document.getElementById('soundRoll');
+  el.value = sound;
+  el.dataset.userOverride = '1';
+  el.style.transition = 'box-shadow 0.1s';
+  el.style.boxShadow = '0 0 0 3px rgba(200,150,62,0.3)';
+  setTimeout(() => el.style.boxShadow = '', 400);
+  onRollInput();
+}
+
 function rollForMe() {
   const hope = Math.ceil(Math.random() * state.hopeFearDie);
   const fear = Math.ceil(Math.random() * state.hopeFearDie);
