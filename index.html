@@ -230,7 +230,10 @@
     grid-template-columns: 2fr 1fr;
     gap: 16px;
     margin-bottom: 16px;
-    align-items: stretch;
+    align-items: start;
+  }
+  .session-card {
+    margin-bottom: 0;
   }
   .stats-card {
     margin-bottom: 0;
@@ -757,6 +760,42 @@
   }
   .btn-import-csv:hover { border-color: var(--teal); color: var(--teal); }
 
+  /* TOGGLE SWITCH */
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    cursor: pointer;
+  }
+  .toggle-switch input { display: none; }
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 24px;
+    transition: all 0.25s;
+  }
+  .toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 16px; height: 16px;
+    left: 3px; top: 3px;
+    background: var(--text3);
+    border-radius: 50%;
+    transition: all 0.25s;
+  }
+  .toggle-switch input:checked + .toggle-slider {
+    background: rgba(200,150,62,0.15);
+    border-color: var(--gold);
+  }
+  .toggle-switch input:checked + .toggle-slider::before {
+    background: var(--gold2);
+    transform: translateX(20px);
+    box-shadow: 0 0 8px rgba(200,150,62,0.4);
+  }
+
   /* MODAL */
   .modal-overlay {
     display: none;
@@ -1058,6 +1097,39 @@
         <input type="file" id="soundFileInput" accept=".mp3,.wav" onchange="loadSoundFile(event)">
       </div>
     </div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Ticking Sound</div>
+        <div class="setting-sub">Soft clock tick while timer runs (4/sec)</div>
+      </div>
+      <div class="setting-control">
+        <label class="toggle-switch">
+          <input type="checkbox" id="tickingToggle" onchange="saveSettings()">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Hope / Fear Die</div>
+        <div class="setting-sub">Number of sides for Hope & Fear rolls</div>
+      </div>
+      <div class="setting-control">
+        <span style="color:var(--text3);font-size:0.8rem;margin-right:4px;">d</span><input type="number" id="hopeFearDieSetting" value="20" min="4" max="100" onchange="saveSettings()">
+      </div>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Soundtrack Die</div>
+        <div class="setting-sub">Number of sides for Soundtrack rolls</div>
+      </div>
+      <div class="setting-control">
+        <span style="color:var(--text3);font-size:0.8rem;margin-right:4px;">d</span><input type="number" id="soundtrackDieSetting" value="20" min="4" max="100" onchange="saveSettings()">
+      </div>
+    </div>
   </div>
 
   <!-- Soundtrack Table -->
@@ -1141,12 +1213,16 @@ let state = {
   baseTime: 10,
   dcDefault: 24,
   minionDcDefault: 18,
+  hopeFearDie: 20,
+  soundtrackDie: 20,
+  tickingEnabled: false,
   soundtracks: [...DEFAULT_SOUNDTRACKS],
   logs: [],
   timerSeconds: 0,
   timerTotal: 0,
   timerRunning: false,
   timerInterval: null,
+  tickInterval: null,
   currentSession: null,
   soundFileURL: null,
 };
@@ -1161,6 +1237,9 @@ function saveState() {
     baseTime: state.baseTime,
     dcDefault: state.dcDefault,
     minionDcDefault: state.minionDcDefault,
+    hopeFearDie: state.hopeFearDie,
+    soundtrackDie: state.soundtrackDie,
+    tickingEnabled: state.tickingEnabled,
     soundtracks: state.soundtracks,
     logs: state.logs,
   };
@@ -1175,6 +1254,9 @@ function loadState() {
     if (saved.baseTime !== undefined) state.baseTime = saved.baseTime;
     if (saved.dcDefault !== undefined) state.dcDefault = saved.dcDefault;
     if (saved.minionDcDefault !== undefined) state.minionDcDefault = saved.minionDcDefault;
+    if (saved.hopeFearDie !== undefined) state.hopeFearDie = saved.hopeFearDie;
+    if (saved.soundtrackDie !== undefined) state.soundtrackDie = saved.soundtrackDie;
+    if (saved.tickingEnabled !== undefined) state.tickingEnabled = saved.tickingEnabled;
     if (saved.soundtracks) state.soundtracks = saved.soundtracks;
     if (saved.logs) state.logs = saved.logs;
   } catch(e) {}
@@ -1195,9 +1277,9 @@ function switchTab(name) {
 // ROLLS & SESSION SETUP
 // ============================================================
 function rollForMe() {
-  const hope = Math.ceil(Math.random() * 20);
-  const fear = Math.ceil(Math.random() * 20);
-  const sound = Math.ceil(Math.random() * 20);
+  const hope = Math.ceil(Math.random() * state.hopeFearDie);
+  const fear = Math.ceil(Math.random() * state.hopeFearDie);
+  const sound = Math.ceil(Math.random() * state.soundtrackDie);
   document.getElementById('hopeRoll').value = hope;
   document.getElementById('fearRoll').value = fear;
   // Clear override so soundtrack auto-populates from hope
@@ -1308,12 +1390,14 @@ function startTimer() {
   state.timerRunning = true;
   document.getElementById('btnStart').style.display = 'none';
   document.getElementById('btnPause').style.display = 'inline-flex';
+  startTicking();
   state.timerInterval = setInterval(() => {
     state.timerSeconds--;
     updateTimerDisplay();
     updateRing();
     if (state.timerSeconds <= 0) {
       clearInterval(state.timerInterval);
+      stopTicking();
       state.timerRunning = false;
       playSound();
       document.getElementById('btnPause').style.display = 'none';
@@ -1325,6 +1409,7 @@ function startTimer() {
 
 function pauseTimer() {
   if (state.timerInterval) clearInterval(state.timerInterval);
+  stopTicking();
   state.timerRunning = false;
   document.getElementById('btnPause').style.display = 'none';
   document.getElementById('btnStart').style.display = 'inline-flex';
@@ -1461,6 +1546,9 @@ function saveSettings() {
   state.baseTime = parseInt(document.getElementById('baseTimeSetting').value) || 10;
   state.dcDefault = parseInt(document.getElementById('dcDefaultSetting').value) || 24;
   state.minionDcDefault = parseInt(document.getElementById('minionDcDefaultSetting').value) || 18;
+  state.hopeFearDie = parseInt(document.getElementById('hopeFearDieSetting').value) || 20;
+  state.soundtrackDie = parseInt(document.getElementById('soundtrackDieSetting').value) || 20;
+  state.tickingEnabled = document.getElementById('tickingToggle').checked;
   updateBreakDC();
 
   // Save soundtracks from table
@@ -1536,6 +1624,35 @@ function loadSoundFile(event) {
     saveState();
   };
   reader.readAsDataURL(file);
+}
+
+function startTicking() {
+  if (!state.tickingEnabled) return;
+  stopTicking();
+  let audioCtx = null;
+  try { audioCtx = new AudioContext(); } catch(e) { return; }
+  state.tickInterval = setInterval(() => {
+    if (!state.tickingEnabled) return;
+    try {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.04);
+      osc.start(audioCtx.currentTime);
+      osc.stop(audioCtx.currentTime + 0.04);
+    } catch(e) {}
+  }, 250); // 4 ticks per second
+}
+
+function stopTicking() {
+  if (state.tickInterval) {
+    clearInterval(state.tickInterval);
+    state.tickInterval = null;
+  }
 }
 
 function stopSound() {
@@ -1648,6 +1765,9 @@ function init() {
   document.getElementById('baseTimeSetting').value = state.baseTime;
   document.getElementById('dcDefaultSetting').value = state.dcDefault;
   document.getElementById('minionDcDefaultSetting').value = state.minionDcDefault;
+  document.getElementById('hopeFearDieSetting').value = state.hopeFearDie;
+  document.getElementById('soundtrackDieSetting').value = state.soundtrackDie;
+  document.getElementById('tickingToggle').checked = state.tickingEnabled;
   updateBreakDC();
   buildSoundtrackTable();
 
