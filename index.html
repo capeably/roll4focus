@@ -26,6 +26,7 @@
     --text2: #b8a990;
     --text3: #7a6e5e;
     --success: #4caf82;
+    --minion: #9b7fd4;
     --shadow: rgba(0,0,0,0.5);
   }
 
@@ -104,6 +105,7 @@
   .tab-btn:first-child { border-radius: 4px 0 0 4px; }
   .tab-btn:last-child { border-radius: 0 4px 4px 0; }
   .tab-btn + .tab-btn { border-left: none; }
+  .tab-btn + .tab-btn.active { border-left: 1px solid var(--gold); }
   .tab-btn:hover { color: var(--gold2); border-color: var(--border2); background: rgba(200,150,62,0.04); }
   .tab-btn.active {
     color: var(--gold2);
@@ -149,33 +151,116 @@
     background: linear-gradient(to right, var(--border2), transparent);
   }
 
-  /* ROLLS LAYOUT */
-  .rolls-layout {
+  /* DICE ROW — OCTAGONS */
+  .dice-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    justify-items: center;
+  }
+  .die-field {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+  .die-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .die-field.hope .die-label { color: var(--teal); }
+  .die-field.fear .die-label { color: var(--red2); }
+  .die-field.soundtrack .die-label { color: var(--gold); }
+
+  .die-oct-wrap {
+    position: relative;
+    width: min(100%, 110px);
+    aspect-ratio: 1;
+  }
+  .die-oct-svg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+  }
+  .die-oct-bg {
+    fill: var(--bg3);
+    stroke: var(--border2);
+    stroke-width: 4;
+  }
+  .die-oct-accent {
+    fill: none;
+    stroke-width: 3;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .die-oct-wrap:focus-within .die-oct-accent { opacity: 1; }
+  .hope-accent { stroke: var(--teal); filter: drop-shadow(0 0 4px rgba(46,173,168,0.5)); }
+  .fear-accent { stroke: var(--red2); filter: drop-shadow(0 0 4px rgba(231,76,60,0.5)); }
+  .gold-accent  { stroke: var(--gold); filter: drop-shadow(0 0 4px rgba(200,150,62,0.5)); }
+
+  .die-oct-input {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.4rem, 3.5vw, 2rem);
+    text-align: center;
+    padding: 0;
+    -moz-appearance: textfield;
+    outline: none;
+    /* Vertically center inside octagon */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding-top: 8px;
+  }
+  .die-oct-input::-webkit-inner-spin-button,
+  .die-oct-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .die-oct-input.hope { color: var(--teal); }
+  .die-oct-input.fear { color: var(--red2); }
+
+  /* SESSION + STATS SIDE BY SIDE */
+  .session-stats-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+    align-items: stretch;
+  }
+  .stats-card {
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .stats-card .stats-col {
+    flex: 1;
+  }
+
+  .stats-col {
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
-  .rolls-top-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  .rolls-bottom-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    align-items: end;
-  }
-  .roll-submit-cell {
+  .stat-field {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 8px;
+    text-align: center;
+    flex: 1;
     display: flex;
-    align-items: flex-end;
-  }
-  .roll-submit-cell .btn-submit {
-    width: 100%;
-    margin-top: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
   }
 
-  /* ROLL FIELDS */
+  /* ROLL FIELDS (legacy, kept for compatibility) */
   .roll-field label {
     display: block;
     font-family: 'Cinzel', serif;
@@ -400,6 +485,8 @@
   }
   .counter-label.inspiration { color: var(--gold); }
   .counter-label.dc { color: var(--teal); }
+  .counter-label.minion-dc { color: var(--minion); }
+  .dc-value.minion { color: var(--minion); }
   .counter-label.penalty { color: var(--red2); }
   .counter-controls {
     display: flex;
@@ -821,83 +908,106 @@
   <!-- Rolls Card -->
   <div class="card">
     <div class="card-title">Roll the Dice <button class="btn-roll-for-me" onclick="rollForMe()">🎲 Roll for Me</button></div>
-    <div class="rolls-layout">
-      <div class="rolls-top-row">
-        <div class="roll-field hope">
-          <label>d20 Hope</label>
-          <input type="number" class="die-input hope" id="hopeRoll" min="1" max="20" placeholder="—">
-        </div>
-        <div class="roll-field fear">
-          <label>d20 Fear</label>
-          <input type="number" class="die-input fear" id="fearRoll" min="1" max="20" placeholder="—">
+    <div class="dice-row">
+      <div class="die-field hope">
+        <div class="die-label">Hope</div>
+        <div class="die-oct-wrap">
+          <svg class="die-oct-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <polygon class="die-oct-bg" points="29,4 71,4 96,29 96,71 71,96 29,96 4,71 4,29"/>
+            <polygon class="die-oct-accent hope-accent" points="29,4 71,4 96,29 96,71 71,96 29,96 4,71 4,29"/>
+          </svg>
+          <input type="number" class="die-oct-input hope" id="hopeRoll" min="1" max="20" placeholder="—"
+            oninput="onHopeInput(this.value)" onchange="onHopeInput(this.value)">
         </div>
       </div>
-      <div class="rolls-bottom-row">
-        <div class="roll-field soundtrack">
-          <label>d20 Soundtrack</label>
-          <input type="number" class="die-input" id="soundRoll" min="1" max="20" placeholder="—">
+      <div class="die-field fear">
+        <div class="die-label">Fear</div>
+        <div class="die-oct-wrap">
+          <svg class="die-oct-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <polygon class="die-oct-bg" points="29,4 71,4 96,29 96,71 71,96 29,96 4,71 4,29"/>
+            <polygon class="die-oct-accent fear-accent" points="29,4 71,4 96,29 96,71 71,96 29,96 4,71 4,29"/>
+          </svg>
+          <input type="number" class="die-oct-input fear" id="fearRoll" min="1" max="20" placeholder="—"
+            oninput="onRollInput()" onchange="onRollInput()">
         </div>
-        <div class="roll-submit-cell">
-          <button class="btn-submit" onclick="submitRolls()">⚔ Submit Rolls</button>
+      </div>
+      <div class="die-field soundtrack">
+        <div class="die-label">Soundtrack</div>
+        <div class="die-oct-wrap">
+          <svg class="die-oct-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <polygon class="die-oct-bg" points="29,4 71,4 96,29 96,71 71,96 29,96 4,71 4,29"/>
+            <polygon class="die-oct-accent gold-accent" points="29,4 71,4 96,29 96,71 71,96 29,96 4,71 4,29"/>
+          </svg>
+          <input type="number" class="die-oct-input" id="soundRoll" min="1" max="20" placeholder="—"
+            oninput="onSoundInput()" onchange="onSoundInput()">
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Timer Centrepiece -->
-  <div class="card">
-    <div class="card-title">Session</div>
-    <div class="timer-centrepiece">
-      <div class="timer-ring-container">
-        <svg class="timer-ring-svg" viewBox="0 0 220 220">
-          <circle class="timer-ring-bg" cx="110" cy="110" r="100"/>
-          <circle class="timer-ring-progress" id="timerRing" cx="110" cy="110" r="100"/>
-        </svg>
-        <div class="timer-inner">
-          <div class="timer-display" id="timerDisplay" onclick="startEdit()" title="Click to edit">—:——</div>
-          <input type="text" class="timer-edit" id="timerEdit" placeholder="MM:SS" onblur="finishEdit()" onkeydown="editKeydown(event)">
-          <div class="timer-label">Click to adjust</div>
+  <!-- Session + Stats side by side -->
+  <div class="session-stats-row">
+
+    <!-- Timer Centrepiece (2/3) -->
+    <div class="card session-card">
+      <div class="card-title">Session</div>
+      <div class="timer-centrepiece">
+        <div class="timer-ring-container">
+          <svg class="timer-ring-svg" viewBox="0 0 220 220">
+            <circle class="timer-ring-bg" cx="110" cy="110" r="100"/>
+            <circle class="timer-ring-progress" id="timerRing" cx="110" cy="110" r="100"/>
+          </svg>
+          <div class="timer-inner">
+            <div class="timer-display" id="timerDisplay" onclick="startEdit()" title="Click to edit">—:——</div>
+            <input type="text" class="timer-edit" id="timerEdit" placeholder="MM:SS" onblur="finishEdit()" onkeydown="editKeydown(event)">
+            <div class="timer-label">Click to adjust</div>
+          </div>
+        </div>
+        <div class="timer-controls">
+          <button class="btn-timer btn-start" id="btnStart" onclick="startTimer()">▶ Start</button>
+          <button class="btn-timer btn-pause" id="btnPause" onclick="pauseTimer()" style="display:none">⏸ Pause</button>
+          <button class="btn-timer btn-reset" onclick="resetTimer()">↺ Reset</button>
         </div>
       </div>
-      <div class="timer-controls">
-        <button class="btn-timer btn-start" id="btnStart" onclick="startTimer()">▶ Start</button>
-        <button class="btn-timer btn-pause" id="btnPause" onclick="pauseTimer()" style="display:none">⏸ Pause</button>
-        <button class="btn-timer btn-reset" onclick="resetTimer()">↺ Reset</button>
+    </div>
+
+    <!-- Stats (1/3) -->
+    <div class="card stats-card">
+      <div class="card-title">Stats <button class="btn-status-reset" onclick="resetStatus()" title="Reset inspiration, penalty & DCs to defaults">↺ Reset</button></div>
+      <div class="stats-col">
+        <div class="stat-field">
+          <div class="counter-label inspiration">Inspiration</div>
+          <div class="counter-controls">
+            <button class="counter-btn" onclick="adjustCounter('inspiration', -1)">−</button>
+            <div class="counter-value inspiration" id="inspirationVal">0</div>
+            <button class="counter-btn" onclick="adjustCounter('inspiration', 1)">+</button>
+          </div>
+        </div>
+        <div class="stat-field">
+          <div class="counter-label penalty">Penalty</div>
+          <div class="counter-controls">
+            <button class="counter-btn" onclick="adjustCounter('penalty', -1)">−</button>
+            <div class="counter-value" id="penaltyVal">0</div>
+            <button class="counter-btn" onclick="adjustCounter('penalty', 1)">+</button>
+          </div>
+        </div>
+        <div class="stat-field">
+          <div class="counter-label dc">Boss DC</div>
+          <div class="dc-value" id="bossDCVal">24</div>
+        </div>
+        <div class="stat-field">
+          <div class="counter-label minion-dc">Minion DC</div>
+          <div class="dc-value minion" id="minionDCVal">18</div>
+        </div>
       </div>
     </div>
+
   </div>
 
   <!-- Soundtrack Display -->
   <div class="card">
     <div class="card-title">Soundtrack</div>
     <div class="soundtrack-display" id="soundtrackDisplay">— Roll the dice to reveal your soundtrack —</div>
-  </div>
-
-  <!-- Counters -->
-  <div class="card">
-    <div class="card-title">Status <button class="btn-status-reset" onclick="resetStatus()" title="Reset inspiration, penalty & DC to defaults">↺ Reset</button></div>
-    <div class="counters-row">
-      <div class="counter-field">
-        <div class="counter-label inspiration">Inspiration</div>
-        <div class="counter-controls">
-          <button class="counter-btn" onclick="adjustCounter('inspiration', -1)">−</button>
-          <div class="counter-value inspiration" id="inspirationVal">0</div>
-          <button class="counter-btn" onclick="adjustCounter('inspiration', 1)">+</button>
-        </div>
-      </div>
-      <div class="counter-field">
-        <div class="counter-label dc">Break DC</div>
-        <div class="dc-value" id="breakDCVal">24</div>
-      </div>
-      <div class="counter-field">
-        <div class="counter-label penalty">Penalty</div>
-        <div class="counter-controls">
-          <button class="counter-btn" onclick="adjustCounter('penalty', -1)">−</button>
-          <div class="counter-value" id="penaltyVal">0</div>
-          <button class="counter-btn" onclick="adjustCounter('penalty', 1)">+</button>
-        </div>
-      </div>
-    </div>
   </div>
 
 </div>
@@ -920,11 +1030,21 @@
 
     <div class="setting-row">
       <div>
-        <div class="setting-label">Frivolous Break DC</div>
+        <div class="setting-label">Boss DC</div>
         <div class="setting-sub">Default DC before inspiration/penalty modifiers</div>
       </div>
       <div class="setting-control">
         <input type="number" id="dcDefaultSetting" value="24" min="1" max="30" onchange="saveSettings()">
+      </div>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Minion DC</div>
+        <div class="setting-sub">Lower DC for minor breaks/distractions</div>
+      </div>
+      <div class="setting-control">
+        <input type="number" id="minionDcDefaultSetting" value="18" min="1" max="30" onchange="saveSettings()">
       </div>
     </div>
 
@@ -1020,6 +1140,7 @@ let state = {
   penalty: 0,
   baseTime: 10,
   dcDefault: 24,
+  minionDcDefault: 18,
   soundtracks: [...DEFAULT_SOUNDTRACKS],
   logs: [],
   timerSeconds: 0,
@@ -1039,6 +1160,7 @@ function saveState() {
     penalty: state.penalty,
     baseTime: state.baseTime,
     dcDefault: state.dcDefault,
+    minionDcDefault: state.minionDcDefault,
     soundtracks: state.soundtracks,
     logs: state.logs,
   };
@@ -1052,6 +1174,7 @@ function loadState() {
     if (saved.penalty !== undefined) state.penalty = saved.penalty;
     if (saved.baseTime !== undefined) state.baseTime = saved.baseTime;
     if (saved.dcDefault !== undefined) state.dcDefault = saved.dcDefault;
+    if (saved.minionDcDefault !== undefined) state.minionDcDefault = saved.minionDcDefault;
     if (saved.soundtracks) state.soundtracks = saved.soundtracks;
     if (saved.logs) state.logs = saved.logs;
   } catch(e) {}
@@ -1077,6 +1200,8 @@ function rollForMe() {
   const sound = Math.ceil(Math.random() * 20);
   document.getElementById('hopeRoll').value = hope;
   document.getElementById('fearRoll').value = fear;
+  // Clear override so soundtrack auto-populates from hope
+  document.getElementById('soundRoll').removeAttribute('data-user-override');
   document.getElementById('soundRoll').value = sound;
   // Animate inputs briefly
   ['hopeRoll','fearRoll','soundRoll'].forEach(id => {
@@ -1085,35 +1210,67 @@ function rollForMe() {
     el.style.boxShadow = '0 0 0 3px rgba(46,173,168,0.3)';
     setTimeout(() => el.style.boxShadow = '', 400);
   });
+  onRollInput();
 }
 
-function submitRolls() {
+// ============================================================
+// ROLLS & LIVE SESSION CALCULATION
+// ============================================================
+function onHopeInput(val) {
+  // Auto-populate soundtrack with same value as hope unless user has overridden it
+  const soundEl = document.getElementById('soundRoll');
+  if (!soundEl.dataset.userOverride) {
+    soundEl.value = val;
+  }
+  onRollInput();
+}
+
+function onSoundInput() {
+  // Mark as user-overridden so hope no longer auto-fills it
+  document.getElementById('soundRoll').dataset.userOverride = '1';
+  onRollInput();
+}
+
+function onRollInput() {
   const hope = parseInt(document.getElementById('hopeRoll').value);
   const fear = parseInt(document.getElementById('fearRoll').value);
   const sound = parseInt(document.getElementById('soundRoll').value);
 
-  if (!hope || hope < 1 || hope > 20) { showToast('Enter a valid Hope roll (1–20)'); return; }
-  if (!fear || fear < 1 || fear > 20) { showToast('Enter a valid Fear roll (1–20)'); return; }
-  if (!sound || sound < 1 || sound > 20) { showToast('Enter a valid Soundtrack roll (1–20)'); return; }
-
-  let totalMinutes;
-  if (hope === fear) {
-    totalMinutes = hope + state.baseTime;
-    adjustCounter('inspiration', 1);
-    showToast('Hope = Fear — +1 Inspiration!');
-  } else if (hope > fear) {
-    totalMinutes = hope + state.baseTime;
-  } else {
-    totalMinutes = hope + fear + state.baseTime;
+  if (hope >= 1 && hope <= 20 && fear >= 1 && fear <= 20) {
+    let totalMinutes;
+    const equalKey = `${hope}`;
+    if (hope === fear) {
+      totalMinutes = hope + state.baseTime;
+      if (!state._lastEqualRoll || state._lastEqualRoll !== equalKey) {
+        state._lastEqualRoll = equalKey;
+        adjustCounter('inspiration', 1);
+        showToast('Hope = Fear — +1 Inspiration!');
+      }
+    } else {
+      state._lastEqualRoll = null;
+      totalMinutes = hope > fear ? hope + state.baseTime : hope + fear + state.baseTime;
+    }
+    state.currentSession = state.currentSession || {};
+    state.currentSession.hope = hope;
+    state.currentSession.fear = fear;
+    state.currentSession.totalMinutes = totalMinutes;
+    setTimer(totalMinutes * 60);
   }
 
-  const soundtrackName = state.soundtracks[sound - 1] || `Track ${sound}`;
-  document.getElementById('soundtrackDisplay').textContent = soundtrackName;
-  document.getElementById('soundtrackDisplay').classList.add('populated');
-
-  state.currentSession = { hope, fear, sound, soundtrackName, totalMinutes };
-  setTimer(totalMinutes * 60);
+  if (sound >= 1 && sound <= 20) {
+    const name = state.soundtracks[sound - 1] || `Track ${sound}`;
+    state.currentSession = state.currentSession || {};
+    state.currentSession.sound = sound;
+    state.currentSession.soundtrackName = name;
+    document.getElementById('soundtrackDisplay').textContent = name;
+    document.getElementById('soundtrackDisplay').classList.add('populated');
+  } else {
+    document.getElementById('soundtrackDisplay').textContent = '— Roll the dice to reveal your soundtrack —';
+    document.getElementById('soundtrackDisplay').classList.remove('populated');
+  }
 }
+
+function submitRolls() {} // no-op, kept for safety
 
 // ============================================================
 // TIMER
@@ -1291,8 +1448,10 @@ function adjustCounter(which, delta) {
 }
 
 function updateBreakDC() {
-  const dc = state.dcDefault - state.inspiration + state.penalty;
-  document.getElementById('breakDCVal').textContent = dc;
+  const bossDC = state.dcDefault - state.inspiration + state.penalty;
+  const minionDC = state.minionDcDefault - state.inspiration + state.penalty;
+  document.getElementById('bossDCVal').textContent = bossDC;
+  document.getElementById('minionDCVal').textContent = minionDC;
 }
 
 // ============================================================
@@ -1301,6 +1460,7 @@ function updateBreakDC() {
 function saveSettings() {
   state.baseTime = parseInt(document.getElementById('baseTimeSetting').value) || 10;
   state.dcDefault = parseInt(document.getElementById('dcDefaultSetting').value) || 24;
+  state.minionDcDefault = parseInt(document.getElementById('minionDcDefaultSetting').value) || 18;
   updateBreakDC();
 
   // Save soundtracks from table
@@ -1487,6 +1647,7 @@ function init() {
   document.getElementById('penaltyVal').textContent = state.penalty;
   document.getElementById('baseTimeSetting').value = state.baseTime;
   document.getElementById('dcDefaultSetting').value = state.dcDefault;
+  document.getElementById('minionDcDefaultSetting').value = state.minionDcDefault;
   updateBreakDC();
   buildSoundtrackTable();
 
