@@ -760,6 +760,12 @@
   }
   .btn-import-csv:hover { border-color: var(--teal); color: var(--teal); }
 
+  .sound-file-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
   /* TOGGLE SWITCH */
   .toggle-switch {
     position: relative;
@@ -1180,30 +1186,6 @@
 
     <div class="setting-row">
       <div>
-        <div class="setting-label">Timer Sound</div>
-        <div class="setting-sub" id="soundFileName">No file selected</div>
-      </div>
-      <div class="setting-control">
-        <label class="file-btn" for="soundFileInput">Choose File</label>
-        <input type="file" id="soundFileInput" accept=".mp3,.wav" onchange="loadSoundFile(event)">
-      </div>
-    </div>
-
-    <div class="setting-row">
-      <div>
-        <div class="setting-label">Ticking Sound</div>
-        <div class="setting-sub">Soft clock tick while timer runs (4/sec)</div>
-      </div>
-      <div class="setting-control">
-        <label class="toggle-switch">
-          <input type="checkbox" id="tickingToggle" onchange="saveSettings()">
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-    </div>
-
-    <div class="setting-row">
-      <div>
         <div class="setting-label">Hope / Fear Die</div>
         <div class="setting-sub">Number of sides for Hope & Fear rolls</div>
       </div>
@@ -1221,6 +1203,70 @@
         <span style="color:var(--text3);font-size:0.8rem;margin-right:4px;">d</span><input type="number" id="soundtrackDieSetting" value="20" min="4" max="100" onchange="saveSettings()">
       </div>
     </div>
+  </div>
+
+  <!-- Sound Settings -->
+  <div class="card">
+    <div class="card-title">Sound Settings</div>
+
+    <!-- Timer Sound -->
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Timer Sound</div>
+        <div class="setting-sub" id="soundFileName">No file selected</div>
+      </div>
+      <div class="setting-control">
+        <label class="file-btn" for="soundFileInput">Choose File</label>
+        <input type="file" id="soundFileInput" accept=".mp3,.wav" onchange="loadSoundFile(event)">
+      </div>
+    </div>
+
+    <!-- Ticking Sound -->
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Ticking Sound</div>
+        <div class="setting-sub">Soft clock tick while timer runs (4/sec)</div>
+      </div>
+      <div class="setting-control">
+        <label class="toggle-switch">
+          <input type="checkbox" id="tickingToggle" onchange="saveSettings()">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Session Start Sound -->
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Session Start Sound</div>
+        <div class="setting-sub" id="startSoundFileName">No file selected</div>
+      </div>
+      <div class="setting-control sound-file-control">
+        <label class="toggle-switch">
+          <input type="checkbox" id="startSoundToggle" onchange="saveSettings()">
+          <span class="toggle-slider"></span>
+        </label>
+        <label class="file-btn" for="startSoundFileInput">Choose File</label>
+        <input type="file" id="startSoundFileInput" accept=".mp3,.wav" onchange="loadStartSoundFile(event)">
+      </div>
+    </div>
+
+    <!-- Inspiration Sound -->
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Inspiration Sound</div>
+        <div class="setting-sub" id="inspirationSoundFileName">No file selected</div>
+      </div>
+      <div class="setting-control sound-file-control">
+        <label class="toggle-switch">
+          <input type="checkbox" id="inspirationSoundToggle" onchange="saveSettings()">
+          <span class="toggle-slider"></span>
+        </label>
+        <label class="file-btn" for="inspirationSoundFileInput">Choose File</label>
+        <input type="file" id="inspirationSoundFileInput" accept=".mp3,.wav" onchange="loadInspirationSoundFile(event)">
+      </div>
+    </div>
+
   </div>
 
   <!-- Soundtrack Table -->
@@ -1284,6 +1330,8 @@
 <div class="toast" id="toast"></div>
 
 <audio id="timerSound"></audio>
+<audio id="startSound"></audio>
+<audio id="inspirationSound"></audio>
 
 <script>
 // ============================================================
@@ -1321,6 +1369,8 @@ let state = {
   hopeFearDie: 20,
   soundtrackDie: 20,
   tickingEnabled: false,
+  startSoundEnabled: false,
+  inspirationSoundEnabled: false,
   soundtracks: [...DEFAULT_SOUNDTRACKS],
   logs: [],
   timerSeconds: 0,
@@ -1345,6 +1395,8 @@ function saveState() {
     hopeFearDie: state.hopeFearDie,
     soundtrackDie: state.soundtrackDie,
     tickingEnabled: state.tickingEnabled,
+    startSoundEnabled: state.startSoundEnabled,
+    inspirationSoundEnabled: state.inspirationSoundEnabled,
     soundtracks: state.soundtracks,
     logs: state.logs,
   };
@@ -1362,6 +1414,8 @@ function loadState() {
     if (saved.hopeFearDie !== undefined) state.hopeFearDie = saved.hopeFearDie;
     if (saved.soundtrackDie !== undefined) state.soundtrackDie = saved.soundtrackDie;
     if (saved.tickingEnabled !== undefined) state.tickingEnabled = saved.tickingEnabled;
+    if (saved.startSoundEnabled !== undefined) state.startSoundEnabled = saved.startSoundEnabled;
+    if (saved.inspirationSoundEnabled !== undefined) state.inspirationSoundEnabled = saved.inspirationSoundEnabled;
     if (saved.soundtracks) state.soundtracks = saved.soundtracks;
     if (saved.logs) state.logs = saved.logs;
   } catch(e) {}
@@ -1544,6 +1598,7 @@ function onRollInput() {
       if (!state._lastEqualRoll || state._lastEqualRoll !== equalKey) {
         state._lastEqualRoll = equalKey;
         adjustCounter('inspiration', 1);
+        playInspirationSound();
         showToast('Hope = Fear — +1 Inspiration!');
       }
     } else {
@@ -1608,6 +1663,7 @@ function startTimer() {
   state.timerRunning = true;
   document.getElementById('btnStart').style.display = 'none';
   document.getElementById('btnPause').style.display = 'inline-flex';
+  playStartSound();
   startTicking();
   state.timerInterval = setInterval(() => {
     state.timerSeconds--;
@@ -1703,6 +1759,7 @@ function sessionResult(success) {
 
     adjustCounter('inspiration', 1 + bonus);
     flashInspiration();
+    playInspirationSound();
 
     if (bonus > 0) {
       showToast(`+${1 + bonus} Inspiration — ${duration}m session bonus!`);
@@ -1767,6 +1824,8 @@ function saveSettings() {
   state.hopeFearDie = parseInt(document.getElementById('hopeFearDieSetting').value) || 20;
   state.soundtrackDie = parseInt(document.getElementById('soundtrackDieSetting').value) || 20;
   state.tickingEnabled = document.getElementById('tickingToggle').checked;
+  state.startSoundEnabled = document.getElementById('startSoundToggle').checked;
+  state.inspirationSoundEnabled = document.getElementById('inspirationSoundToggle').checked;
   updateBreakDC();
 
   // Save soundtracks from table
@@ -1870,6 +1929,58 @@ function stopTicking() {
   if (state.tickInterval) {
     clearInterval(state.tickInterval);
     state.tickInterval = null;
+  }
+}
+
+function loadStartSoundFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  document.getElementById('startSoundFileName').textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataURL = e.target.result;
+    document.getElementById('startSound').src = dataURL;
+    try {
+      localStorage.setItem('r4f_start_sound', JSON.stringify({ name: file.name, data: dataURL }));
+    } catch(err) {
+      showToast('File too large to persist — re-select on next open');
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function loadInspirationSoundFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  document.getElementById('inspirationSoundFileName').textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataURL = e.target.result;
+    document.getElementById('inspirationSound').src = dataURL;
+    try {
+      localStorage.setItem('r4f_inspiration_sound', JSON.stringify({ name: file.name, data: dataURL }));
+    } catch(err) {
+      showToast('File too large to persist — re-select on next open');
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function playStartSound() {
+  if (!state.startSoundEnabled) return;
+  const audio = document.getElementById('startSound');
+  if (audio.src && audio.src !== window.location.href) {
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+  }
+}
+
+function playInspirationSound() {
+  if (!state.inspirationSoundEnabled) return;
+  const audio = document.getElementById('inspirationSound');
+  if (audio.src && audio.src !== window.location.href) {
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
   }
 }
 
@@ -1986,6 +2097,8 @@ function init() {
   document.getElementById('hopeFearDieSetting').value = state.hopeFearDie;
   document.getElementById('soundtrackDieSetting').value = state.soundtrackDie;
   document.getElementById('tickingToggle').checked = state.tickingEnabled;
+  document.getElementById('startSoundToggle').checked = state.startSoundEnabled;
+  document.getElementById('inspirationSoundToggle').checked = state.inspirationSoundEnabled;
   updateBreakDC();
   buildSoundtrackTable();
   loadNotes();
@@ -1998,6 +2111,24 @@ function init() {
       document.getElementById('timerSound').src = saved.data;
       document.getElementById('soundFileName').textContent = saved.name;
       state.soundFileURL = saved.data;
+    }
+  } catch(e) {}
+
+  // Restore start sound
+  try {
+    const saved = JSON.parse(localStorage.getItem('r4f_start_sound') || 'null');
+    if (saved && saved.data) {
+      document.getElementById('startSound').src = saved.data;
+      document.getElementById('startSoundFileName').textContent = saved.name;
+    }
+  } catch(e) {}
+
+  // Restore inspiration sound
+  try {
+    const saved = JSON.parse(localStorage.getItem('r4f_inspiration_sound') || 'null');
+    if (saved && saved.data) {
+      document.getElementById('inspirationSound').src = saved.data;
+      document.getElementById('inspirationSoundFileName').textContent = saved.name;
     }
   } catch(e) {}
 }
