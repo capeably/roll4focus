@@ -1123,11 +1123,19 @@
         </div>
         <div class="stat-field">
           <div class="counter-label dc">Boss DC</div>
-          <div class="dc-value" id="bossDCVal">24</div>
+          <div class="counter-controls">
+            <button class="counter-btn" onclick="adjustDC('boss', -1)">−</button>
+            <div class="dc-value" id="bossDCVal">24</div>
+            <button class="counter-btn" onclick="adjustDC('boss', 1)">+</button>
+          </div>
         </div>
         <div class="stat-field">
           <div class="counter-label minion-dc">Minion DC</div>
-          <div class="dc-value minion" id="minionDCVal">18</div>
+          <div class="counter-controls">
+            <button class="counter-btn" onclick="adjustDC('minion', -1)">−</button>
+            <div class="dc-value minion" id="minionDCVal">18</div>
+            <button class="counter-btn" onclick="adjustDC('minion', 1)">+</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1793,6 +1801,20 @@ function resetStatus() {
   updateBreakDC();
   saveState();
   showToast('Status reset');
+}
+
+function adjustDC(which, delta) {
+  if (which === 'boss') {
+    state.dcDefault = Math.max(1, state.dcDefault + delta);
+    const el = document.getElementById('dcDefaultSetting');
+    if (el) el.value = state.dcDefault;
+  } else {
+    state.minionDcDefault = Math.max(1, state.minionDcDefault + delta);
+    const el = document.getElementById('minionDcDefaultSetting');
+    if (el) el.value = state.minionDcDefault;
+  }
+  updateBreakDC();
+  saveState();
 }
 
 function adjustCounter(which, delta) {
