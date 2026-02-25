@@ -1007,6 +1007,37 @@
     margin: 0.8em 0;
   }
   .notes-preview a { color: var(--teal); }
+
+  /* ADVENTURING TIME */
+  .adv-time-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .adv-time-field {
+    flex: 1;
+    text-align: center;
+    padding: 8px 0;
+  }
+  .adv-time-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 6px;
+  }
+  .adv-time-value {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.6rem;
+    color: var(--gold2);
+    text-shadow: 0 0 20px rgba(200,150,62,0.3);
+  }
+  .adv-time-divider {
+    width: 1px;
+    height: 48px;
+    background: linear-gradient(to bottom, transparent, var(--border2), transparent);
+  }
 </style>
 </head>
 <body>
@@ -1020,13 +1051,13 @@
 </header>
 
 <nav class="tabs">
-  <button class="tab-btn active" onclick="switchTab('timer')">Timer</button>
+  <button class="tab-btn active" onclick="switchTab('timer')">Dashboard</button>
   <button class="tab-btn" onclick="switchTab('settings')">Settings</button>
   <button class="tab-btn" onclick="switchTab('logs')">Logs</button>
   <button class="tab-btn" onclick="switchTab('notes')">Notes</button>
 </nav>
 
-<!-- ======================== TIMER TAB ======================== -->
+<!-- ======================== DASHBOARD TAB ======================== -->
 <div id="tab-timer" class="tab-content active">
 
   <!-- Rolls Card -->
@@ -1140,6 +1171,22 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- Adventuring Time -->
+  <div class="card">
+    <div class="card-title">Adventuring Time</div>
+    <div class="adv-time-row">
+      <div class="adv-time-field">
+        <div class="adv-time-label">Today</div>
+        <div class="adv-time-value" id="advTimeToday">0m</div>
+      </div>
+      <div class="adv-time-divider"></div>
+      <div class="adv-time-field">
+        <div class="adv-time-label">This Week</div>
+        <div class="adv-time-value" id="advTimeWeek">0m</div>
+      </div>
+    </div>
   </div>
 
   <!-- Notes -->
@@ -1542,6 +1589,39 @@ function parseMarkdown(md) {
   return html;
 }
 
+function updateAdventuringTime() {
+  const now = new Date();
+
+  // Start of today (local midnight)
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  // Start of this week (Monday local midnight)
+  const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon...
+  const daysFromMon = (dayOfWeek + 6) % 7;
+  const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - daysFromMon);
+
+  let todayMins = 0;
+  let weekMins = 0;
+
+  state.logs.forEach(log => {
+    if (!log.success) return;
+    const logDate = new Date(log.timestamp);
+    if (isNaN(logDate)) return;
+    if (logDate >= todayStart) todayMins += (log.duration || 0);
+    if (logDate >= weekStart) weekMins += (log.duration || 0);
+  });
+
+  const fmt = (mins) => {
+    if (mins < 60) return `${mins}m`;
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    return m > 0 ? `${h}h ${m}m` : `${h}h`;
+  };
+
+  document.getElementById('advTimeToday').textContent = fmt(todayMins);
+  document.getElementById('advTimeWeek').textContent = fmt(weekMins);
+}
+
 // ============================================================
 // TABS
 // ============================================================
@@ -1799,6 +1879,7 @@ function sessionResult(success) {
   };
   state.logs.unshift(log);
   saveState();
+  updateAdventuringTime();
 }
 
 // ============================================================
@@ -2136,6 +2217,7 @@ function init() {
   buildSoundtrackTable();
   loadNotes();
   loadNotesTab();
+  updateAdventuringTime();
 
   // Restore persisted sound file
   try {
