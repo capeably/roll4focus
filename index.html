@@ -1038,6 +1038,163 @@
     height: 48px;
     background: linear-gradient(to bottom, transparent, var(--border2), transparent);
   }
+
+  /* MINION BATTLE ROW */
+  .minion-row {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .minion-battle-card,
+  .minion-chest-card { margin-bottom: 0; }
+
+  /* Attack button */
+  .btn-attack {
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, rgba(155,127,212,0.2), rgba(155,127,212,0.08));
+    border: 1px solid var(--minion);
+    color: var(--minion);
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+  }
+  .btn-attack:hover {
+    background: linear-gradient(135deg, rgba(155,127,212,0.35), rgba(155,127,212,0.15));
+    box-shadow: 0 0 14px rgba(155,127,212,0.3);
+    transform: translateY(-1px);
+  }
+  .btn-attack:active { transform: translateY(0); }
+  .btn-attack:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* Open chest button */
+  .btn-chest {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, rgba(200,150,62,0.15), rgba(200,150,62,0.06));
+    border: 1px solid var(--gold);
+    color: var(--gold2);
+    padding: 9px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+  }
+  .btn-chest:hover {
+    background: linear-gradient(135deg, rgba(200,150,62,0.25), rgba(200,150,62,0.12));
+    box-shadow: 0 0 14px rgba(200,150,62,0.25);
+    transform: translateY(-1px);
+  }
+  .btn-chest:active { transform: translateY(0); }
+  .btn-chest:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* Attack roll result display */
+  .attack-result {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.6rem;
+    text-align: center;
+    min-width: 48px;
+    transition: all 0.2s;
+  }
+  .attack-result.win  { color: var(--success); text-shadow: 0 0 12px rgba(76,175,130,0.5); }
+  .attack-result.fail { color: var(--red2);    text-shadow: 0 0 12px rgba(231,76,60,0.4); }
+  .attack-result.idle { color: var(--text3); }
+
+  /* Minion countdown display */
+  .minion-countdown {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.1rem;
+    color: var(--minion);
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+  .minion-countdown.inactive { color: var(--text3); font-size: 0.85rem; font-family: 'Cinzel', serif; letter-spacing: 0.1em; }
+
+  /* Minion stats grid */
+  .minion-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .minion-stat {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 6px;
+    text-align: center;
+  }
+  .minion-stat-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.52rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 4px;
+  }
+  .minion-stat-value {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.1rem;
+    color: var(--minion);
+  }
+  .minion-stat-value.gold { color: var(--gold2); }
+
+  /* Battle top row: countdown + attack + result */
+  .battle-top {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .battle-timer-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .battle-timer-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.52rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+  .battle-mid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .battle-result-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .battle-result-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.52rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+  /* DC row inside battle card */
+  .battle-dc-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 0 4px;
+    border-top: 1px solid var(--border);
+  }
 </style>
 </head>
 <body>
@@ -1134,7 +1291,7 @@
 
     <!-- Stats (1/3) -->
     <div class="card stats-card">
-      <div class="card-title">Stats <button class="btn-status-reset" onclick="resetStatus()" title="Reset inspiration, penalty & DCs to defaults">↺ Reset</button></div>
+      <div class="card-title">Stats <button class="btn-status-reset" onclick="resetStatus()" title="Reset inspiration, penalty & Boss DC to defaults">↺ Reset</button></div>
       <div class="stats-col">
         <div class="stat-field">
           <div class="counter-label inspiration">Inspiration</div>
@@ -1160,13 +1317,84 @@
             <button class="counter-btn" onclick="adjustDC('boss', 1)">+</button>
           </div>
         </div>
-        <div class="stat-field">
-          <div class="counter-label minion-dc">Minion DC</div>
-          <div class="counter-controls">
-            <button class="counter-btn" onclick="adjustDC('minion', -1)">−</button>
-            <div class="dc-value minion" id="minionDCVal">18</div>
-            <button class="counter-btn" onclick="adjustDC('minion', 1)">+</button>
-          </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Minion Battles + Minion Chests -->
+  <div class="minion-row">
+
+    <!-- Minion Battles (left) -->
+    <div class="card minion-battle-card">
+      <div class="card-title">
+        Minion Battles
+        <label class="toggle-switch" title="Toggle minion countdown">
+          <input type="checkbox" id="minionCountdownToggle" onchange="onMinionToggleChange()">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <!-- Top row: countdown | attack | result -->
+      <div class="battle-top">
+        <div class="battle-timer-block">
+          <div class="battle-timer-label">Next Battle</div>
+          <div class="minion-countdown inactive" id="minionCountdown">Off</div>
+        </div>
+        <div class="battle-mid">
+          <button class="btn-attack" id="btnAttack" onclick="minionAttack()" disabled>⚔ Attack</button>
+        </div>
+        <div class="battle-result-block">
+          <div class="battle-result-label">Attack Roll</div>
+          <div class="attack-result idle" id="attackResult">—</div>
+        </div>
+      </div>
+
+      <!-- Minion DC row -->
+      <div class="battle-dc-row">
+        <div class="counter-label minion-dc" style="margin-bottom:0;">Minion DC</div>
+        <button class="counter-btn" onclick="adjustDC('minion', -1)">−</button>
+        <div class="dc-value minion" id="minionDCVal">18</div>
+        <button class="counter-btn" onclick="adjustDC('minion', 1)">+</button>
+      </div>
+
+      <!-- Stats grid -->
+      <div class="minion-stats">
+        <div class="minion-stat">
+          <div class="minion-stat-label">Earned</div>
+          <div class="minion-stat-value" id="minionBattlesEarned">0</div>
+        </div>
+        <div class="minion-stat">
+          <div class="minion-stat-label">Fought</div>
+          <div class="minion-stat-value" id="minionBattlesFought">0</div>
+        </div>
+        <div class="minion-stat">
+          <div class="minion-stat-label">Won</div>
+          <div class="minion-stat-value" id="minionBattlesWon">0</div>
+        </div>
+        <div class="minion-stat">
+          <div class="minion-stat-label">Remaining</div>
+          <div class="minion-stat-value" id="minionBattlesRemaining">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Minion Chests (right) -->
+    <div class="card minion-chest-card">
+      <div class="card-title">Chests</div>
+      <button class="btn-chest" id="btnOpenChest" onclick="openChest()" disabled style="margin-bottom:12px;">🎁 Open Chest</button>
+      <div class="minion-stats" style="grid-template-columns:1fr;">
+        <div class="minion-stat">
+          <div class="minion-stat-label">Earned</div>
+          <div class="minion-stat-value gold" id="minionChestsEarned">0</div>
+        </div>
+        <div class="minion-stat">
+          <div class="minion-stat-label">Opened</div>
+          <div class="minion-stat-value gold" id="minionChestsOpened">0</div>
+        </div>
+        <div class="minion-stat">
+          <div class="minion-stat-label">Remaining</div>
+          <div class="minion-stat-value gold" id="minionChestsRemaining">0</div>
         </div>
       </div>
     </div>
@@ -1322,6 +1550,100 @@
       </div>
     </div>
 
+    <!-- Battle Earned Sound -->
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Battle Earned Sound</div>
+        <div class="setting-sub" id="battleEarnedSoundFileName">No file selected</div>
+      </div>
+      <div class="setting-control sound-file-control">
+        <label class="toggle-switch">
+          <input type="checkbox" id="battleEarnedSoundToggle" onchange="saveSettings()">
+          <span class="toggle-slider"></span>
+        </label>
+        <label class="file-btn" for="battleEarnedSoundFileInput">Choose File</label>
+        <input type="file" id="battleEarnedSoundFileInput" accept=".mp3,.wav" onchange="loadGenericSound(event,'battleEarned')">
+      </div>
+    </div>
+
+    <!-- Attack Success Sound -->
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Attack Success Sound</div>
+        <div class="setting-sub" id="attackSuccessSoundFileName">No file selected</div>
+      </div>
+      <div class="setting-control sound-file-control">
+        <label class="toggle-switch">
+          <input type="checkbox" id="attackSuccessSoundToggle" onchange="saveSettings()">
+          <span class="toggle-slider"></span>
+        </label>
+        <label class="file-btn" for="attackSuccessSoundFileInput">Choose File</label>
+        <input type="file" id="attackSuccessSoundFileInput" accept=".mp3,.wav" onchange="loadGenericSound(event,'attackSuccess')">
+      </div>
+    </div>
+
+    <!-- Attack Fail Sound -->
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Attack Fail Sound</div>
+        <div class="setting-sub" id="attackFailSoundFileName">No file selected</div>
+      </div>
+      <div class="setting-control sound-file-control">
+        <label class="toggle-switch">
+          <input type="checkbox" id="attackFailSoundToggle" onchange="saveSettings()">
+          <span class="toggle-slider"></span>
+        </label>
+        <label class="file-btn" for="attackFailSoundFileInput">Choose File</label>
+        <input type="file" id="attackFailSoundFileInput" accept=".mp3,.wav" onchange="loadGenericSound(event,'attackFail')">
+      </div>
+    </div>
+
+    <!-- Open Chest Sound -->
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Open Chest Sound</div>
+        <div class="setting-sub" id="openChestSoundFileName">No file selected</div>
+      </div>
+      <div class="setting-control sound-file-control">
+        <label class="toggle-switch">
+          <input type="checkbox" id="openChestSoundToggle" onchange="saveSettings()">
+          <span class="toggle-slider"></span>
+        </label>
+        <label class="file-btn" for="openChestSoundFileInput">Choose File</label>
+        <input type="file" id="openChestSoundFileInput" accept=".mp3,.wav" onchange="loadGenericSound(event,'openChest')">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Minion Settings -->
+  <div class="card">
+    <div class="card-title">Minion Settings</div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Battle Interval</div>
+        <div class="setting-sub">Minutes of session time per battle earned</div>
+      </div>
+      <div class="setting-control">
+        <input type="number" id="minionIntervalSetting" value="10" min="1" max="60" onchange="saveSettings()">
+        <span style="color:var(--text3);font-size:0.8rem;margin-left:4px;">min</span>
+      </div>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Auto-Fight</div>
+        <div class="setting-sub">Automatically attack when a battle is earned</div>
+      </div>
+      <div class="setting-control">
+        <label class="toggle-switch">
+          <input type="checkbox" id="minionAutoFightToggle" onchange="saveSettings()">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
   </div>
 
   <!-- Soundtrack Table -->
@@ -1387,6 +1709,10 @@
 <audio id="timerSound"></audio>
 <audio id="startSound"></audio>
 <audio id="inspirationSound"></audio>
+<audio id="battleEarnedSound"></audio>
+<audio id="attackSuccessSound"></audio>
+<audio id="attackFailSound"></audio>
+<audio id="openChestSound"></audio>
 
 <script>
 // ============================================================
@@ -1426,6 +1752,24 @@ let state = {
   tickingEnabled: false,
   startSoundEnabled: false,
   inspirationSoundEnabled: false,
+  // Minion settings
+  minionCountdownEnabled: false,
+  minionAutoFight: false,
+  minionInterval: 10,
+  battleEarnedSoundEnabled: false,
+  attackSuccessSoundEnabled: false,
+  attackFailSoundEnabled: false,
+  openChestSoundEnabled: false,
+  // Minion runtime (not persisted across sessions)
+  minionCountdownSeconds: 600,
+  minionCountdownInterval: null,
+  // Minion today stats (persisted, reset daily)
+  minionBattlesEarned: 0,
+  minionBattlesFought: 0,
+  minionBattlesWon: 0,
+  minionChestsEarned: 0,
+  minionChestsOpened: 0,
+  minionStatsDate: '',    // YYYY-MM-DD of last reset
   soundtracks: [...DEFAULT_SOUNDTRACKS],
   logs: [],
   timerSeconds: 0,
@@ -1452,6 +1796,19 @@ function saveState() {
     tickingEnabled: state.tickingEnabled,
     startSoundEnabled: state.startSoundEnabled,
     inspirationSoundEnabled: state.inspirationSoundEnabled,
+    minionCountdownEnabled: state.minionCountdownEnabled,
+    minionAutoFight: state.minionAutoFight,
+    minionInterval: state.minionInterval,
+    battleEarnedSoundEnabled: state.battleEarnedSoundEnabled,
+    attackSuccessSoundEnabled: state.attackSuccessSoundEnabled,
+    attackFailSoundEnabled: state.attackFailSoundEnabled,
+    openChestSoundEnabled: state.openChestSoundEnabled,
+    minionBattlesEarned: state.minionBattlesEarned,
+    minionBattlesFought: state.minionBattlesFought,
+    minionBattlesWon: state.minionBattlesWon,
+    minionChestsEarned: state.minionChestsEarned,
+    minionChestsOpened: state.minionChestsOpened,
+    minionStatsDate: state.minionStatsDate,
     soundtracks: state.soundtracks,
     logs: state.logs,
   };
@@ -1471,6 +1828,19 @@ function loadState() {
     if (saved.tickingEnabled !== undefined) state.tickingEnabled = saved.tickingEnabled;
     if (saved.startSoundEnabled !== undefined) state.startSoundEnabled = saved.startSoundEnabled;
     if (saved.inspirationSoundEnabled !== undefined) state.inspirationSoundEnabled = saved.inspirationSoundEnabled;
+    if (saved.minionCountdownEnabled !== undefined) state.minionCountdownEnabled = saved.minionCountdownEnabled;
+    if (saved.minionAutoFight !== undefined) state.minionAutoFight = saved.minionAutoFight;
+    if (saved.minionInterval !== undefined) state.minionInterval = saved.minionInterval;
+    if (saved.battleEarnedSoundEnabled !== undefined) state.battleEarnedSoundEnabled = saved.battleEarnedSoundEnabled;
+    if (saved.attackSuccessSoundEnabled !== undefined) state.attackSuccessSoundEnabled = saved.attackSuccessSoundEnabled;
+    if (saved.attackFailSoundEnabled !== undefined) state.attackFailSoundEnabled = saved.attackFailSoundEnabled;
+    if (saved.openChestSoundEnabled !== undefined) state.openChestSoundEnabled = saved.openChestSoundEnabled;
+    if (saved.minionBattlesEarned !== undefined) state.minionBattlesEarned = saved.minionBattlesEarned;
+    if (saved.minionBattlesFought !== undefined) state.minionBattlesFought = saved.minionBattlesFought;
+    if (saved.minionBattlesWon !== undefined) state.minionBattlesWon = saved.minionBattlesWon;
+    if (saved.minionChestsEarned !== undefined) state.minionChestsEarned = saved.minionChestsEarned;
+    if (saved.minionChestsOpened !== undefined) state.minionChestsOpened = saved.minionChestsOpened;
+    if (saved.minionStatsDate !== undefined) state.minionStatsDate = saved.minionStatsDate;
     if (saved.soundtracks) state.soundtracks = saved.soundtracks;
     if (saved.logs) state.logs = saved.logs;
   } catch(e) {}
@@ -1623,6 +1993,182 @@ function updateAdventuringTime() {
 }
 
 // ============================================================
+// MINION BATTLES
+// ============================================================
+
+function todayDateStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function checkMinionDailyReset() {
+  const today = todayDateStr();
+  if (state.minionStatsDate !== today) {
+    // Log yesterday's data before resetting
+    if (state.minionStatsDate) {
+      const log = JSON.parse(localStorage.getItem('r4f_minion_log') || '[]');
+      log.push({
+        date: state.minionStatsDate,
+        minionBattlesEarned: state.minionBattlesEarned,
+        minionBattlesFought: state.minionBattlesFought,
+        minionBattlesWon: state.minionBattlesWon,
+        minionChestsEarned: state.minionChestsEarned,
+        minionChestsOpened: state.minionChestsOpened,
+      });
+      localStorage.setItem('r4f_minion_log', JSON.stringify(log));
+    }
+    state.minionBattlesEarned = 0;
+    state.minionBattlesFought = 0;
+    state.minionBattlesWon = 0;
+    state.minionChestsEarned = 0;
+    state.minionChestsOpened = 0;
+    state.minionStatsDate = today;
+    saveState();
+  }
+}
+
+function onMinionToggleChange() {
+  state.minionCountdownEnabled = document.getElementById('minionCountdownToggle').checked;
+  if (!state.minionCountdownEnabled) {
+    stopMinionCountdown();
+    updateMinionCountdownDisplay();
+  } else if (state.timerRunning) {
+    startMinionCountdown();
+  } else {
+    updateMinionCountdownDisplay();
+  }
+  saveState();
+}
+
+function startMinionCountdown() {
+  if (!state.minionCountdownEnabled) return;
+  stopMinionCountdown();
+  state.minionCountdownInterval = setInterval(() => {
+    state.minionCountdownSeconds--;
+    updateMinionCountdownDisplay();
+    if (state.minionCountdownSeconds <= 0) {
+      // Battle earned!
+      state.minionBattlesEarned++;
+      updateMinionUI();
+      playGenericSound('battleEarned');
+      showToast('⚔ Minion Battle Earned!');
+      // Reset countdown
+      state.minionCountdownSeconds = state.minionInterval * 60;
+      updateMinionCountdownDisplay();
+      saveState();
+      // Auto-fight?
+      if (state.minionAutoFight) {
+        setTimeout(() => minionAttack(), 300);
+      }
+    }
+  }, 1000);
+}
+
+function stopMinionCountdown() {
+  if (state.minionCountdownInterval) {
+    clearInterval(state.minionCountdownInterval);
+    state.minionCountdownInterval = null;
+  }
+}
+
+function updateMinionCountdownDisplay() {
+  const el = document.getElementById('minionCountdown');
+  if (!state.minionCountdownEnabled) {
+    el.textContent = 'Off';
+    el.className = 'minion-countdown inactive';
+    return;
+  }
+  const mins = Math.floor(state.minionCountdownSeconds / 60);
+  const secs = state.minionCountdownSeconds % 60;
+  el.textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  el.className = 'minion-countdown';
+}
+
+function minionAttack() {
+  const remaining = state.minionBattlesEarned - state.minionBattlesFought;
+  if (remaining <= 0) return;
+
+  const roll = Math.ceil(Math.random() * 20);
+  const minionDC = state.minionDcDefault - state.inspiration + state.penalty;
+  const won = roll > minionDC;
+
+  state.minionBattlesFought++;
+  if (won) {
+    state.minionBattlesWon++;
+    state.minionChestsEarned++;
+    adjustDC('minion', 1);           // DC increases on win
+    playGenericSound('attackSuccess');
+    showToast(`⚔ Hit! Rolled ${roll} vs DC ${minionDC} — Chest Earned!`);
+  } else {
+    playGenericSound('attackFail');
+    showToast(`💨 Miss! Rolled ${roll} vs DC ${minionDC}`);
+  }
+
+  // Display result
+  const resultEl = document.getElementById('attackResult');
+  resultEl.textContent = roll;
+  resultEl.className = `attack-result ${won ? 'win' : 'fail'}`;
+
+  updateMinionUI();
+  saveState();
+}
+
+function openChest() {
+  if (state.minionChestsEarned - state.minionChestsOpened <= 0) return;
+  state.minionChestsOpened++;
+  playGenericSound('openChest');
+  showToast('🎁 Chest Opened!');
+  updateMinionUI();
+  saveState();
+}
+
+function updateMinionUI() {
+  const remaining = state.minionBattlesEarned - state.minionBattlesFought;
+  const chestsRemaining = state.minionChestsEarned - state.minionChestsOpened;
+  document.getElementById('minionBattlesEarned').textContent = state.minionBattlesEarned;
+  document.getElementById('minionBattlesFought').textContent = state.minionBattlesFought;
+  document.getElementById('minionBattlesWon').textContent = state.minionBattlesWon;
+  document.getElementById('minionBattlesRemaining').textContent = remaining;
+  document.getElementById('minionChestsEarned').textContent = state.minionChestsEarned;
+  document.getElementById('minionChestsOpened').textContent = state.minionChestsOpened;
+  document.getElementById('minionChestsRemaining').textContent = chestsRemaining;
+  // Enable/disable buttons
+  document.getElementById('btnAttack').disabled = remaining <= 0;
+  document.getElementById('btnOpenChest').disabled = chestsRemaining <= 0;
+}
+
+// ============================================================
+// GENERIC SOUND LOADER & PLAYER
+// ============================================================
+function loadGenericSound(event, key) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const labelId = `${key}SoundFileName`;
+  document.getElementById(labelId).textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataURL = e.target.result;
+    document.getElementById(`${key}Sound`).src = dataURL;
+    try {
+      localStorage.setItem(`r4f_sound_${key}`, JSON.stringify({ name: file.name, data: dataURL }));
+    } catch(err) {
+      showToast('File too large to persist');
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function playGenericSound(key) {
+  const toggleKey = `${key}SoundEnabled`;
+  if (!state[toggleKey]) return;
+  const audio = document.getElementById(`${key}Sound`);
+  if (audio && audio.src && audio.src !== window.location.href) {
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+  }
+}
+
+// ============================================================
 // TABS
 // ============================================================
 function switchTab(name) {
@@ -1764,6 +2310,7 @@ function startTimer() {
   document.getElementById('btnPause').style.display = 'inline-flex';
   playStartSound();
   startTicking();
+  startMinionCountdown();
   state.timerInterval = setInterval(() => {
     state.timerSeconds--;
     updateTimerDisplay();
@@ -1771,6 +2318,7 @@ function startTimer() {
     if (state.timerSeconds <= 0) {
       clearInterval(state.timerInterval);
       stopTicking();
+      stopMinionCountdown();
       state.timerRunning = false;
       playSound();
       document.getElementById('btnPause').style.display = 'none';
@@ -1783,6 +2331,7 @@ function startTimer() {
 function pauseTimer() {
   if (state.timerInterval) clearInterval(state.timerInterval);
   stopTicking();
+  stopMinionCountdown();
   state.timerRunning = false;
   document.getElementById('btnPause').style.display = 'none';
   document.getElementById('btnStart').style.display = 'inline-flex';
@@ -1940,6 +2489,17 @@ function saveSettings() {
   state.tickingEnabled = document.getElementById('tickingToggle').checked;
   state.startSoundEnabled = document.getElementById('startSoundToggle').checked;
   state.inspirationSoundEnabled = document.getElementById('inspirationSoundToggle').checked;
+  state.battleEarnedSoundEnabled = document.getElementById('battleEarnedSoundToggle').checked;
+  state.attackSuccessSoundEnabled = document.getElementById('attackSuccessSoundToggle').checked;
+  state.attackFailSoundEnabled = document.getElementById('attackFailSoundToggle').checked;
+  state.openChestSoundEnabled = document.getElementById('openChestSoundToggle').checked;
+  state.minionInterval = parseInt(document.getElementById('minionIntervalSetting').value) || 10;
+  state.minionAutoFight = document.getElementById('minionAutoFightToggle').checked;
+  // Reset countdown to new interval if not running
+  if (!state.timerRunning) {
+    state.minionCountdownSeconds = state.minionInterval * 60;
+    updateMinionCountdownDisplay();
+  }
   updateBreakDC();
 
   // Save soundtracks from table
@@ -2213,6 +2773,17 @@ function init() {
   document.getElementById('tickingToggle').checked = state.tickingEnabled;
   document.getElementById('startSoundToggle').checked = state.startSoundEnabled;
   document.getElementById('inspirationSoundToggle').checked = state.inspirationSoundEnabled;
+  document.getElementById('battleEarnedSoundToggle').checked = state.battleEarnedSoundEnabled;
+  document.getElementById('attackSuccessSoundToggle').checked = state.attackSuccessSoundEnabled;
+  document.getElementById('attackFailSoundToggle').checked = state.attackFailSoundEnabled;
+  document.getElementById('openChestSoundToggle').checked = state.openChestSoundEnabled;
+  document.getElementById('minionIntervalSetting').value = state.minionInterval;
+  document.getElementById('minionAutoFightToggle').checked = state.minionAutoFight;
+  document.getElementById('minionCountdownToggle').checked = state.minionCountdownEnabled;
+  state.minionCountdownSeconds = state.minionInterval * 60;
+  checkMinionDailyReset();
+  updateMinionUI();
+  updateMinionCountdownDisplay();
   updateBreakDC();
   buildSoundtrackTable();
   loadNotes();
@@ -2246,6 +2817,17 @@ function init() {
       document.getElementById('inspirationSoundFileName').textContent = saved.name;
     }
   } catch(e) {}
+
+  // Restore generic sounds
+  ['battleEarned','attackSuccess','attackFail','openChest'].forEach(key => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(`r4f_sound_${key}`) || 'null');
+      if (saved && saved.data) {
+        document.getElementById(`${key}Sound`).src = saved.data;
+        document.getElementById(`${key}SoundFileName`).textContent = saved.name;
+      }
+    } catch(e) {}
+  });
 }
 
 init();
