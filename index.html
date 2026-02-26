@@ -1195,6 +1195,37 @@
     padding: 8px 0 4px;
     border-top: 1px solid var(--border);
   }
+
+  /* Boss manual roll input */
+  .boss-manual-roll {
+    width: 70px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--gold2);
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.2rem;
+    text-align: center;
+    padding: 6px 4px;
+    -moz-appearance: textfield;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .boss-manual-roll::-webkit-inner-spin-button,
+  .boss-manual-roll::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .boss-manual-roll:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(200,150,62,0.15); }
+  .boss-manual-roll::placeholder { color: var(--text3); font-family: 'Cinzel', serif; font-size: 0.7rem; }
+
+  /* Boss attack button — gold theme instead of minion purple */
+  .btn-attack.boss-attack {
+    background: linear-gradient(135deg, rgba(200,150,62,0.2), rgba(200,150,62,0.08));
+    border-color: var(--gold);
+    color: var(--gold2);
+  }
+  .btn-attack.boss-attack:hover {
+    background: linear-gradient(135deg, rgba(200,150,62,0.35), rgba(200,150,62,0.15));
+    box-shadow: 0 0 14px rgba(200,150,62,0.3);
+  }
 </style>
 </head>
 <body>
@@ -1291,7 +1322,7 @@
 
     <!-- Stats (1/3) -->
     <div class="card stats-card">
-      <div class="card-title">Stats <button class="btn-status-reset" onclick="resetStatus()" title="Reset inspiration, penalty & Boss DC to defaults">↺ Reset</button></div>
+      <div class="card-title">Stats <button class="btn-status-reset" onclick="resetStatus()" title="Reset all stats to defaults">↺ Reset</button></div>
       <div class="stats-col">
         <div class="stat-field">
           <div class="counter-label inspiration">Inspiration</div>
@@ -1309,21 +1340,86 @@
             <button class="counter-btn" onclick="adjustCounter('penalty', 1)">+</button>
           </div>
         </div>
-        <div class="stat-field">
-          <div class="counter-label dc">Boss DC</div>
-          <div class="counter-controls">
-            <button class="counter-btn" onclick="adjustDC('boss', -1)">−</button>
-            <div class="dc-value" id="bossDCVal">24</div>
-            <button class="counter-btn" onclick="adjustDC('boss', 1)">+</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Boss Battles + Boss Chests -->
+  <div class="minion-row">
+
+    <!-- Boss Battles (left) -->
+    <div class="card minion-battle-card">
+      <div class="card-title">Boss Battles</div>
+
+      <!-- Top row: manual roll | attack | result -->
+      <div class="battle-top">
+        <div class="battle-timer-block">
+          <div class="battle-timer-label">Manual Roll</div>
+          <input type="number" class="boss-manual-roll" id="bossManualRoll" min="1" max="20" placeholder="d20">
+        </div>
+        <div class="battle-mid">
+          <button class="btn-attack boss-attack" id="btnBossAttack" onclick="bossAttack()" disabled>⚔ Attack</button>
+        </div>
+        <div class="battle-result-block">
+          <div class="battle-result-label">Attack Roll</div>
+          <div class="attack-result idle" id="bossAttackResult">—</div>
+        </div>
+      </div>
+
+      <!-- Boss DC row -->
+      <div class="battle-dc-row">
+        <div class="counter-label dc" style="margin-bottom:0;">Boss DC</div>
+        <button class="counter-btn" onclick="adjustDC('boss', -1)">−</button>
+        <div class="dc-value" id="bossDCVal">24</div>
+        <button class="counter-btn" onclick="adjustDC('boss', 1)">+</button>
+      </div>
+
+      <!-- Stats grid -->
+      <div class="minion-stats">
+        <div class="minion-stat">
+          <div class="minion-stat-label">Earned</div>
+          <div class="counter-controls" style="justify-content:center;gap:6px;">
+            <button class="counter-btn" onclick="adjustBossStat('bossBattlesEarned',-1)">−</button>
+            <div class="minion-stat-value" id="bossBattlesEarned">0</div>
+            <button class="counter-btn" onclick="adjustBossStat('bossBattlesEarned',1)">+</button>
           </div>
         </div>
-        <div class="stat-field">
-          <div class="counter-label" style="color:var(--gold);">Boss Chests</div>
-          <div class="counter-controls">
-            <button class="counter-btn" onclick="adjustCounter('bossChests', -1)">−</button>
-            <div class="counter-value" id="bossChestsVal">0</div>
-            <button class="counter-btn" onclick="adjustCounter('bossChests', 1)">+</button>
+        <div class="minion-stat">
+          <div class="minion-stat-label">Fought</div>
+          <div class="minion-stat-value" id="bossBattlesFought">0</div>
+        </div>
+        <div class="minion-stat">
+          <div class="minion-stat-label">Won</div>
+          <div class="minion-stat-value" id="bossBattlesWon">0</div>
+        </div>
+        <div class="minion-stat">
+          <div class="minion-stat-label">Remaining</div>
+          <div class="minion-stat-value" id="bossBattlesRemaining">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Boss Chests (right) -->
+    <div class="card minion-chest-card">
+      <div class="card-title">Boss Chests</div>
+      <button class="btn-chest" id="btnOpenBossChest" onclick="openBossChest()" disabled style="margin-bottom:12px;">🎁 Open Chest</button>
+      <div class="minion-stats" style="grid-template-columns:1fr;">
+        <div class="minion-stat">
+          <div class="minion-stat-label">Earned</div>
+          <div class="counter-controls" style="justify-content:center;gap:6px;">
+            <button class="counter-btn" onclick="adjustBossStat('bossChestsEarned',-1)">−</button>
+            <div class="minion-stat-value gold" id="bossChestsEarned">0</div>
+            <button class="counter-btn" onclick="adjustBossStat('bossChestsEarned',1)">+</button>
           </div>
+        </div>
+        <div class="minion-stat">
+          <div class="minion-stat-label">Opened</div>
+          <div class="minion-stat-value gold" id="bossChestsOpened">0</div>
+        </div>
+        <div class="minion-stat">
+          <div class="minion-stat-label">Remaining</div>
+          <div class="minion-stat-value gold" id="bossChestsRemaining">0</div>
         </div>
       </div>
     </div>
@@ -1662,6 +1758,22 @@
 
   </div>
 
+  <!-- Boss Settings -->
+  <div class="card">
+    <div class="card-title">Boss Settings</div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Boss DC Scaling</div>
+        <div class="setting-sub">How much Boss DC increases per win</div>
+      </div>
+      <div class="setting-control">
+        <input type="number" id="bossDcScalingSetting" value="3" min="0" max="10" onchange="saveSettings()">
+      </div>
+    </div>
+
+  </div>
+
   <!-- Soundtrack Table -->
   <div class="card">
     <div class="card-title">Soundtrack Table
@@ -1786,8 +1898,17 @@ let state = {
   minionChestsEarned: 0,
   minionChestsOpened: 0,
   minionStatsDate: '',    // kept for legacy compat
-  // Boss Chests
-  bossChests: 0,
+  // DC manual adjustments (separate from defaults, reset on Stats Reset)
+  bossManualAdj: 0,
+  minionManualAdj: 0,
+  // Boss Battle stats (persisted, reset manually)
+  bossBattlesEarned: 0,
+  bossBattlesFought: 0,
+  bossBattlesWon: 0,
+  bossChestsEarned: 0,
+  bossChestsOpened: 0,
+  // Boss DC scaling per win
+  bossDcScaling: 3,
   soundtracks: [...DEFAULT_SOUNDTRACKS],
   logs: [],
   timerSeconds: 0,
@@ -1827,7 +1948,14 @@ function saveState() {
     minionChestsEarned: state.minionChestsEarned,
     minionChestsOpened: state.minionChestsOpened,
     minionStatsDate: state.minionStatsDate,
-    bossChests: state.bossChests,
+    bossManualAdj: state.bossManualAdj,
+    minionManualAdj: state.minionManualAdj,
+    bossBattlesEarned: state.bossBattlesEarned,
+    bossBattlesFought: state.bossBattlesFought,
+    bossBattlesWon: state.bossBattlesWon,
+    bossChestsEarned: state.bossChestsEarned,
+    bossChestsOpened: state.bossChestsOpened,
+    bossDcScaling: state.bossDcScaling,
     soundtracks: state.soundtracks,
     logs: state.logs,
   };
@@ -1861,6 +1989,14 @@ function loadState() {
     if (saved.minionChestsOpened !== undefined) state.minionChestsOpened = saved.minionChestsOpened;
     if (saved.minionStatsDate !== undefined) state.minionStatsDate = saved.minionStatsDate;
     if (saved.bossChests !== undefined) state.bossChests = saved.bossChests;
+    if (saved.bossManualAdj !== undefined) state.bossManualAdj = saved.bossManualAdj;
+    if (saved.minionManualAdj !== undefined) state.minionManualAdj = saved.minionManualAdj;
+    if (saved.bossBattlesEarned !== undefined) state.bossBattlesEarned = saved.bossBattlesEarned;
+    if (saved.bossBattlesFought !== undefined) state.bossBattlesFought = saved.bossBattlesFought;
+    if (saved.bossBattlesWon !== undefined) state.bossBattlesWon = saved.bossBattlesWon;
+    if (saved.bossChestsEarned !== undefined) state.bossChestsEarned = saved.bossChestsEarned;
+    if (saved.bossChestsOpened !== undefined) state.bossChestsOpened = saved.bossChestsOpened;
+    if (saved.bossDcScaling !== undefined) state.bossDcScaling = saved.bossDcScaling;
     if (saved.soundtracks) state.soundtracks = saved.soundtracks;
     if (saved.logs) state.logs = saved.logs;
   } catch(e) {}
@@ -2094,8 +2230,8 @@ function minionAttack() {
   if (remaining <= 0) return;
 
   const roll = Math.ceil(Math.random() * 20);
-  const minionDC = state.minionDcDefault - state.inspiration + state.penalty;
-  const won = roll > minionDC;
+  const minionDC = state.minionDcDefault - state.inspiration + state.penalty + state.minionManualAdj;
+  const won = roll === 20 || roll > minionDC;
 
   state.minionBattlesFought++;
   if (won) {
@@ -2143,8 +2279,76 @@ function updateMinionUI() {
 }
 
 // ============================================================
-// GENERIC SOUND LOADER & PLAYER
+// BOSS BATTLES
 // ============================================================
+function bossAttack() {
+  const remaining = state.bossBattlesEarned - state.bossBattlesFought;
+  if (remaining <= 0) return;
+
+  const manualInput = document.getElementById('bossManualRoll');
+  const manualVal = manualInput.value.trim();
+  let roll;
+  if (manualVal !== '' && !isNaN(parseInt(manualVal))) {
+    roll = Math.max(1, parseInt(manualVal));
+    manualInput.value = '';
+  } else {
+    roll = Math.ceil(Math.random() * 20);
+  }
+
+  const bossDC = state.dcDefault - state.inspiration + state.penalty + state.bossManualAdj;
+  const won = roll === 20 || roll > bossDC;
+
+  state.bossBattlesFought++;
+  if (won) {
+    state.bossBattlesWon++;
+    state.bossChestsEarned++;
+    state.bossManualAdj += state.bossDcScaling;  // DC scales up on win
+    playGenericSound('attackSuccess');
+    showToast(`⚔ Boss Hit! Rolled ${roll} vs DC ${bossDC} — Chest Earned!`);
+  } else {
+    playGenericSound('attackFail');
+    showToast(`💨 Boss Miss! Rolled ${roll} vs DC ${bossDC}`);
+  }
+
+  const resultEl = document.getElementById('bossAttackResult');
+  resultEl.textContent = roll;
+  resultEl.className = `attack-result ${won ? 'win' : 'fail'}`;
+
+  updateBreakDC();
+  updateBossUI();
+  saveState();
+}
+
+function openBossChest() {
+  if (state.bossChestsEarned - state.bossChestsOpened <= 0) return;
+  state.bossChestsOpened++;
+  playGenericSound('openChest');
+  showToast('🎁 Boss Chest Opened!');
+  updateBossUI();
+  saveState();
+}
+
+function adjustBossStat(key, delta) {
+  state[key] = Math.max(0, state[key] + delta);
+  updateBossUI();
+  saveState();
+}
+
+function updateBossUI() {
+  const remaining = state.bossBattlesEarned - state.bossBattlesFought;
+  const chestsRemaining = state.bossChestsEarned - state.bossChestsOpened;
+  document.getElementById('bossBattlesEarned').textContent = state.bossBattlesEarned;
+  document.getElementById('bossBattlesFought').textContent = state.bossBattlesFought;
+  document.getElementById('bossBattlesWon').textContent = state.bossBattlesWon;
+  document.getElementById('bossBattlesRemaining').textContent = remaining;
+  document.getElementById('bossChestsEarned').textContent = state.bossChestsEarned;
+  document.getElementById('bossChestsOpened').textContent = state.bossChestsOpened;
+  document.getElementById('bossChestsRemaining').textContent = chestsRemaining;
+  document.getElementById('btnBossAttack').disabled = remaining <= 0;
+  document.getElementById('btnOpenBossChest').disabled = chestsRemaining <= 0;
+}
+
+
 function loadGenericSound(event, key) {
   const file = event.target.files[0];
   if (!file) return;
@@ -2414,6 +2618,10 @@ function sessionResult(success) {
     flashInspiration();
     playInspirationSound();
 
+    // Successful session = +1 Boss Battle Earned
+    state.bossBattlesEarned++;
+    updateBossUI();
+
     if (bonus > 0) {
       showToast(`+${1 + bonus} Inspiration — ${duration}m session bonus!`);
     } else {
@@ -2442,28 +2650,32 @@ function sessionResult(success) {
 function resetStatus() {
   state.inspiration = 0;
   state.penalty = 0;
+  state.bossManualAdj = 0;
+  state.minionManualAdj = 0;
   state.minionBattlesEarned = 0;
   state.minionBattlesFought = 0;
   state.minionBattlesWon = 0;
   state.minionChestsEarned = 0;
   state.minionChestsOpened = 0;
+  state.bossBattlesEarned = 0;
+  state.bossBattlesFought = 0;
+  state.bossBattlesWon = 0;
+  state.bossChestsEarned = 0;
+  state.bossChestsOpened = 0;
   document.getElementById('inspirationVal').textContent = 0;
   document.getElementById('penaltyVal').textContent = 0;
   updateBreakDC();
   updateMinionUI();
+  updateBossUI();
   saveState();
   showToast('Status reset');
 }
 
 function adjustDC(which, delta) {
   if (which === 'boss') {
-    state.dcDefault = Math.max(1, state.dcDefault + delta);
-    const el = document.getElementById('dcDefaultSetting');
-    if (el) el.value = state.dcDefault;
+    state.bossManualAdj += delta;
   } else {
-    state.minionDcDefault = Math.max(1, state.minionDcDefault + delta);
-    const el = document.getElementById('minionDcDefaultSetting');
-    if (el) el.value = state.minionDcDefault;
+    state.minionManualAdj += delta;
   }
   updateBreakDC();
   saveState();
@@ -2476,17 +2688,14 @@ function adjustCounter(which, delta) {
   } else if (which === 'penalty') {
     state.penalty = Math.max(0, state.penalty + delta);
     document.getElementById('penaltyVal').textContent = state.penalty;
-  } else if (which === 'bossChests') {
-    state.bossChests = Math.max(0, state.bossChests + delta);
-    document.getElementById('bossChestsVal').textContent = state.bossChests;
   }
   updateBreakDC();
   saveState();
 }
 
 function updateBreakDC() {
-  const bossDC = state.dcDefault - state.inspiration + state.penalty;
-  const minionDC = state.minionDcDefault - state.inspiration + state.penalty;
+  const bossDC = state.dcDefault - state.inspiration + state.penalty + state.bossManualAdj;
+  const minionDC = state.minionDcDefault - state.inspiration + state.penalty + state.minionManualAdj;
   document.getElementById('bossDCVal').textContent = bossDC;
   document.getElementById('minionDCVal').textContent = minionDC;
 }
@@ -2509,6 +2718,7 @@ function saveSettings() {
   state.openChestSoundEnabled = document.getElementById('openChestSoundToggle').checked;
   state.minionInterval = parseInt(document.getElementById('minionIntervalSetting').value) || 10;
   state.minionAutoFight = document.getElementById('minionAutoFightToggle').checked;
+  state.bossDcScaling = parseInt(document.getElementById('bossDcScalingSetting').value) || 3;
   // Reset countdown to new interval if not running
   if (!state.timerRunning) {
     state.minionCountdownSeconds = state.minionInterval * 60;
@@ -2779,7 +2989,6 @@ function init() {
   loadState();
   document.getElementById('inspirationVal').textContent = state.inspiration;
   document.getElementById('penaltyVal').textContent = state.penalty;
-  document.getElementById('bossChestsVal').textContent = state.bossChests;
   document.getElementById('baseTimeSetting').value = state.baseTime;
   document.getElementById('dcDefaultSetting').value = state.dcDefault;
   document.getElementById('minionDcDefaultSetting').value = state.minionDcDefault;
@@ -2795,9 +3004,11 @@ function init() {
   document.getElementById('minionIntervalSetting').value = state.minionInterval;
   document.getElementById('minionAutoFightToggle').checked = state.minionAutoFight;
   document.getElementById('minionCountdownToggle').checked = state.minionCountdownEnabled;
+  document.getElementById('bossDcScalingSetting').value = state.bossDcScaling;
   state.minionCountdownSeconds = state.minionInterval * 60;
   checkMinionDailyReset();
   updateMinionUI();
+  updateBossUI();
   updateMinionCountdownDisplay();
   updateBreakDC();
   buildSoundtrackTable();
