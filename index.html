@@ -1362,7 +1362,11 @@
       <div class="minion-stats">
         <div class="minion-stat">
           <div class="minion-stat-label">Earned</div>
-          <div class="minion-stat-value" id="minionBattlesEarned">0</div>
+          <div class="counter-controls" style="justify-content:center;gap:6px;">
+            <button class="counter-btn" onclick="adjustMinionStat('minionBattlesEarned',-1)">−</button>
+            <div class="minion-stat-value" id="minionBattlesEarned">0</div>
+            <button class="counter-btn" onclick="adjustMinionStat('minionBattlesEarned',1)">+</button>
+          </div>
         </div>
         <div class="minion-stat">
           <div class="minion-stat-label">Fought</div>
@@ -1381,12 +1385,16 @@
 
     <!-- Minion Chests (right) -->
     <div class="card minion-chest-card">
-      <div class="card-title">Chests</div>
+      <div class="card-title">Minion Chests</div>
       <button class="btn-chest" id="btnOpenChest" onclick="openChest()" disabled style="margin-bottom:12px;">🎁 Open Chest</button>
       <div class="minion-stats" style="grid-template-columns:1fr;">
         <div class="minion-stat">
           <div class="minion-stat-label">Earned</div>
-          <div class="minion-stat-value gold" id="minionChestsEarned">0</div>
+          <div class="counter-controls" style="justify-content:center;gap:6px;">
+            <button class="counter-btn" onclick="adjustMinionStat('minionChestsEarned',-1)">−</button>
+            <div class="minion-stat-value gold" id="minionChestsEarned">0</div>
+            <button class="counter-btn" onclick="adjustMinionStat('minionChestsEarned',1)">+</button>
+          </div>
         </div>
         <div class="minion-stat">
           <div class="minion-stat-label">Opened</div>
@@ -2025,6 +2033,12 @@ function checkMinionDailyReset() {
     state.minionStatsDate = today;
     saveState();
   }
+}
+
+function adjustMinionStat(key, delta) {
+  state[key] = Math.max(0, state[key] + delta);
+  updateMinionUI();
+  saveState();
 }
 
 function onMinionToggleChange() {
