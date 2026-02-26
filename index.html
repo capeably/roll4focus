@@ -1433,6 +1433,150 @@
     color: var(--text3);
     padding-bottom: 8px;
   }
+
+  /* BREAK BUTTON */
+  .btn-break {
+    background: linear-gradient(135deg, rgba(212,129,58,0.2), rgba(212,129,58,0.1));
+    border-color: var(--amber);
+    color: var(--amber);
+    font-size: 0.65rem;
+    padding: 8px 16px;
+  }
+  .btn-break:hover { background: rgba(212,129,58,0.25); box-shadow: 0 0 16px rgba(212,129,58,0.2); }
+
+  /* BREAK TIMER MODAL */
+  .break-modal {
+    background: var(--card);
+    border: 1px solid var(--amber);
+    border-radius: 12px;
+    padding: 28px 24px;
+    max-width: 320px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 0 60px rgba(212,129,58,0.15), 0 20px 60px rgba(0,0,0,0.5);
+    animation: modalIn 0.25s ease;
+    position: relative;
+  }
+  .break-modal::before {
+    content: '';
+    position: absolute; top: 0; left: 20%; right: 20%; height: 1px;
+    background: linear-gradient(to right, transparent, var(--amber), transparent);
+  }
+  .break-modal-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.1rem;
+    color: var(--amber);
+    margin-bottom: 4px;
+  }
+  .break-modal-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+  .break-duration-picker {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 16px 0;
+  }
+  .break-dur-btn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 48px;
+  }
+  .break-dur-btn:hover { border-color: var(--amber); color: var(--amber); }
+  .break-dur-btn.active {
+    border-color: var(--amber);
+    color: var(--amber);
+    background: rgba(212,129,58,0.12);
+    box-shadow: 0 0 10px rgba(212,129,58,0.15);
+  }
+  .break-timer-display {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 2.8rem;
+    color: var(--amber);
+    text-shadow: 0 0 20px rgba(212,129,58,0.3);
+    margin: 12px 0;
+    line-height: 1;
+  }
+  .break-timer-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 16px;
+  }
+  .break-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  .btn-break-start {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-radius: 50px;
+    padding: 9px 20px;
+    cursor: pointer;
+    border: 1px solid var(--success);
+    background: linear-gradient(135deg, rgba(76,175,130,0.2), rgba(76,175,130,0.1));
+    color: var(--success);
+    transition: all 0.2s;
+  }
+  .btn-break-start:hover { background: rgba(76,175,130,0.25); box-shadow: 0 0 14px rgba(76,175,130,0.2); }
+  .btn-break-pause {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-radius: 50px;
+    padding: 9px 20px;
+    cursor: pointer;
+    border: 1px solid var(--amber);
+    background: linear-gradient(135deg, rgba(212,129,58,0.2), rgba(212,129,58,0.1));
+    color: var(--amber);
+    transition: all 0.2s;
+  }
+  .btn-break-pause:hover { background: rgba(212,129,58,0.25); box-shadow: 0 0 14px rgba(212,129,58,0.2); }
+  .btn-break-reset {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 50px;
+    padding: 7px 14px;
+    cursor: pointer;
+    border: 1px solid var(--border2);
+    background: none;
+    color: var(--text3);
+    transition: all 0.2s;
+  }
+  .btn-break-reset:hover { border-color: var(--red); color: var(--red2); }
+  .btn-break-close {
+    font-family: 'Cinzel', serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    padding: 6px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-break-close:hover { border-color: var(--text2); color: var(--text2); }
 </style>
 </head>
 <body>
@@ -1546,6 +1690,7 @@
           <button class="btn-timer btn-start" id="btnStart" onclick="startTimer()">▶ Start</button>
           <button class="btn-timer btn-pause" id="btnPause" onclick="pauseTimer()" style="display:none">⏸ Pause</button>
           <button class="btn-timer btn-reset" onclick="resetTimer()">↺ Reset</button>
+          <button class="btn-timer btn-break" onclick="openBreakDialog()">☕ Break</button>
         </div>
       </div>
     </div>
@@ -2103,6 +2248,29 @@
       <button class="btn-yes" onclick="confirmManualTime()">✓ Add Time</button>
       <button class="btn-no" onclick="closeManualTimeDialog()">✗ Cancel</button>
     </div>
+  </div>
+</div>
+
+<!-- ======================== BREAK TIMER MODAL ======================== -->
+<div class="modal-overlay" id="breakModal">
+  <div class="break-modal">
+    <div class="break-modal-icon">☕</div>
+    <div class="break-modal-title">Break Time</div>
+    <div class="break-duration-picker" id="breakDurationPicker">
+      <button class="break-dur-btn" onclick="selectBreakDuration(5)">5m</button>
+      <button class="break-dur-btn" onclick="selectBreakDuration(10)">10m</button>
+      <button class="break-dur-btn active" onclick="selectBreakDuration(15)">15m</button>
+      <button class="break-dur-btn" onclick="selectBreakDuration(20)">20m</button>
+      <button class="break-dur-btn" onclick="selectBreakDuration(25)">25m</button>
+    </div>
+    <div class="break-timer-display" id="breakTimerDisplay">15:00</div>
+    <div class="break-timer-label">Select duration &amp; start</div>
+    <div class="break-controls">
+      <button class="btn-break-start" id="btnBreakStart" onclick="startBreak()">▶ Start</button>
+      <button class="btn-break-pause" id="btnBreakPause" onclick="pauseBreak()" style="display:none">⏸ Pause</button>
+      <button class="btn-break-reset" onclick="resetBreak()">↺ Reset</button>
+    </div>
+    <button class="btn-break-close" onclick="closeBreakDialog()">✕ Close</button>
   </div>
 </div>
 
@@ -3066,6 +3234,81 @@ function exportCSV() {
 
 function clearLogs() {
   if (confirm('Clear all session logs?')) { state.logs = []; saveState(); renderLogs(); }
+}
+
+// ============================================================
+// BREAK TIMER
+// ============================================================
+let breakState = {
+  duration: 15,
+  seconds: 900,
+  total: 900,
+  running: false,
+  interval: null,
+};
+
+function openBreakDialog() {
+  document.getElementById('breakModal').classList.add('show');
+  selectBreakDuration(breakState.duration);
+}
+
+function closeBreakDialog() {
+  pauseBreak();
+  document.getElementById('breakModal').classList.remove('show');
+}
+
+function selectBreakDuration(mins) {
+  if (breakState.running) return;
+  breakState.duration = mins;
+  breakState.seconds = mins * 60;
+  breakState.total = mins * 60;
+  updateBreakDisplay();
+  // Update active button
+  document.querySelectorAll('.break-dur-btn').forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.textContent) === mins);
+  });
+}
+
+function updateBreakDisplay() {
+  const m = Math.floor(breakState.seconds / 60);
+  const s = breakState.seconds % 60;
+  document.getElementById('breakTimerDisplay').textContent =
+    `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function startBreak() {
+  if (breakState.seconds <= 0) return;
+  breakState.running = true;
+  document.getElementById('btnBreakStart').style.display = 'none';
+  document.getElementById('btnBreakPause').style.display = 'inline-flex';
+  playStartSound();
+  breakState.interval = setInterval(() => {
+    breakState.seconds--;
+    updateBreakDisplay();
+    if (breakState.seconds <= 0) {
+      clearInterval(breakState.interval);
+      breakState.running = false;
+      breakState.interval = null;
+      document.getElementById('btnBreakPause').style.display = 'none';
+      document.getElementById('btnBreakStart').style.display = 'inline-flex';
+      playSound();
+      showToast('☕ Break over — back to the adventure!');
+    }
+  }, 1000);
+}
+
+function pauseBreak() {
+  if (breakState.interval) { clearInterval(breakState.interval); breakState.interval = null; }
+  breakState.running = false;
+  document.getElementById('btnBreakPause').style.display = 'none';
+  document.getElementById('btnBreakStart').style.display = 'inline-flex';
+}
+
+function resetBreak() {
+  pauseBreak();
+  breakState.seconds = breakState.duration * 60;
+  breakState.total = breakState.duration * 60;
+  updateBreakDisplay();
 }
 
 // ============================================================
