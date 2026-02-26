@@ -2408,13 +2408,18 @@ function confirmManualTime() {
   if (minionBattlesGained > 0) { state.minionBattlesEarned += minionBattlesGained; updateMinionUI(); }
   const bossBattlesGained = Math.floor(totalMins / state.manualBossMinutes);
   if (bossBattlesGained > 0) { state.bossBattlesEarned += bossBattlesGained; updateBossUI(); }
+  // +1 Inspiration per manualBossMinutes interval
+  if (bossBattlesGained > 0) {
+    adjustCounter('inspiration', bossBattlesGained);
+    flashInspiration(); playInspirationSound();
+  }
   saveState(); updateAdventuringTime(); closeManualTimeDialog();
   const parts = [];
   if (hours > 0) parts.push(`${hours}h`);
   if (mins > 0)  parts.push(`${mins}m`);
   let msg = `+${parts.join(' ')} logged`;
-  if (minionBattlesGained > 0) msg += ` · +${minionBattlesGained} Minion Battle${minionBattlesGained > 1 ? 's' : ''}`;
-  if (bossBattlesGained > 0)   msg += ` · +${bossBattlesGained} Boss Battle${bossBattlesGained > 1 ? 's' : ''}`;
+  if (minionBattlesGained > 0) msg += ` · +${minionBattlesGained} Minion`;
+  if (bossBattlesGained > 0)   msg += ` · +${bossBattlesGained} Boss · +${bossBattlesGained} Insp`;
   showToast(msg);
 }
 
