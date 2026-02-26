@@ -888,7 +888,7 @@
   }
   .btn-export-csv:hover { border-color: var(--teal); color: var(--teal); }
 
-  .btn-status-reset {
+  .btn-inline {
     font-family: 'Cinzel', serif;
     font-size: 0.58rem;
     letter-spacing: 0.12em;
@@ -903,7 +903,7 @@
     margin-left: 6px;
     vertical-align: middle;
   }
-  .btn-status-reset:hover { border-color: var(--red); color: var(--red2); }
+  .btn-inline:hover { border-color: var(--red); color: var(--red2); }
 
   .btn-import-csv {
     font-family: 'Cinzel', serif;
@@ -1202,14 +1202,14 @@
   }
 
   /* MINION BATTLE ROW */
-  .minion-row {
+  .battle-row {
     display: grid;
     grid-template-columns: 3fr 2fr;
     gap: 16px;
     margin-bottom: 16px;
   }
-  .minion-battle-card,
-  .minion-chest-card { margin-bottom: 0; }
+  .battle-card,
+  .chest-card { margin-bottom: 0; }
 
   /* Attack button */
   .btn-attack {
@@ -1280,20 +1280,20 @@
   .minion-countdown.inactive { color: var(--text3); font-size: 0.85rem; font-family: 'Cinzel', serif; letter-spacing: 0.1em; }
 
   /* Minion stats grid */
-  .minion-stats {
+  .battle-stats-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 6px;
     margin-top: 10px;
   }
-  .minion-stat {
+  .battle-stat {
     background: var(--bg3);
     border: 1px solid var(--border);
     border-radius: 6px;
     padding: 8px 6px;
     text-align: center;
   }
-  .minion-stat-label {
+  .battle-stat-label {
     font-family: 'Cinzel', serif;
     font-size: 0.52rem;
     letter-spacing: 0.18em;
@@ -1301,12 +1301,12 @@
     color: var(--text3);
     margin-bottom: 4px;
   }
-  .minion-stat-value {
+  .battle-stat-value {
     font-family: 'Cinzel Decorative', serif;
     font-size: 1.1rem;
     color: var(--minion);
   }
-  .minion-stat-value.gold { color: var(--gold2); }
+  .battle-stat-value.gold { color: var(--gold2); }
 
   /* Battle top row: countdown + attack + result */
   .battle-top {
@@ -1590,10 +1590,10 @@
 </header>
 
 <nav class="tabs">
-  <button class="tab-btn active" onclick="switchTab('timer')">Dashboard</button>
-  <button class="tab-btn" onclick="switchTab('settings')">Settings</button>
-  <button class="tab-btn" onclick="switchTab('logs')">Logs</button>
-  <button class="tab-btn" onclick="switchTab('notes')">Notes</button>
+  <button class="tab-btn active" onclick="switchTab('timer', event)">Dashboard</button>
+  <button class="tab-btn" onclick="switchTab('settings', event)">Settings</button>
+  <button class="tab-btn" onclick="switchTab('logs', event)">Logs</button>
+  <button class="tab-btn" onclick="switchTab('notes', event)">Notes</button>
 </nav>
 
 <!-- ======================== DASHBOARD TAB ======================== -->
@@ -1644,7 +1644,7 @@
 
     <!-- Stats (1fr) -->
     <div class="card stats-card">
-      <div class="card-title">Stats <button class="btn-status-reset" onclick="resetStatus()" title="Reset all stats to defaults">↺ Reset</button></div>
+      <div class="card-title">Stats <button class="btn-inline" onclick="resetStatus()" title="Reset all stats to defaults">↺ Reset</button></div>
       <div class="stats-col">
         <div class="stat-field">
           <div class="counter-label inspiration">Inspiration</div>
@@ -1745,7 +1745,7 @@
           <span class="minion-countdown inactive" id="minionCountdown" style="display:inline;font-size:0.8rem;">Off</span>
         </div>
         <div class="qb-chest-row">
-          <button class="btn-qb-chest" id="qbBtnMinionChest" onclick="openChest()" disabled>🎁 Chest</button>
+          <button class="btn-qb-chest" id="qbBtnMinionChest" onclick="openMinionChest()" disabled>🎁 Chest</button>
           <span class="qb-chest-count" id="qbMinionChestsRemaining">0</span>
         </div>
       </div>
@@ -1755,10 +1755,10 @@
   </div>
 
   <!-- Boss Battles + Boss Chests (full width row) -->
-  <div class="minion-row">
+  <div class="battle-row">
 
     <!-- Boss Battles (left) -->
-    <div class="card minion-battle-card">
+    <div class="card battle-card">
       <div class="card-title">Boss Battles</div>
 
       <!-- Top row: manual roll | attack | result -->
@@ -1785,50 +1785,50 @@
       </div>
 
       <!-- Stats grid -->
-      <div class="minion-stats">
-        <div class="minion-stat">
-          <div class="minion-stat-label">Earned</div>
+      <div class="battle-stats-grid">
+        <div class="battle-stat">
+          <div class="battle-stat-label">Earned</div>
           <div class="counter-controls" style="justify-content:center;gap:6px;">
-            <button class="counter-btn" onclick="adjustBossStat('bossBattlesEarned',-1)">−</button>
-            <div class="minion-stat-value" id="bossBattlesEarned">0</div>
-            <button class="counter-btn" onclick="adjustBossStat('bossBattlesEarned',1)">+</button>
+            <button class="counter-btn" onclick="adjustBattleStat('bossBattlesEarned',-1,'boss')">−</button>
+            <div class="battle-stat-value" id="bossBattlesEarned">0</div>
+            <button class="counter-btn" onclick="adjustBattleStat('bossBattlesEarned',1,'boss')">+</button>
           </div>
         </div>
-        <div class="minion-stat">
-          <div class="minion-stat-label">Fought</div>
-          <div class="minion-stat-value" id="bossBattlesFought">0</div>
+        <div class="battle-stat">
+          <div class="battle-stat-label">Fought</div>
+          <div class="battle-stat-value" id="bossBattlesFought">0</div>
         </div>
-        <div class="minion-stat">
-          <div class="minion-stat-label">Won</div>
-          <div class="minion-stat-value" id="bossBattlesWon">0</div>
+        <div class="battle-stat">
+          <div class="battle-stat-label">Won</div>
+          <div class="battle-stat-value" id="bossBattlesWon">0</div>
         </div>
-        <div class="minion-stat">
-          <div class="minion-stat-label">Remaining</div>
-          <div class="minion-stat-value" id="bossBattlesRemaining">0</div>
+        <div class="battle-stat">
+          <div class="battle-stat-label">Remaining</div>
+          <div class="battle-stat-value" id="bossBattlesRemaining">0</div>
         </div>
       </div>
     </div>
 
     <!-- Boss Chests (right) -->
-    <div class="card minion-chest-card">
+    <div class="card chest-card">
       <div class="card-title">Boss Chests</div>
       <button class="btn-chest" id="btnOpenBossChest" onclick="openBossChest()" disabled style="margin-bottom:12px;">🎁 Open Chest</button>
-      <div class="minion-stats" style="grid-template-columns:1fr;">
-        <div class="minion-stat">
-          <div class="minion-stat-label">Earned</div>
+      <div class="battle-stats-grid" style="grid-template-columns:1fr;">
+        <div class="battle-stat">
+          <div class="battle-stat-label">Earned</div>
           <div class="counter-controls" style="justify-content:center;gap:6px;">
-            <button class="counter-btn" onclick="adjustBossStat('bossChestsEarned',-1)">−</button>
-            <div class="minion-stat-value gold" id="bossChestsEarned">0</div>
-            <button class="counter-btn" onclick="adjustBossStat('bossChestsEarned',1)">+</button>
+            <button class="counter-btn" onclick="adjustBattleStat('bossChestsEarned',-1,'boss')">−</button>
+            <div class="battle-stat-value gold" id="bossChestsEarned">0</div>
+            <button class="counter-btn" onclick="adjustBattleStat('bossChestsEarned',1,'boss')">+</button>
           </div>
         </div>
-        <div class="minion-stat">
-          <div class="minion-stat-label">Opened</div>
-          <div class="minion-stat-value gold" id="bossChestsOpened">0</div>
+        <div class="battle-stat">
+          <div class="battle-stat-label">Opened</div>
+          <div class="battle-stat-value gold" id="bossChestsOpened">0</div>
         </div>
-        <div class="minion-stat">
-          <div class="minion-stat-label">Remaining</div>
-          <div class="minion-stat-value gold" id="bossChestsRemaining">0</div>
+        <div class="battle-stat">
+          <div class="battle-stat-label">Remaining</div>
+          <div class="battle-stat-value gold" id="bossChestsRemaining">0</div>
         </div>
       </div>
     </div>
@@ -1836,10 +1836,10 @@
   </div>
 
   <!-- Minion Battles + Minion Chests (full width row) -->
-  <div class="minion-row">
+  <div class="battle-row">
 
     <!-- Minion Battles (left) -->
-    <div class="card minion-battle-card">
+    <div class="card battle-card">
       <div class="card-title">Minion Battles</div>
 
       <!-- Top row: countdown | attack | result -->
@@ -1866,50 +1866,50 @@
       </div>
 
       <!-- Stats grid -->
-      <div class="minion-stats">
-        <div class="minion-stat">
-          <div class="minion-stat-label">Earned</div>
+      <div class="battle-stats-grid">
+        <div class="battle-stat">
+          <div class="battle-stat-label">Earned</div>
           <div class="counter-controls" style="justify-content:center;gap:6px;">
-            <button class="counter-btn" onclick="adjustMinionStat('minionBattlesEarned',-1)">−</button>
-            <div class="minion-stat-value" id="minionBattlesEarned">0</div>
-            <button class="counter-btn" onclick="adjustMinionStat('minionBattlesEarned',1)">+</button>
+            <button class="counter-btn" onclick="adjustBattleStat('minionBattlesEarned',-1,'minion')">−</button>
+            <div class="battle-stat-value" id="minionBattlesEarned">0</div>
+            <button class="counter-btn" onclick="adjustBattleStat('minionBattlesEarned',1,'minion')">+</button>
           </div>
         </div>
-        <div class="minion-stat">
-          <div class="minion-stat-label">Fought</div>
-          <div class="minion-stat-value" id="minionBattlesFought">0</div>
+        <div class="battle-stat">
+          <div class="battle-stat-label">Fought</div>
+          <div class="battle-stat-value" id="minionBattlesFought">0</div>
         </div>
-        <div class="minion-stat">
-          <div class="minion-stat-label">Won</div>
-          <div class="minion-stat-value" id="minionBattlesWon">0</div>
+        <div class="battle-stat">
+          <div class="battle-stat-label">Won</div>
+          <div class="battle-stat-value" id="minionBattlesWon">0</div>
         </div>
-        <div class="minion-stat">
-          <div class="minion-stat-label">Remaining</div>
-          <div class="minion-stat-value" id="minionBattlesRemaining">0</div>
+        <div class="battle-stat">
+          <div class="battle-stat-label">Remaining</div>
+          <div class="battle-stat-value" id="minionBattlesRemaining">0</div>
         </div>
       </div>
     </div>
 
     <!-- Minion Chests (right) -->
-    <div class="card minion-chest-card">
+    <div class="card chest-card">
       <div class="card-title">Minion Chests</div>
-      <button class="btn-chest" id="btnOpenChest" onclick="openChest()" disabled style="margin-bottom:12px;">🎁 Open Chest</button>
-      <div class="minion-stats" style="grid-template-columns:1fr;">
-        <div class="minion-stat">
-          <div class="minion-stat-label">Earned</div>
+      <button class="btn-chest" id="btnOpenChest" onclick="openMinionChest()" disabled style="margin-bottom:12px;">🎁 Open Chest</button>
+      <div class="battle-stats-grid" style="grid-template-columns:1fr;">
+        <div class="battle-stat">
+          <div class="battle-stat-label">Earned</div>
           <div class="counter-controls" style="justify-content:center;gap:6px;">
-            <button class="counter-btn" onclick="adjustMinionStat('minionChestsEarned',-1)">−</button>
-            <div class="minion-stat-value gold" id="minionChestsEarned">0</div>
-            <button class="counter-btn" onclick="adjustMinionStat('minionChestsEarned',1)">+</button>
+            <button class="counter-btn" onclick="adjustBattleStat('minionChestsEarned',-1,'minion')">−</button>
+            <div class="battle-stat-value gold" id="minionChestsEarned">0</div>
+            <button class="counter-btn" onclick="adjustBattleStat('minionChestsEarned',1,'minion')">+</button>
           </div>
         </div>
-        <div class="minion-stat">
-          <div class="minion-stat-label">Opened</div>
-          <div class="minion-stat-value gold" id="minionChestsOpened">0</div>
+        <div class="battle-stat">
+          <div class="battle-stat-label">Opened</div>
+          <div class="battle-stat-value gold" id="minionChestsOpened">0</div>
         </div>
-        <div class="minion-stat">
-          <div class="minion-stat-label">Remaining</div>
-          <div class="minion-stat-value gold" id="minionChestsRemaining">0</div>
+        <div class="battle-stat">
+          <div class="battle-stat-label">Remaining</div>
+          <div class="battle-stat-value gold" id="minionChestsRemaining">0</div>
         </div>
       </div>
     </div>
@@ -1918,7 +1918,7 @@
 
   <!-- Adventuring Time -->
   <div class="card">
-    <div class="card-title">Adventuring Time <button class="btn-status-reset" onclick="openManualTimeDialog()">+ Add Session Time</button></div>
+    <div class="card-title">Adventuring Time <button class="btn-inline" onclick="openManualTimeDialog()">+ Add Session Time</button></div>
     <div class="adv-time-row">
       <div class="adv-time-field">
         <div class="adv-time-label">Today</div>
@@ -1936,7 +1936,7 @@
   <div class="card">
     <div class="card-title">
       Notes
-      <button class="btn-status-reset" onclick="toggleNotesMode()" id="notesModeBtn" title="Toggle edit/preview">✎ Edit</button>
+      <button class="btn-inline" onclick="toggleNotesMode()" id="notesModeBtn" title="Toggle edit/preview">✎ Edit</button>
     </div>
     <div id="notesEditor">
       <textarea id="notesInput" class="notes-textarea" placeholder="Session notes... (supports **bold**, *italic*, # headings, - lists, `code`, etc.)" oninput="saveNotes()"></textarea>
@@ -1968,7 +1968,7 @@
         <div class="setting-sub">Default DC before inspiration/penalty modifiers</div>
       </div>
       <div class="setting-control">
-        <input type="number" id="dcDefaultSetting" value="24" min="1" max="30" onchange="saveSettings()">
+        <input type="number" id="bossDcDefaultSetting" value="24" min="1" max="30" onchange="saveSettings()">
       </div>
     </div>
 
@@ -2216,7 +2216,7 @@
   <div class="card">
     <div class="card-title">
       Notes
-      <button class="btn-status-reset" onclick="toggleNotesModeTab()" id="notesModeTabBtn" title="Toggle edit/preview">👁 Preview</button>
+      <button class="btn-inline" onclick="toggleNotesModeTab()" id="notesModeTabBtn" title="Toggle edit/preview">👁 Preview</button>
     </div>
     <div id="notesEditorTab">
       <textarea id="notesInputTab" class="notes-textarea" style="min-height:400px;" placeholder="Your notes... (supports **bold**, *italic*, # headings, - lists, `code`, etc.)" oninput="saveNotesTab()"></textarea>
@@ -2301,6 +2301,9 @@
 // ============================================================
 // STATE
 // ============================================================
+// DOM helper
+const $ = (id) => document.getElementById(id);
+
 const DEFAULT_SOUNDTRACKS = [
   "Binaural Focus Cafe",
   "MyNoise – Pure Tones for Focus",
@@ -2349,7 +2352,6 @@ let state = {
   minionBattlesWon: 0,
   minionChestsEarned: 0,
   minionChestsOpened: 0,
-  minionStatsDate: '',
   bossManualAdj: 0,
   minionManualAdj: 0,
   bossBattlesEarned: 0,
@@ -2368,7 +2370,6 @@ let state = {
   timerInterval: null,
   tickInterval: null,
   currentSession: null,
-  soundFileURL: null,
 };
 
 // ============================================================
@@ -2379,7 +2380,7 @@ function saveState() {
     inspiration: state.inspiration,
     penalty: state.penalty,
     baseTime: state.baseTime,
-    dcDefault: state.dcDefault,
+    bossDcDefault: state.bossDcDefault,
     minionDcDefault: state.minionDcDefault,
     hopeFearDie: state.hopeFearDie,
     soundtrackDie: state.soundtrackDie,
@@ -2398,7 +2399,6 @@ function saveState() {
     minionBattlesWon: state.minionBattlesWon,
     minionChestsEarned: state.minionChestsEarned,
     minionChestsOpened: state.minionChestsOpened,
-    minionStatsDate: state.minionStatsDate,
     bossManualAdj: state.bossManualAdj,
     minionManualAdj: state.minionManualAdj,
     bossBattlesEarned: state.bossBattlesEarned,
@@ -2421,7 +2421,8 @@ function loadState() {
     if (saved.inspiration !== undefined) state.inspiration = saved.inspiration;
     if (saved.penalty !== undefined) state.penalty = saved.penalty;
     if (saved.baseTime !== undefined) state.baseTime = saved.baseTime;
-    if (saved.dcDefault !== undefined) state.dcDefault = saved.dcDefault;
+    if (saved.bossDcDefault !== undefined) state.bossDcDefault = saved.bossDcDefault;
+    else if (saved.dcDefault !== undefined) state.bossDcDefault = saved.dcDefault; // backward compat
     if (saved.minionDcDefault !== undefined) state.minionDcDefault = saved.minionDcDefault;
     if (saved.hopeFearDie !== undefined) state.hopeFearDie = saved.hopeFearDie;
     if (saved.soundtrackDie !== undefined) state.soundtrackDie = saved.soundtrackDie;
@@ -2440,8 +2441,6 @@ function loadState() {
     if (saved.minionBattlesWon !== undefined) state.minionBattlesWon = saved.minionBattlesWon;
     if (saved.minionChestsEarned !== undefined) state.minionChestsEarned = saved.minionChestsEarned;
     if (saved.minionChestsOpened !== undefined) state.minionChestsOpened = saved.minionChestsOpened;
-    if (saved.minionStatsDate !== undefined) state.minionStatsDate = saved.minionStatsDate;
-    if (saved.bossChests !== undefined) state.bossChests = saved.bossChests;
     if (saved.bossManualAdj !== undefined) state.bossManualAdj = saved.bossManualAdj;
     if (saved.minionManualAdj !== undefined) state.minionManualAdj = saved.minionManualAdj;
     if (saved.bossBattlesEarned !== undefined) state.bossBattlesEarned = saved.bossBattlesEarned;
@@ -2594,15 +2593,11 @@ function confirmManualTime() {
 // ============================================================
 // MINION BATTLES
 // ============================================================
-function todayDateStr() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-function checkMinionDailyReset() { /* No-op — reset manually via Stats Reset */ }
 
-function adjustMinionStat(key, delta) {
+function adjustBattleStat(key, delta, type) {
   state[key] = Math.max(0, state[key] + delta);
-  updateMinionUI(); saveState();
+  if (type === 'boss') updateBossUI(); else updateMinionUI();
+  saveState();
 }
 
 function onMinionToggleChange() {
@@ -2655,7 +2650,7 @@ function minionAttack() {
   const remaining = state.minionBattlesEarned - state.minionBattlesFought;
   if (remaining <= 0) return;
   const roll = Math.ceil(Math.random() * 20);
-  const minionDC = state.minionDcDefault - state.inspiration + state.penalty + state.minionManualAdj;
+  const minionDC = getMinionDC();
   const won = roll === 20 || roll > minionDC;
   state.minionBattlesFought++;
   if (won) {
@@ -2677,7 +2672,7 @@ function minionAttack() {
   updateMinionUI(); saveState();
 }
 
-function openChest() {
+function openMinionChest() {
   if (state.minionChestsEarned - state.minionChestsOpened <= 0) return;
   state.minionChestsOpened++;
   playGenericSound('openChest'); showToast('🎁 Chest Opened!');
@@ -2727,7 +2722,7 @@ function bossAttack() {
     roll = Math.ceil(Math.random() * 20);
   }
 
-  const bossDC = state.dcDefault - state.inspiration + state.penalty + state.bossManualAdj;
+  const bossDC = getBossDC();
   const won = roll === 20 || roll > bossDC;
   state.bossBattlesFought++;
   if (won) {
@@ -2746,18 +2741,13 @@ function bossAttack() {
   const qbEl = document.getElementById('qbBossResult');
   qbEl.textContent = roll;
   qbEl.className = `qb-result ${won ? 'win' : 'fail'}`;
-  updateBreakDC(); updateBossUI(); saveState();
+  updateDCDisplays(); updateBossUI(); saveState();
 }
 
 function openBossChest() {
   if (state.bossChestsEarned - state.bossChestsOpened <= 0) return;
   state.bossChestsOpened++;
   playGenericSound('openChest'); showToast('🎁 Boss Chest Opened!');
-  updateBossUI(); saveState();
-}
-
-function adjustBossStat(key, delta) {
-  state[key] = Math.max(0, state[key] + delta);
   updateBossUI(); saveState();
 }
 
@@ -2781,19 +2771,7 @@ function updateBossUI() {
   document.getElementById('qbBossChestsRemaining').textContent = chestsRemaining;
 }
 
-function loadGenericSound(event, key) {
-  const file = event.target.files[0];
-  if (!file) return;
-  document.getElementById(`${key}SoundFileName`).textContent = file.name;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const dataURL = e.target.result;
-    document.getElementById(`${key}Sound`).src = dataURL;
-    try { localStorage.setItem(`r4f_sound_${key}`, JSON.stringify({ name: file.name, data: dataURL })); }
-    catch(err) { showToast('File too large to persist'); }
-  };
-  reader.readAsDataURL(file);
-}
+function loadGenericSound(event, key) { loadSoundToAudio(event, `${key}Sound`, `${key}SoundFileName`, `r4f_sound_${key}`); }
 
 function playGenericSound(key) {
   if (!state[`${key}SoundEnabled`]) return;
@@ -2804,11 +2782,11 @@ function playGenericSound(key) {
 // ============================================================
 // TABS
 // ============================================================
-function switchTab(name) {
+function switchTab(name, e) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
-  event.target.classList.add('active');
+  e.target.classList.add('active');
   if (name === 'logs') renderLogs();
 }
 
@@ -2890,8 +2868,6 @@ function onRollInput() {
   }
 }
 
-function submitRolls() {}
-
 // ============================================================
 // TIMER
 // ============================================================
@@ -2906,9 +2882,11 @@ function updateTimerDisplay() {
   document.getElementById('timerDisplay').textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
 }
 
+const RING_CIRCUMFERENCE = 2 * Math.PI * 100; // matches r=100 in SVG
+
 function updateRing() {
   const ring = document.getElementById('timerRing');
-  const circumference = 628;
+  const circumference = RING_CIRCUMFERENCE;
   if (state.timerTotal === 0) { ring.style.strokeDashoffset = 0; ring.classList.remove('low'); return; }
   const frac = state.timerSeconds / state.timerTotal;
   ring.style.strokeDashoffset = circumference * (1 - frac);
@@ -3013,14 +2991,14 @@ function resetStatus() {
   state.bossChestsEarned = 0; state.bossChestsOpened = 0;
   document.getElementById('inspirationVal').textContent = 0;
   document.getElementById('penaltyVal').textContent = 0;
-  updateBreakDC(); updateMinionUI(); updateBossUI(); saveState();
+  updateDCDisplays(); updateMinionUI(); updateBossUI(); saveState();
   showToast('Status reset');
 }
 
 function adjustDC(which, delta) {
   if (which === 'boss') state.bossManualAdj += delta;
   else state.minionManualAdj += delta;
-  updateBreakDC(); saveState();
+  updateDCDisplays(); saveState();
 }
 
 function adjustCounter(which, delta) {
@@ -3031,12 +3009,19 @@ function adjustCounter(which, delta) {
     state.penalty = Math.max(0, state.penalty + delta);
     document.getElementById('penaltyVal').textContent = state.penalty;
   }
-  updateBreakDC(); saveState();
+  updateDCDisplays(); saveState();
 }
 
-function updateBreakDC() {
-  const bossDC = state.dcDefault - state.inspiration + state.penalty + state.bossManualAdj;
-  const minionDC = state.minionDcDefault - state.inspiration + state.penalty + state.minionManualAdj;
+function getBossDC() {
+  return state.bossDcDefault - state.inspiration + state.penalty + state.bossManualAdj;
+}
+function getMinionDC() {
+  return state.minionDcDefault - state.inspiration + state.penalty + state.minionManualAdj;
+}
+
+function updateDCDisplays() {
+  const bossDC = getBossDC();
+  const minionDC = getMinionDC();
   // Update all DC displays (quick panel + full cards)
   document.getElementById('bossDCVal').textContent = bossDC;
   document.getElementById('bossDCValFull').textContent = bossDC;
@@ -3049,7 +3034,7 @@ function updateBreakDC() {
 // ============================================================
 function saveSettings() {
   state.baseTime = parseInt(document.getElementById('baseTimeSetting').value) || 10;
-  state.dcDefault = parseInt(document.getElementById('dcDefaultSetting').value) || 24;
+  state.bossDcDefault = parseInt(document.getElementById('bossDcDefaultSetting').value) || 24;
   state.minionDcDefault = parseInt(document.getElementById('minionDcDefaultSetting').value) || 18;
   state.hopeFearDie = parseInt(document.getElementById('hopeFearDieSetting').value) || 20;
   state.soundtrackDie = parseInt(document.getElementById('soundtrackDieSetting').value) || 20;
@@ -3065,7 +3050,7 @@ function saveSettings() {
   state.bossDcScaling = parseInt(document.getElementById('bossDcScalingSetting').value) || 3;
   state.manualBossMinutes = parseInt(document.getElementById('manualBossMinutesSetting').value) || 20;
   if (!state.timerRunning) { state.minionCountdownSeconds = state.minionInterval * 60; updateMinionCountdownDisplay(); }
-  updateBreakDC();
+  updateDCDisplays();
   const rows = document.querySelectorAll('#soundtrackTableBody tr');
   rows.forEach((row, i) => { const input = row.querySelector('input[type="text"]'); if (input) state.soundtracks[i] = input.value; });
   saveState();
@@ -3104,20 +3089,20 @@ function buildSoundtrackTable() {
 
 function escapeHtml(str) { return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
 
-function loadSoundFile(event) {
+function loadSoundToAudio(event, audioId, displayId, storageKey) {
   const file = event.target.files[0]; if (!file) return;
-  document.getElementById('soundFileName').textContent = file.name;
+  document.getElementById(displayId).textContent = file.name;
   const reader = new FileReader();
   reader.onload = (e) => {
     const dataURL = e.target.result;
-    state.soundFileURL = dataURL; state.soundFileName = file.name;
-    document.getElementById('timerSound').src = dataURL;
-    try { localStorage.setItem('r4f_sound', JSON.stringify({ name: file.name, data: dataURL })); }
-    catch(err) { showToast('File too large to persist — re-select on next open'); }
-    saveState();
+    document.getElementById(audioId).src = dataURL;
+    try { localStorage.setItem(storageKey, JSON.stringify({ name: file.name, data: dataURL })); }
+    catch(err) { showToast('File too large to persist'); }
   };
   reader.readAsDataURL(file);
 }
+
+function loadSoundFile(event) { loadSoundToAudio(event, 'timerSound', 'soundFileName', 'r4f_sound'); }
 
 function startTicking() {
   if (!state.tickingEnabled) return; stopTicking();
@@ -3137,29 +3122,9 @@ function startTicking() {
 }
 function stopTicking() { if (state.tickInterval) { clearInterval(state.tickInterval); state.tickInterval = null; } }
 
-function loadStartSoundFile(event) {
-  const file = event.target.files[0]; if (!file) return;
-  document.getElementById('startSoundFileName').textContent = file.name;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    document.getElementById('startSound').src = e.target.result;
-    try { localStorage.setItem('r4f_start_sound', JSON.stringify({ name: file.name, data: e.target.result })); }
-    catch(err) { showToast('File too large to persist — re-select on next open'); }
-  };
-  reader.readAsDataURL(file);
-}
+function loadStartSoundFile(event) { loadSoundToAudio(event, 'startSound', 'startSoundFileName', 'r4f_start_sound'); }
 
-function loadInspirationSoundFile(event) {
-  const file = event.target.files[0]; if (!file) return;
-  document.getElementById('inspirationSoundFileName').textContent = file.name;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    document.getElementById('inspirationSound').src = e.target.result;
-    try { localStorage.setItem('r4f_inspiration_sound', JSON.stringify({ name: file.name, data: e.target.result })); }
-    catch(err) { showToast('File too large to persist — re-select on next open'); }
-  };
-  reader.readAsDataURL(file);
-}
+function loadInspirationSoundFile(event) { loadSoundToAudio(event, 'inspirationSound', 'inspirationSoundFileName', 'r4f_inspiration_sound'); }
 
 function playStartSound() {
   if (!state.startSoundEnabled) return;
@@ -3333,7 +3298,7 @@ function init() {
   document.getElementById('inspirationVal').textContent = state.inspiration;
   document.getElementById('penaltyVal').textContent = state.penalty;
   document.getElementById('baseTimeSetting').value = state.baseTime;
-  document.getElementById('dcDefaultSetting').value = state.dcDefault;
+  document.getElementById('bossDcDefaultSetting').value = state.bossDcDefault;
   document.getElementById('minionDcDefaultSetting').value = state.minionDcDefault;
   document.getElementById('hopeFearDieSetting').value = state.hopeFearDie;
   document.getElementById('soundtrackDieSetting').value = state.soundtrackDie;
@@ -3350,8 +3315,7 @@ function init() {
   document.getElementById('bossDcScalingSetting').value = state.bossDcScaling;
   document.getElementById('manualBossMinutesSetting').value = state.manualBossMinutes;
   state.minionCountdownSeconds = state.minionInterval * 60;
-  checkMinionDailyReset();
-  updateMinionUI(); updateBossUI(); updateMinionCountdownDisplay(); updateBreakDC();
+  updateMinionUI(); updateBossUI(); updateMinionCountdownDisplay(); updateDCDisplays();
   buildSoundtrackTable(); loadNotes(); loadNotesTab(); updateAdventuringTime();
 
   try {
