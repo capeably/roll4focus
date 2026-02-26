@@ -224,8 +224,18 @@
   .die-oct-input.hope { color: var(--teal); }
   .die-oct-input.fear { color: var(--red2); }
 
-  /* SESSION + STATS SIDE BY SIDE */
-  .session-stats-row {
+  /* DICE + STATS SIDE BY SIDE (Row 1) */
+  .dice-stats-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+    align-items: start;
+  }
+  .dice-stats-row .card { margin-bottom: 0; }
+
+  /* SESSION + QUICK BATTLE SIDE BY SIDE (Row 2) */
+  .session-battle-row {
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 16px;
@@ -235,6 +245,158 @@
   .session-card {
     margin-bottom: 0;
   }
+  .quick-battle-card {
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* QUICK BATTLE PANEL */
+  .qb-section {
+    padding: 10px 0;
+  }
+  .qb-section + .qb-section {
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+  }
+  .qb-section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .qb-section-label.minion-label {
+    color: var(--minion);
+  }
+  .qb-attack-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .qb-result {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.2rem;
+    min-width: 32px;
+    text-align: center;
+  }
+  .qb-result.win  { color: var(--success); text-shadow: 0 0 10px rgba(76,175,130,0.4); }
+  .qb-result.fail { color: var(--red2); text-shadow: 0 0 10px rgba(231,76,60,0.3); }
+  .qb-result.idle { color: var(--text3); }
+  .qb-dc-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.85rem;
+  }
+  .qb-dc-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.52rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+  .qb-remaining {
+    font-family: 'Cinzel', serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    text-align: center;
+    margin-top: 6px;
+  }
+  .qb-remaining span {
+    color: var(--text2);
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.8rem;
+  }
+  .qb-chest-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .btn-qb-chest {
+    font-family: 'Cinzel', serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, rgba(200,150,62,0.12), rgba(200,150,62,0.04));
+    border: 1px solid var(--gold);
+    color: var(--gold2);
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-qb-chest:hover {
+    background: linear-gradient(135deg, rgba(200,150,62,0.22), rgba(200,150,62,0.10));
+    box-shadow: 0 0 10px rgba(200,150,62,0.2);
+  }
+  .btn-qb-chest:disabled { opacity: 0.4; cursor: not-allowed; }
+  .qb-chest-count {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.9rem;
+    color: var(--gold2);
+    min-width: 20px;
+    text-align: center;
+  }
+  .btn-qb-attack {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid;
+  }
+  .btn-qb-attack.boss {
+    background: linear-gradient(135deg, rgba(200,150,62,0.18), rgba(200,150,62,0.06));
+    border-color: var(--gold);
+    color: var(--gold2);
+  }
+  .btn-qb-attack.boss:hover {
+    background: linear-gradient(135deg, rgba(200,150,62,0.30), rgba(200,150,62,0.12));
+    box-shadow: 0 0 12px rgba(200,150,62,0.25);
+  }
+  .btn-qb-attack.minion {
+    background: linear-gradient(135deg, rgba(155,127,212,0.18), rgba(155,127,212,0.06));
+    border-color: var(--minion);
+    color: var(--minion);
+  }
+  .btn-qb-attack.minion:hover {
+    background: linear-gradient(135deg, rgba(155,127,212,0.30), rgba(155,127,212,0.12));
+    box-shadow: 0 0 12px rgba(155,127,212,0.25);
+  }
+  .btn-qb-attack:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+  .qb-boss-roll-input {
+    width: 48px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 5px;
+    color: var(--gold2);
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.95rem;
+    text-align: center;
+    padding: 5px 2px;
+    -moz-appearance: textfield;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .qb-boss-roll-input::-webkit-inner-spin-button,
+  .qb-boss-roll-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .qb-boss-roll-input:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(200,150,62,0.12); }
+  .qb-boss-roll-input::placeholder { color: var(--text3); font-family: 'Cinzel', serif; font-size: 0.55rem; }
+
+  /* STATS CARD (now in dice row) */
   .stats-card {
     margin-bottom: 0;
     display: flex;
@@ -1226,6 +1388,51 @@
     background: linear-gradient(135deg, rgba(200,150,62,0.35), rgba(200,150,62,0.15));
     box-shadow: 0 0 14px rgba(200,150,62,0.3);
   }
+
+  /* Manual time entry modal */
+  .manual-time-inputs {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 8px;
+    margin: 8px 0;
+  }
+  .manual-time-field {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .manual-time-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+  .manual-time-input {
+    width: 80px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--gold2);
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.6rem;
+    text-align: center;
+    padding: 8px 4px;
+    -moz-appearance: textfield;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .manual-time-input::-webkit-inner-spin-button,
+  .manual-time-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .manual-time-input:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(200,150,62,0.15); }
+  .manual-time-sep {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.8rem;
+    color: var(--text3);
+    padding-bottom: 8px;
+  }
 </style>
 </head>
 <body>
@@ -1248,79 +1455,50 @@
 <!-- ======================== DASHBOARD TAB ======================== -->
 <div id="tab-timer" class="tab-content active">
 
-  <!-- Rolls Card -->
-  <div class="card">
-    <div class="card-title">Roll the Dice <button class="btn-roll-for-me" onclick="rollForMe()">🎲 Roll for Me</button></div>
-    <div class="dice-row">
-      <div class="die-field hope">
-        <div class="die-label">Hope</div>
-        <div class="die-oct-wrap">
-          <svg class="die-oct-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <polygon class="die-oct-bg" points="29,4 71,4 96,29 96,71 71,96 29,96 4,71 4,29"/>
-            <polygon class="die-oct-accent hope-accent" points="29,4 71,4 96,29 96,71 71,96 29,96 4,71 4,29"/>
-          </svg>
-          <input type="number" class="die-oct-input hope" id="hopeRoll" min="1" max="20" placeholder="—"
-            oninput="onHopeInput(this.value)" onchange="onHopeInput(this.value)">
-        </div>
-      </div>
-      <div class="die-field fear">
-        <div class="die-label">Fear</div>
-        <div class="die-oct-wrap">
-          <svg class="die-oct-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <polygon class="die-oct-bg" points="29,4 71,4 96,29 96,71 71,96 29,96 4,71 4,29"/>
-            <polygon class="die-oct-accent fear-accent" points="29,4 71,4 96,29 96,71 71,96 29,96 4,71 4,29"/>
-          </svg>
-          <input type="number" class="die-oct-input fear" id="fearRoll" min="1" max="20" placeholder="—"
-            oninput="onRollInput()" onchange="onRollInput()">
-        </div>
-      </div>
-      <div class="die-field soundtrack">
-        <div class="die-label">Soundtrack</div>
-        <div class="die-oct-wrap">
-          <svg class="die-oct-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <polygon class="die-oct-bg" points="29,4 71,4 96,29 96,71 71,96 29,96 4,71 4,29"/>
-            <polygon class="die-oct-accent gold-accent" points="29,4 71,4 96,29 96,71 71,96 29,96 4,71 4,29"/>
-          </svg>
-          <input type="number" class="die-oct-input" id="soundRoll" min="1" max="20" placeholder="—"
-            oninput="onSoundInput()" onchange="onSoundInput()">
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- ROW 1: Roll the Dice + Stats side by side -->
+  <div class="dice-stats-row">
 
-  <!-- Soundtrack Display (moved here, right below Roll the Dice) -->
-  <div class="card">
-    <div class="card-title">Soundtrack <button class="btn-roll-for-me" onclick="rerollSoundtrack()">🎲 Reroll Soundtrack</button></div>
-    <div class="soundtrack-display" id="soundtrackDisplay">— Roll the dice to reveal your soundtrack —</div>
-  </div>
-
-  <!-- Session + Stats side by side -->
-  <div class="session-stats-row">
-
-    <!-- Timer Centrepiece (2/3) -->
-    <div class="card session-card">
-      <div class="card-title">Session</div>
-      <div class="timer-centrepiece">
-        <div class="timer-ring-container">
-          <svg class="timer-ring-svg" viewBox="0 0 220 220">
-            <circle class="timer-ring-bg" cx="110" cy="110" r="100"/>
-            <circle class="timer-ring-progress" id="timerRing" cx="110" cy="110" r="100"/>
-          </svg>
-          <div class="timer-inner">
-            <div class="timer-display" id="timerDisplay" onclick="startEdit()" title="Click to edit">—:——</div>
-            <input type="text" class="timer-edit" id="timerEdit" placeholder="MM:SS" onblur="finishEdit()" onkeydown="editKeydown(event)">
-            <div class="timer-label">Click to adjust</div>
+    <!-- Rolls Card (2fr) -->
+    <div class="card">
+      <div class="card-title">Roll the Dice <button class="btn-roll-for-me" onclick="rollForMe()">🎲 Roll for Me</button></div>
+      <div class="dice-row">
+        <div class="die-field hope">
+          <div class="die-label">Hope</div>
+          <div class="die-oct-wrap">
+            <svg class="die-oct-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <polygon class="die-oct-bg" points="29,4 71,4 96,29 96,71 71,96 29,96 4,71 4,29"/>
+              <polygon class="die-oct-accent hope-accent" points="29,4 71,4 96,29 96,71 71,96 29,96 4,71 4,29"/>
+            </svg>
+            <input type="number" class="die-oct-input hope" id="hopeRoll" min="1" max="20" placeholder="—"
+              oninput="onHopeInput(this.value)" onchange="onHopeInput(this.value)">
           </div>
         </div>
-        <div class="timer-controls">
-          <button class="btn-timer btn-start" id="btnStart" onclick="startTimer()">▶ Start</button>
-          <button class="btn-timer btn-pause" id="btnPause" onclick="pauseTimer()" style="display:none">⏸ Pause</button>
-          <button class="btn-timer btn-reset" onclick="resetTimer()">↺ Reset</button>
+        <div class="die-field fear">
+          <div class="die-label">Fear</div>
+          <div class="die-oct-wrap">
+            <svg class="die-oct-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <polygon class="die-oct-bg" points="29,4 71,4 96,29 96,71 71,96 29,96 4,71 4,29"/>
+              <polygon class="die-oct-accent fear-accent" points="29,4 71,4 96,29 96,71 71,96 29,96 4,71 4,29"/>
+            </svg>
+            <input type="number" class="die-oct-input fear" id="fearRoll" min="1" max="20" placeholder="—"
+              oninput="onRollInput()" onchange="onRollInput()">
+          </div>
+        </div>
+        <div class="die-field soundtrack">
+          <div class="die-label">Soundtrack</div>
+          <div class="die-oct-wrap">
+            <svg class="die-oct-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <polygon class="die-oct-bg" points="29,4 71,4 96,29 96,71 71,96 29,96 4,71 4,29"/>
+              <polygon class="die-oct-accent gold-accent" points="29,4 71,4 96,29 96,71 71,96 29,96 4,71 4,29"/>
+            </svg>
+            <input type="number" class="die-oct-input" id="soundRoll" min="1" max="20" placeholder="—"
+              oninput="onSoundInput()" onchange="onSoundInput()">
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Stats (1/3) -->
+    <!-- Stats (1fr) -->
     <div class="card stats-card">
       <div class="card-title">Stats <button class="btn-status-reset" onclick="resetStatus()" title="Reset all stats to defaults">↺ Reset</button></div>
       <div class="stats-col">
@@ -1345,7 +1523,93 @@
 
   </div>
 
-  <!-- Boss Battles + Boss Chests -->
+  <!-- ROW 2: Session + Quick Battle Controls side by side -->
+  <div class="session-battle-row">
+
+    <!-- Timer Centrepiece (2fr) -->
+    <div class="card session-card">
+      <div class="card-title">Session <button class="btn-roll-for-me" onclick="rerollSoundtrack()">🎲 Reroll Soundtrack</button></div>
+      <div id="soundtrackDisplay" style="text-align:center;font-style:italic;color:var(--text3);font-size:0.9rem;margin-bottom:8px;">🎵 —</div>
+      <div class="timer-centrepiece">
+        <div class="timer-ring-container">
+          <svg class="timer-ring-svg" viewBox="0 0 220 220">
+            <circle class="timer-ring-bg" cx="110" cy="110" r="100"/>
+            <circle class="timer-ring-progress" id="timerRing" cx="110" cy="110" r="100"/>
+          </svg>
+          <div class="timer-inner">
+            <div class="timer-display" id="timerDisplay" onclick="startEdit()" title="Click to edit">—:——</div>
+            <input type="text" class="timer-edit" id="timerEdit" placeholder="MM:SS" onblur="finishEdit()" onkeydown="editKeydown(event)">
+            <div class="timer-label">Click to adjust</div>
+          </div>
+        </div>
+        <div class="timer-controls">
+          <button class="btn-timer btn-start" id="btnStart" onclick="startTimer()">▶ Start</button>
+          <button class="btn-timer btn-pause" id="btnPause" onclick="pauseTimer()" style="display:none">⏸ Pause</button>
+          <button class="btn-timer btn-reset" onclick="resetTimer()">↺ Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Battle Controls (1fr) -->
+    <div class="card quick-battle-card">
+      <div class="card-title">Quick Battle</div>
+
+      <!-- Boss Section -->
+      <div class="qb-section">
+        <div class="qb-section-label">Boss</div>
+        <div class="qb-attack-row">
+          <input type="number" class="qb-boss-roll-input" id="qbBossRoll" min="1" max="20" placeholder="d20"
+            onkeydown="if(event.key==='Enter') bossAttack()">
+          <button class="btn-qb-attack boss" id="qbBtnBossAttack" onclick="bossAttack()" disabled>⚔ Attack</button>
+          <div class="qb-result idle" id="qbBossResult">—</div>
+        </div>
+        <div class="qb-dc-row">
+          <span class="qb-dc-label">DC</span>
+          <button class="counter-btn" onclick="adjustDC('boss', -1)" style="width:22px;height:22px;font-size:0.85rem;">−</button>
+          <div class="dc-value" id="bossDCVal" style="font-size:1.1rem;">24</div>
+          <button class="counter-btn" onclick="adjustDC('boss', 1)" style="width:22px;height:22px;font-size:0.85rem;">+</button>
+        </div>
+        <div class="qb-remaining">Battles: <span id="qbBossRemaining">0</span></div>
+        <div class="qb-chest-row">
+          <button class="btn-qb-chest" id="qbBtnBossChest" onclick="openBossChest()" disabled>🎁 Chest</button>
+          <span class="qb-chest-count" id="qbBossChestsRemaining">0</span>
+        </div>
+      </div>
+
+      <!-- Minion Section -->
+      <div class="qb-section">
+        <div class="qb-section-label minion-label">Minion
+          <label class="toggle-switch" title="Toggle minion countdown" style="margin-left:6px;vertical-align:middle;">
+            <input type="checkbox" id="minionCountdownToggle" onchange="onMinionToggleChange()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="qb-attack-row">
+          <button class="btn-qb-attack minion" id="qbBtnMinionAttack" onclick="minionAttack()" disabled>⚔ Attack</button>
+          <div class="qb-result idle" id="qbMinionResult">—</div>
+        </div>
+        <div class="qb-dc-row">
+          <span class="qb-dc-label">DC</span>
+          <button class="counter-btn" onclick="adjustDC('minion', -1)" style="width:22px;height:22px;font-size:0.85rem;">−</button>
+          <div class="dc-value minion" id="minionDCVal" style="font-size:1.1rem;">18</div>
+          <button class="counter-btn" onclick="adjustDC('minion', 1)" style="width:22px;height:22px;font-size:0.85rem;">+</button>
+        </div>
+        <div class="qb-remaining">
+          Battles: <span id="qbMinionRemaining">0</span>
+          &nbsp;·&nbsp;
+          <span class="minion-countdown inactive" id="minionCountdown" style="display:inline;font-size:0.8rem;">Off</span>
+        </div>
+        <div class="qb-chest-row">
+          <button class="btn-qb-chest" id="qbBtnMinionChest" onclick="openChest()" disabled>🎁 Chest</button>
+          <span class="qb-chest-count" id="qbMinionChestsRemaining">0</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Boss Battles + Boss Chests (full width row) -->
   <div class="minion-row">
 
     <!-- Boss Battles (left) -->
@@ -1356,7 +1620,7 @@
       <div class="battle-top">
         <div class="battle-timer-block">
           <div class="battle-timer-label">Manual Roll</div>
-          <input type="number" class="boss-manual-roll" id="bossManualRoll" min="1" max="20" placeholder="d20">
+          <input type="number" class="boss-manual-roll" id="bossManualRoll" min="1" max="20" placeholder="d20" onkeydown="if(event.key==='Enter') bossAttack()">
         </div>
         <div class="battle-mid">
           <button class="btn-attack boss-attack" id="btnBossAttack" onclick="bossAttack()" disabled>⚔ Attack</button>
@@ -1371,7 +1635,7 @@
       <div class="battle-dc-row">
         <div class="counter-label dc" style="margin-bottom:0;">Boss DC</div>
         <button class="counter-btn" onclick="adjustDC('boss', -1)">−</button>
-        <div class="dc-value" id="bossDCVal">24</div>
+        <div class="dc-value" id="bossDCValFull">24</div>
         <button class="counter-btn" onclick="adjustDC('boss', 1)">+</button>
       </div>
 
@@ -1426,24 +1690,18 @@
 
   </div>
 
-  <!-- Minion Battles + Minion Chests -->
+  <!-- Minion Battles + Minion Chests (full width row) -->
   <div class="minion-row">
 
     <!-- Minion Battles (left) -->
     <div class="card minion-battle-card">
-      <div class="card-title">
-        Minion Battles
-        <label class="toggle-switch" title="Toggle minion countdown">
-          <input type="checkbox" id="minionCountdownToggle" onchange="onMinionToggleChange()">
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
+      <div class="card-title">Minion Battles</div>
 
       <!-- Top row: countdown | attack | result -->
       <div class="battle-top">
         <div class="battle-timer-block">
           <div class="battle-timer-label">Next Battle</div>
-          <div class="minion-countdown inactive" id="minionCountdown">Off</div>
+          <div class="minion-countdown inactive" id="minionCountdownFull">Off</div>
         </div>
         <div class="battle-mid">
           <button class="btn-attack" id="btnAttack" onclick="minionAttack()" disabled>⚔ Attack</button>
@@ -1458,7 +1716,7 @@
       <div class="battle-dc-row">
         <div class="counter-label minion-dc" style="margin-bottom:0;">Minion DC</div>
         <button class="counter-btn" onclick="adjustDC('minion', -1)">−</button>
-        <div class="dc-value minion" id="minionDCVal">18</div>
+        <div class="dc-value minion" id="minionDCValFull">18</div>
         <button class="counter-btn" onclick="adjustDC('minion', 1)">+</button>
       </div>
 
@@ -1515,7 +1773,7 @@
 
   <!-- Adventuring Time -->
   <div class="card">
-    <div class="card-title">Adventuring Time</div>
+    <div class="card-title">Adventuring Time <button class="btn-status-reset" onclick="openManualTimeDialog()">+ Add Session Time</button></div>
     <div class="adv-time-row">
       <div class="adv-time-field">
         <div class="adv-time-label">Today</div>
@@ -1604,7 +1862,6 @@
   <div class="card">
     <div class="card-title">Sound Settings</div>
 
-    <!-- Timer Sound -->
     <div class="setting-row">
       <div>
         <div class="setting-label">Timer Sound</div>
@@ -1616,7 +1873,6 @@
       </div>
     </div>
 
-    <!-- Ticking Sound -->
     <div class="setting-row">
       <div>
         <div class="setting-label">Ticking Sound</div>
@@ -1630,7 +1886,6 @@
       </div>
     </div>
 
-    <!-- Session Start Sound -->
     <div class="setting-row">
       <div>
         <div class="setting-label">Session Start Sound</div>
@@ -1646,7 +1901,6 @@
       </div>
     </div>
 
-    <!-- Inspiration Sound -->
     <div class="setting-row">
       <div>
         <div class="setting-label">Inspiration Sound</div>
@@ -1662,7 +1916,6 @@
       </div>
     </div>
 
-    <!-- Battle Earned Sound -->
     <div class="setting-row">
       <div>
         <div class="setting-label">Battle Earned Sound</div>
@@ -1678,7 +1931,6 @@
       </div>
     </div>
 
-    <!-- Attack Success Sound -->
     <div class="setting-row">
       <div>
         <div class="setting-label">Attack Success Sound</div>
@@ -1694,7 +1946,6 @@
       </div>
     </div>
 
-    <!-- Attack Fail Sound -->
     <div class="setting-row">
       <div>
         <div class="setting-label">Attack Fail Sound</div>
@@ -1710,7 +1961,6 @@
       </div>
     </div>
 
-    <!-- Open Chest Sound -->
     <div class="setting-row">
       <div>
         <div class="setting-label">Open Chest Sound</div>
@@ -1772,6 +2022,17 @@
       </div>
     </div>
 
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Manual Entry — Boss Battle</div>
+        <div class="setting-sub">Minutes of manually logged time to earn 1 Boss Battle</div>
+      </div>
+      <div class="setting-control">
+        <input type="number" id="manualBossMinutesSetting" value="20" min="1" max="120" onchange="saveSettings()">
+        <span style="color:var(--text3);font-size:0.8rem;margin-left:4px;">min</span>
+      </div>
+    </div>
+
   </div>
 
   <!-- Soundtrack Table -->
@@ -1816,6 +2077,32 @@
       <textarea id="notesInputTab" class="notes-textarea" style="min-height:400px;" placeholder="Your notes... (supports **bold**, *italic*, # headings, - lists, `code`, etc.)" oninput="saveNotesTab()"></textarea>
     </div>
     <div id="notesPreviewTab" class="notes-preview" style="display:none; min-height:400px;"></div>
+  </div>
+</div>
+
+<!-- ======================== MANUAL TIME MODAL ======================== -->
+<div class="modal-overlay" id="manualTimeModal">
+  <div class="modal">
+    <div class="modal-icon">⏱</div>
+    <div class="modal-title">Add Session Time</div>
+    <div class="modal-subtitle">Time counts toward Adventuring Time, Minion Battles &amp; Boss Battles</div>
+    <div class="manual-time-inputs">
+      <div class="manual-time-field">
+        <label class="manual-time-label">Hours</label>
+        <input type="number" id="manualTimeHours" class="manual-time-input" min="0" max="23" placeholder="0"
+          onkeydown="if(event.key==='Enter') confirmManualTime()">
+      </div>
+      <div class="manual-time-sep">:</div>
+      <div class="manual-time-field">
+        <label class="manual-time-label">Minutes</label>
+        <input type="number" id="manualTimeMinutes" class="manual-time-input" min="0" max="59" placeholder="0"
+          onkeydown="if(event.key==='Enter') confirmManualTime()">
+      </div>
+    </div>
+    <div class="modal-buttons" style="margin-top:20px;">
+      <button class="btn-yes" onclick="confirmManualTime()">✓ Add Time</button>
+      <button class="btn-no" onclick="closeManualTimeDialog()">✗ Cancel</button>
+    </div>
   </div>
 </div>
 
@@ -1880,7 +2167,6 @@ let state = {
   tickingEnabled: false,
   startSoundEnabled: false,
   inspirationSoundEnabled: false,
-  // Minion settings
   minionCountdownEnabled: false,
   minionAutoFight: false,
   minionInterval: 10,
@@ -1888,27 +2174,24 @@ let state = {
   attackSuccessSoundEnabled: false,
   attackFailSoundEnabled: false,
   openChestSoundEnabled: false,
-  // Minion runtime (not persisted across sessions)
   minionCountdownSeconds: 600,
   minionCountdownInterval: null,
-  // Minion today stats (persisted, reset manually)
   minionBattlesEarned: 0,
   minionBattlesFought: 0,
   minionBattlesWon: 0,
   minionChestsEarned: 0,
   minionChestsOpened: 0,
-  minionStatsDate: '',    // kept for legacy compat
-  // DC manual adjustments (separate from defaults, reset on Stats Reset)
+  minionStatsDate: '',
   bossManualAdj: 0,
   minionManualAdj: 0,
-  // Boss Battle stats (persisted, reset manually)
   bossBattlesEarned: 0,
   bossBattlesFought: 0,
   bossBattlesWon: 0,
   bossChestsEarned: 0,
   bossChestsOpened: 0,
-  // Boss DC scaling per win
   bossDcScaling: 3,
+  manualBossMinutes: 20,
+  manualTimeLogs: [],
   soundtracks: [...DEFAULT_SOUNDTRACKS],
   logs: [],
   timerSeconds: 0,
@@ -1956,6 +2239,8 @@ function saveState() {
     bossChestsEarned: state.bossChestsEarned,
     bossChestsOpened: state.bossChestsOpened,
     bossDcScaling: state.bossDcScaling,
+    manualBossMinutes: state.manualBossMinutes,
+    manualTimeLogs: state.manualTimeLogs,
     soundtracks: state.soundtracks,
     logs: state.logs,
   };
@@ -1997,6 +2282,8 @@ function loadState() {
     if (saved.bossChestsEarned !== undefined) state.bossChestsEarned = saved.bossChestsEarned;
     if (saved.bossChestsOpened !== undefined) state.bossChestsOpened = saved.bossChestsOpened;
     if (saved.bossDcScaling !== undefined) state.bossDcScaling = saved.bossDcScaling;
+    if (saved.manualBossMinutes !== undefined) state.manualBossMinutes = saved.manualBossMinutes;
+    if (saved.manualTimeLogs) state.manualTimeLogs = saved.manualTimeLogs;
     if (saved.soundtracks) state.soundtracks = saved.soundtracks;
     if (saved.logs) state.logs = saved.logs;
   } catch(e) {}
@@ -2008,21 +2295,14 @@ function loadState() {
 let notesMode = 'edit';
 let notesModeTab = 'edit';
 
-function saveNotes() {
-  localStorage.setItem('r4f_notes', document.getElementById('notesInput').value);
-}
-
-function loadNotes() {
-  const saved = localStorage.getItem('r4f_notes') || '';
-  document.getElementById('notesInput').value = saved;
-}
+function saveNotes() { localStorage.setItem('r4f_notes', document.getElementById('notesInput').value); }
+function loadNotes() { document.getElementById('notesInput').value = localStorage.getItem('r4f_notes') || ''; }
 
 function toggleNotesMode() {
   const btn = document.getElementById('notesModeBtn');
   if (notesMode === 'edit') {
     notesMode = 'preview';
-    const md = document.getElementById('notesInput').value;
-    document.getElementById('notesPreview').innerHTML = parseMarkdown(md);
+    document.getElementById('notesPreview').innerHTML = parseMarkdown(document.getElementById('notesInput').value);
     document.getElementById('notesEditor').style.display = 'none';
     document.getElementById('notesPreview').style.display = 'block';
     btn.textContent = '✎ Edit';
@@ -2034,21 +2314,14 @@ function toggleNotesMode() {
   }
 }
 
-function saveNotesTab() {
-  localStorage.setItem('r4f_notes_tab', document.getElementById('notesInputTab').value);
-}
-
-function loadNotesTab() {
-  const saved = localStorage.getItem('r4f_notes_tab') || '';
-  document.getElementById('notesInputTab').value = saved;
-}
+function saveNotesTab() { localStorage.setItem('r4f_notes_tab', document.getElementById('notesInputTab').value); }
+function loadNotesTab() { document.getElementById('notesInputTab').value = localStorage.getItem('r4f_notes_tab') || ''; }
 
 function toggleNotesModeTab() {
   const btn = document.getElementById('notesModeTabBtn');
   if (notesModeTab === 'edit') {
     notesModeTab = 'preview';
-    const md = document.getElementById('notesInputTab').value;
-    document.getElementById('notesPreviewTab').innerHTML = parseMarkdown(md);
+    document.getElementById('notesPreviewTab').innerHTML = parseMarkdown(document.getElementById('notesInputTab').value);
     document.getElementById('notesEditorTab').style.display = 'none';
     document.getElementById('notesPreviewTab').style.display = 'block';
     btn.textContent = '✎ Edit';
@@ -2061,74 +2334,39 @@ function toggleNotesModeTab() {
 }
 
 function parseMarkdown(md) {
-  // Escape HTML first
-  let html = md
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-
-  // Code blocks (``` ... ```)
-  html = html.replace(/```([\s\S]*?)```/g, (_, code) =>
-    `<pre><code>${code.trim()}</code></pre>`);
-
-  // Inline code
+  let html = md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  html = html.replace(/```([\s\S]*?)```/g, (_, code) => `<pre><code>${code.trim()}</code></pre>`);
   html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-
-  // Headings
   html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
   html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
   html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
-
-  // Horizontal rule
   html = html.replace(/^---$/gm, '<hr>');
-
-  // Blockquote
   html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
-
-  // Bold & italic
   html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
   html = html.replace(/_(.+?)_/g, '<em>$1</em>');
-
-  // Unordered lists
   html = html.replace(/((?:^[-*] .+\n?)+)/gm, (block) => {
     const items = block.trim().split('\n').map(l => `<li>${l.replace(/^[-*] /, '')}</li>`).join('');
     return `<ul>${items}</ul>`;
   });
-
-  // Ordered lists
   html = html.replace(/((?:^\d+\. .+\n?)+)/gm, (block) => {
     const items = block.trim().split('\n').map(l => `<li>${l.replace(/^\d+\. /, '')}</li>`).join('');
     return `<ol>${items}</ol>`;
   });
-
-  // Links
   html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
-
-  // Paragraphs — wrap lines that aren't already block elements
   html = html.replace(/^(?!<[a-z]|$)(.+)$/gm, '<p>$1</p>');
-
-  // Clean up extra blank lines
   html = html.replace(/\n{2,}/g, '\n');
-
   return html;
 }
 
 function updateAdventuringTime() {
   const now = new Date();
-
-  // Start of today (local midnight)
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-  // Start of this week (Monday local midnight)
-  const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon...
+  const dayOfWeek = now.getDay();
   const daysFromMon = (dayOfWeek + 6) % 7;
   const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - daysFromMon);
-
-  let todayMins = 0;
-  let weekMins = 0;
-
+  let todayMins = 0, weekMins = 0;
   state.logs.forEach(log => {
     if (!log.success) return;
     const logDate = new Date(log.timestamp);
@@ -2136,48 +2374,69 @@ function updateAdventuringTime() {
     if (logDate >= todayStart) todayMins += (log.duration || 0);
     if (logDate >= weekStart) weekMins += (log.duration || 0);
   });
-
+  (state.manualTimeLogs || []).forEach(entry => {
+    const entryDate = new Date(entry.timestamp);
+    if (isNaN(entryDate)) return;
+    if (entryDate >= todayStart) todayMins += (entry.mins || 0);
+    if (entryDate >= weekStart) weekMins += (entry.mins || 0);
+  });
   const fmt = (mins) => {
     if (mins < 60) return `${mins}m`;
-    const h = Math.floor(mins / 60);
-    const m = mins % 60;
+    const h = Math.floor(mins / 60), m = mins % 60;
     return m > 0 ? `${h}h ${m}m` : `${h}h`;
   };
-
   document.getElementById('advTimeToday').textContent = fmt(todayMins);
   document.getElementById('advTimeWeek').textContent = fmt(weekMins);
+}
+
+function openManualTimeDialog() {
+  document.getElementById('manualTimeHours').value = '';
+  document.getElementById('manualTimeMinutes').value = '';
+  document.getElementById('manualTimeModal').classList.add('show');
+  document.getElementById('manualTimeHours').focus();
+}
+function closeManualTimeDialog() { document.getElementById('manualTimeModal').classList.remove('show'); }
+
+function confirmManualTime() {
+  const hours = parseInt(document.getElementById('manualTimeHours').value) || 0;
+  const mins  = parseInt(document.getElementById('manualTimeMinutes').value) || 0;
+  const totalMins = hours * 60 + mins;
+  if (totalMins <= 0) { showToast('Enter at least 1 minute'); return; }
+  state.manualTimeLogs = state.manualTimeLogs || [];
+  state.manualTimeLogs.push({ mins: totalMins, timestamp: new Date().toLocaleString() });
+  const minionBattlesGained = Math.floor(totalMins / state.minionInterval);
+  if (minionBattlesGained > 0) { state.minionBattlesEarned += minionBattlesGained; updateMinionUI(); }
+  const bossBattlesGained = Math.floor(totalMins / state.manualBossMinutes);
+  if (bossBattlesGained > 0) { state.bossBattlesEarned += bossBattlesGained; updateBossUI(); }
+  saveState(); updateAdventuringTime(); closeManualTimeDialog();
+  const parts = [];
+  if (hours > 0) parts.push(`${hours}h`);
+  if (mins > 0)  parts.push(`${mins}m`);
+  let msg = `+${parts.join(' ')} logged`;
+  if (minionBattlesGained > 0) msg += ` · +${minionBattlesGained} Minion Battle${minionBattlesGained > 1 ? 's' : ''}`;
+  if (bossBattlesGained > 0)   msg += ` · +${bossBattlesGained} Boss Battle${bossBattlesGained > 1 ? 's' : ''}`;
+  showToast(msg);
 }
 
 // ============================================================
 // MINION BATTLES
 // ============================================================
-
 function todayDateStr() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
-
-function checkMinionDailyReset() {
-  // Auto date-based reset removed — minion stats now reset manually via the Stats Reset button.
-  // This function is kept as a no-op for compatibility.
-}
+function checkMinionDailyReset() { /* No-op — reset manually via Stats Reset */ }
 
 function adjustMinionStat(key, delta) {
   state[key] = Math.max(0, state[key] + delta);
-  updateMinionUI();
-  saveState();
+  updateMinionUI(); saveState();
 }
 
 function onMinionToggleChange() {
   state.minionCountdownEnabled = document.getElementById('minionCountdownToggle').checked;
-  if (!state.minionCountdownEnabled) {
-    stopMinionCountdown();
-    updateMinionCountdownDisplay();
-  } else if (state.timerRunning) {
-    startMinionCountdown();
-  } else {
-    updateMinionCountdownDisplay();
-  }
+  if (!state.minionCountdownEnabled) { stopMinionCountdown(); updateMinionCountdownDisplay(); }
+  else if (state.timerRunning) { startMinionCountdown(); }
+  else { updateMinionCountdownDisplay(); }
   saveState();
 }
 
@@ -2188,79 +2447,68 @@ function startMinionCountdown() {
     state.minionCountdownSeconds--;
     updateMinionCountdownDisplay();
     if (state.minionCountdownSeconds <= 0) {
-      // Battle earned!
       state.minionBattlesEarned++;
-      updateMinionUI();
-      playGenericSound('battleEarned');
+      updateMinionUI(); playGenericSound('battleEarned');
       showToast('⚔ Minion Battle Earned!');
-      // Reset countdown
       state.minionCountdownSeconds = state.minionInterval * 60;
-      updateMinionCountdownDisplay();
-      saveState();
-      // Auto-fight?
-      if (state.minionAutoFight) {
-        setTimeout(() => minionAttack(), 300);
-      }
+      updateMinionCountdownDisplay(); saveState();
+      if (state.minionAutoFight) setTimeout(() => minionAttack(), 300);
     }
   }, 1000);
 }
 
 function stopMinionCountdown() {
-  if (state.minionCountdownInterval) {
-    clearInterval(state.minionCountdownInterval);
-    state.minionCountdownInterval = null;
-  }
+  if (state.minionCountdownInterval) { clearInterval(state.minionCountdownInterval); state.minionCountdownInterval = null; }
 }
 
 function updateMinionCountdownDisplay() {
-  const el = document.getElementById('minionCountdown');
-  if (!state.minionCountdownEnabled) {
-    el.textContent = 'Off';
-    el.className = 'minion-countdown inactive';
-    return;
-  }
-  const mins = Math.floor(state.minionCountdownSeconds / 60);
-  const secs = state.minionCountdownSeconds % 60;
-  el.textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-  el.className = 'minion-countdown';
+  const els = [document.getElementById('minionCountdown'), document.getElementById('minionCountdownFull')];
+  els.forEach(el => {
+    if (!el) return;
+    if (!state.minionCountdownEnabled) {
+      el.textContent = 'Off';
+      el.className = el.className.replace(/\bminion-countdown\b/, '') + ' minion-countdown inactive';
+      return;
+    }
+    const mins = Math.floor(state.minionCountdownSeconds / 60);
+    const secs = state.minionCountdownSeconds % 60;
+    el.textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+    el.className = el.className.replace(/\binactive\b/, '');
+    if (!el.className.includes('minion-countdown')) el.className += ' minion-countdown';
+  });
 }
 
 function minionAttack() {
   const remaining = state.minionBattlesEarned - state.minionBattlesFought;
   if (remaining <= 0) return;
-
   const roll = Math.ceil(Math.random() * 20);
   const minionDC = state.minionDcDefault - state.inspiration + state.penalty + state.minionManualAdj;
   const won = roll === 20 || roll > minionDC;
-
   state.minionBattlesFought++;
   if (won) {
-    state.minionBattlesWon++;
-    state.minionChestsEarned++;
-    adjustDC('minion', 1);           // DC increases on win
+    state.minionBattlesWon++; state.minionChestsEarned++;
+    adjustDC('minion', 1);
     playGenericSound('attackSuccess');
     showToast(`⚔ Hit! Rolled ${roll} vs DC ${minionDC} — Chest Earned!`);
   } else {
     playGenericSound('attackFail');
     showToast(`💨 Miss! Rolled ${roll} vs DC ${minionDC}`);
   }
-
-  // Display result
-  const resultEl = document.getElementById('attackResult');
-  resultEl.textContent = roll;
-  resultEl.className = `attack-result ${won ? 'win' : 'fail'}`;
-
-  updateMinionUI();
-  saveState();
+  // Update all result displays
+  const cls = `attack-result ${won ? 'win' : 'fail'}`;
+  document.getElementById('attackResult').textContent = roll;
+  document.getElementById('attackResult').className = cls;
+  const qbEl = document.getElementById('qbMinionResult');
+  qbEl.textContent = roll;
+  qbEl.className = `qb-result ${won ? 'win' : 'fail'}`;
+  updateMinionUI(); saveState();
 }
 
 function openChest() {
   if (state.minionChestsEarned - state.minionChestsOpened <= 0) return;
   state.minionChestsOpened++;
-  playGenericSound('openChest');
-  showToast('🎁 Chest Opened!');
-  updateMinionUI();
-  saveState();
+  playGenericSound('openChest'); showToast('🎁 Chest Opened!');
+  updateMinionUI(); saveState();
 }
 
 function updateMinionUI() {
@@ -2273,9 +2521,14 @@ function updateMinionUI() {
   document.getElementById('minionChestsEarned').textContent = state.minionChestsEarned;
   document.getElementById('minionChestsOpened').textContent = state.minionChestsOpened;
   document.getElementById('minionChestsRemaining').textContent = chestsRemaining;
-  // Enable/disable buttons
+  // Full card buttons
   document.getElementById('btnAttack').disabled = remaining <= 0;
   document.getElementById('btnOpenChest').disabled = chestsRemaining <= 0;
+  // Quick battle panel
+  document.getElementById('qbBtnMinionAttack').disabled = remaining <= 0;
+  document.getElementById('qbBtnMinionChest').disabled = chestsRemaining <= 0;
+  document.getElementById('qbMinionRemaining').textContent = remaining;
+  document.getElementById('qbMinionChestsRemaining').textContent = chestsRemaining;
 }
 
 // ============================================================
@@ -2285,53 +2538,54 @@ function bossAttack() {
   const remaining = state.bossBattlesEarned - state.bossBattlesFought;
   if (remaining <= 0) return;
 
-  const manualInput = document.getElementById('bossManualRoll');
-  const manualVal = manualInput.value.trim();
+  // Check both manual roll inputs (full card and quick panel)
+  const fullInput = document.getElementById('bossManualRoll');
+  const qbInput = document.getElementById('qbBossRoll');
   let roll;
-  if (manualVal !== '' && !isNaN(parseInt(manualVal))) {
-    roll = Math.max(1, parseInt(manualVal));
-    manualInput.value = '';
+  const fullVal = fullInput.value.trim();
+  const qbVal = qbInput.value.trim();
+  if (fullVal !== '' && !isNaN(parseInt(fullVal))) {
+    roll = Math.max(1, parseInt(fullVal));
+    fullInput.value = ''; qbInput.value = '';
+  } else if (qbVal !== '' && !isNaN(parseInt(qbVal))) {
+    roll = Math.max(1, parseInt(qbVal));
+    fullInput.value = ''; qbInput.value = '';
   } else {
     roll = Math.ceil(Math.random() * 20);
   }
 
   const bossDC = state.dcDefault - state.inspiration + state.penalty + state.bossManualAdj;
   const won = roll === 20 || roll > bossDC;
-
   state.bossBattlesFought++;
   if (won) {
-    state.bossBattlesWon++;
-    state.bossChestsEarned++;
-    state.bossManualAdj += state.bossDcScaling;  // DC scales up on win
+    state.bossBattlesWon++; state.bossChestsEarned++;
+    state.bossManualAdj += state.bossDcScaling;
     playGenericSound('attackSuccess');
     showToast(`⚔ Boss Hit! Rolled ${roll} vs DC ${bossDC} — Chest Earned!`);
   } else {
     playGenericSound('attackFail');
     showToast(`💨 Boss Miss! Rolled ${roll} vs DC ${bossDC}`);
   }
-
-  const resultEl = document.getElementById('bossAttackResult');
-  resultEl.textContent = roll;
-  resultEl.className = `attack-result ${won ? 'win' : 'fail'}`;
-
-  updateBreakDC();
-  updateBossUI();
-  saveState();
+  // Update all result displays
+  const cls = `attack-result ${won ? 'win' : 'fail'}`;
+  document.getElementById('bossAttackResult').textContent = roll;
+  document.getElementById('bossAttackResult').className = cls;
+  const qbEl = document.getElementById('qbBossResult');
+  qbEl.textContent = roll;
+  qbEl.className = `qb-result ${won ? 'win' : 'fail'}`;
+  updateBreakDC(); updateBossUI(); saveState();
 }
 
 function openBossChest() {
   if (state.bossChestsEarned - state.bossChestsOpened <= 0) return;
   state.bossChestsOpened++;
-  playGenericSound('openChest');
-  showToast('🎁 Boss Chest Opened!');
-  updateBossUI();
-  saveState();
+  playGenericSound('openChest'); showToast('🎁 Boss Chest Opened!');
+  updateBossUI(); saveState();
 }
 
 function adjustBossStat(key, delta) {
   state[key] = Math.max(0, state[key] + delta);
-  updateBossUI();
-  saveState();
+  updateBossUI(); saveState();
 }
 
 function updateBossUI() {
@@ -2344,37 +2598,34 @@ function updateBossUI() {
   document.getElementById('bossChestsEarned').textContent = state.bossChestsEarned;
   document.getElementById('bossChestsOpened').textContent = state.bossChestsOpened;
   document.getElementById('bossChestsRemaining').textContent = chestsRemaining;
+  // Full card buttons
   document.getElementById('btnBossAttack').disabled = remaining <= 0;
   document.getElementById('btnOpenBossChest').disabled = chestsRemaining <= 0;
+  // Quick battle panel
+  document.getElementById('qbBtnBossAttack').disabled = remaining <= 0;
+  document.getElementById('qbBtnBossChest').disabled = chestsRemaining <= 0;
+  document.getElementById('qbBossRemaining').textContent = remaining;
+  document.getElementById('qbBossChestsRemaining').textContent = chestsRemaining;
 }
-
 
 function loadGenericSound(event, key) {
   const file = event.target.files[0];
   if (!file) return;
-  const labelId = `${key}SoundFileName`;
-  document.getElementById(labelId).textContent = file.name;
+  document.getElementById(`${key}SoundFileName`).textContent = file.name;
   const reader = new FileReader();
   reader.onload = (e) => {
     const dataURL = e.target.result;
     document.getElementById(`${key}Sound`).src = dataURL;
-    try {
-      localStorage.setItem(`r4f_sound_${key}`, JSON.stringify({ name: file.name, data: dataURL }));
-    } catch(err) {
-      showToast('File too large to persist');
-    }
+    try { localStorage.setItem(`r4f_sound_${key}`, JSON.stringify({ name: file.name, data: dataURL })); }
+    catch(err) { showToast('File too large to persist'); }
   };
   reader.readAsDataURL(file);
 }
 
 function playGenericSound(key) {
-  const toggleKey = `${key}SoundEnabled`;
-  if (!state[toggleKey]) return;
+  if (!state[`${key}SoundEnabled`]) return;
   const audio = document.getElementById(`${key}Sound`);
-  if (audio && audio.src && audio.src !== window.location.href) {
-    audio.currentTime = 0;
-    audio.play().catch(() => {});
-  }
+  if (audio && audio.src && audio.src !== window.location.href) { audio.currentTime = 0; audio.play().catch(() => {}); }
 }
 
 // ============================================================
@@ -2394,8 +2645,7 @@ function switchTab(name) {
 function rerollSoundtrack() {
   const sound = Math.ceil(Math.random() * state.soundtrackDie);
   const el = document.getElementById('soundRoll');
-  el.value = sound;
-  el.dataset.userOverride = '1';
+  el.value = sound; el.dataset.userOverride = '1';
   el.style.transition = 'box-shadow 0.1s';
   el.style.boxShadow = '0 0 0 3px rgba(200,150,62,0.3)';
   setTimeout(() => el.style.boxShadow = '', 400);
@@ -2408,10 +2658,8 @@ function rollForMe() {
   const sound = Math.ceil(Math.random() * state.soundtrackDie);
   document.getElementById('hopeRoll').value = hope;
   document.getElementById('fearRoll').value = fear;
-  // Clear override so soundtrack auto-populates from hope
   document.getElementById('soundRoll').removeAttribute('data-user-override');
   document.getElementById('soundRoll').value = sound;
-  // Animate inputs briefly
   ['hopeRoll','fearRoll','soundRoll'].forEach(id => {
     const el = document.getElementById(id);
     el.style.transition = 'box-shadow 0.1s';
@@ -2421,20 +2669,13 @@ function rollForMe() {
   onRollInput();
 }
 
-// ============================================================
-// ROLLS & LIVE SESSION CALCULATION
-// ============================================================
 function onHopeInput(val) {
-  // Auto-populate soundtrack with same value as hope unless user has overridden it
   const soundEl = document.getElementById('soundRoll');
-  if (!soundEl.dataset.userOverride) {
-    soundEl.value = val;
-  }
+  if (!soundEl.dataset.userOverride) soundEl.value = val;
   onRollInput();
 }
 
 function onSoundInput() {
-  // Mark as user-overridden so hope no longer auto-fills it
   document.getElementById('soundRoll').dataset.userOverride = '1';
   onRollInput();
 }
@@ -2443,7 +2684,6 @@ function onRollInput() {
   const hope = parseInt(document.getElementById('hopeRoll').value);
   const fear = parseInt(document.getElementById('fearRoll').value);
   const sound = parseInt(document.getElementById('soundRoll').value);
-
   if (hope >= 1 && hope <= 20 && fear >= 1 && fear <= 20) {
     let totalMinutes;
     const equalKey = `${hope}`;
@@ -2451,8 +2691,7 @@ function onRollInput() {
       totalMinutes = hope + state.baseTime;
       if (!state._lastEqualRoll || state._lastEqualRoll !== equalKey) {
         state._lastEqualRoll = equalKey;
-        adjustCounter('inspiration', 1);
-        playInspirationSound();
+        adjustCounter('inspiration', 1); playInspirationSound();
         showToast('Hope = Fear — +1 Inspiration!');
       }
     } else {
@@ -2465,51 +2704,42 @@ function onRollInput() {
     state.currentSession.totalMinutes = totalMinutes;
     setTimer(totalMinutes * 60);
   }
-
   if (sound >= 1 && sound <= 20) {
     const name = state.soundtracks[sound - 1] || `Track ${sound}`;
     state.currentSession = state.currentSession || {};
     state.currentSession.sound = sound;
     state.currentSession.soundtrackName = name;
-    document.getElementById('soundtrackDisplay').textContent = name;
-    document.getElementById('soundtrackDisplay').classList.add('populated');
+    document.getElementById('soundtrackDisplay').textContent = '🎵 ' + name;
+    document.getElementById('soundtrackDisplay').style.color = 'var(--gold3)';
   } else {
-    document.getElementById('soundtrackDisplay').textContent = '— Roll the dice to reveal your soundtrack —';
-    document.getElementById('soundtrackDisplay').classList.remove('populated');
+    document.getElementById('soundtrackDisplay').textContent = '🎵 —';
+    document.getElementById('soundtrackDisplay').style.color = 'var(--text3)';
   }
 }
 
-function submitRolls() {} // no-op, kept for safety
+function submitRolls() {}
 
 // ============================================================
 // TIMER
 // ============================================================
 function setTimer(seconds) {
-  state.timerSeconds = seconds;
-  state.timerTotal = seconds;
-  updateTimerDisplay();
-  updateRing();
+  state.timerSeconds = seconds; state.timerTotal = seconds;
+  updateTimerDisplay(); updateRing();
 }
 
 function updateTimerDisplay() {
   const mins = Math.floor(state.timerSeconds / 60);
   const secs = state.timerSeconds % 60;
-  const str = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-  document.getElementById('timerDisplay').textContent = str;
+  document.getElementById('timerDisplay').textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
 }
 
 function updateRing() {
   const ring = document.getElementById('timerRing');
   const circumference = 628;
-  if (state.timerTotal === 0) {
-    ring.style.strokeDashoffset = 0;
-    ring.classList.remove('low');
-    return;
-  }
+  if (state.timerTotal === 0) { ring.style.strokeDashoffset = 0; ring.classList.remove('low'); return; }
   const frac = state.timerSeconds / state.timerTotal;
   ring.style.strokeDashoffset = circumference * (1 - frac);
-  if (frac < 0.2) ring.classList.add('low');
-  else ring.classList.remove('low');
+  if (frac < 0.2) ring.classList.add('low'); else ring.classList.remove('low');
 }
 
 function startTimer() {
@@ -2517,19 +2747,13 @@ function startTimer() {
   state.timerRunning = true;
   document.getElementById('btnStart').style.display = 'none';
   document.getElementById('btnPause').style.display = 'inline-flex';
-  playStartSound();
-  startTicking();
-  startMinionCountdown();
+  playStartSound(); startTicking(); startMinionCountdown();
   state.timerInterval = setInterval(() => {
     state.timerSeconds--;
-    updateTimerDisplay();
-    updateRing();
+    updateTimerDisplay(); updateRing();
     if (state.timerSeconds <= 0) {
-      clearInterval(state.timerInterval);
-      stopTicking();
-      stopMinionCountdown();
-      state.timerRunning = false;
-      playSound();
+      clearInterval(state.timerInterval); stopTicking(); stopMinionCountdown();
+      state.timerRunning = false; playSound();
       document.getElementById('btnPause').style.display = 'none';
       document.getElementById('btnStart').style.display = 'inline-flex';
       setTimeout(() => document.getElementById('sessionModal').classList.add('show'), 500);
@@ -2539,35 +2763,24 @@ function startTimer() {
 
 function pauseTimer() {
   if (state.timerInterval) clearInterval(state.timerInterval);
-  stopTicking();
-  stopMinionCountdown();
-  state.timerRunning = false;
+  stopTicking(); stopMinionCountdown(); state.timerRunning = false;
   document.getElementById('btnPause').style.display = 'none';
   document.getElementById('btnStart').style.display = 'inline-flex';
 }
 
 function resetTimer() {
   pauseTimer();
-  if (state.currentSession) {
-    setTimer(state.currentSession.totalMinutes * 60);
-  } else {
-    state.timerSeconds = 0;
-    state.timerTotal = 0;
-    document.getElementById('timerDisplay').textContent = '—:——';
-    updateRing();
-  }
+  if (state.currentSession) { setTimer(state.currentSession.totalMinutes * 60); }
+  else { state.timerSeconds = 0; state.timerTotal = 0; document.getElementById('timerDisplay').textContent = '—:——'; updateRing(); }
 }
 
-// Manual edit
 function startEdit() {
   if (state.timerRunning) return;
   const disp = document.getElementById('timerDisplay');
   const edit = document.getElementById('timerEdit');
-  disp.style.display = 'none';
-  edit.style.display = 'block';
+  disp.style.display = 'none'; edit.style.display = 'block';
   edit.value = disp.textContent === '—:——' ? '' : disp.textContent;
-  edit.focus();
-  edit.select();
+  edit.focus(); edit.select();
 }
 
 function finishEdit() {
@@ -2576,29 +2789,16 @@ function finishEdit() {
   const val = edit.value.trim();
   if (val) {
     let secs = 0;
-    if (val.includes(':')) {
-      const parts = val.split(':');
-      secs = parseInt(parts[0] || 0) * 60 + parseInt(parts[1] || 0);
-    } else {
-      secs = parseInt(val) * 60;
-    }
-    if (!isNaN(secs) && secs > 0) {
-      state.timerSeconds = secs;
-      state.timerTotal = secs;
-      updateRing();
-    }
+    if (val.includes(':')) { const parts = val.split(':'); secs = parseInt(parts[0] || 0) * 60 + parseInt(parts[1] || 0); }
+    else { secs = parseInt(val) * 60; }
+    if (!isNaN(secs) && secs > 0) { state.timerSeconds = secs; state.timerTotal = secs; updateRing(); }
   }
-  updateTimerDisplay();
-  edit.style.display = 'none';
-  disp.style.display = 'block';
+  updateTimerDisplay(); edit.style.display = 'none'; disp.style.display = 'block';
 }
 
 function editKeydown(e) {
   if (e.key === 'Enter') finishEdit();
-  if (e.key === 'Escape') {
-    document.getElementById('timerEdit').style.display = 'none';
-    document.getElementById('timerDisplay').style.display = 'block';
-  }
+  if (e.key === 'Escape') { document.getElementById('timerEdit').style.display = 'none'; document.getElementById('timerDisplay').style.display = 'block'; }
 }
 
 // ============================================================
@@ -2613,72 +2813,41 @@ function sessionResult(success) {
     if (duration >= 40) bonus = 3;
     else if (duration >= 35) bonus = 2;
     else if (duration >= 30) bonus = 1;
-
-    adjustCounter('inspiration', 1 + bonus);
-    flashInspiration();
-    playInspirationSound();
-
-    // Successful session = +1 Boss Battle Earned
-    state.bossBattlesEarned++;
-    updateBossUI();
-
-    if (bonus > 0) {
-      showToast(`+${1 + bonus} Inspiration — ${duration}m session bonus!`);
-    } else {
-      showToast('+1 Inspiration — Session Complete!');
-    }
+    adjustCounter('inspiration', 1 + bonus); flashInspiration(); playInspirationSound();
+    state.bossBattlesEarned++; updateBossUI();
+    if (bonus > 0) showToast(`+${1 + bonus} Inspiration — ${duration}m session bonus!`);
+    else showToast('+1 Inspiration — Session Complete!');
   }
-  // Log the session
   const session = state.currentSession || {};
-  const log = {
-    hope: session.hope || '—',
-    fear: session.fear || '—',
-    sound: session.sound || '—',
+  state.logs.unshift({
+    hope: session.hope || '—', fear: session.fear || '—', sound: session.sound || '—',
     soundtrack: session.soundtrackName || '—',
     duration: session.totalMinutes || Math.round(state.timerTotal / 60),
-    success,
-    timestamp: new Date().toLocaleString(),
-  };
-  state.logs.unshift(log);
-  saveState();
-  updateAdventuringTime();
+    success, timestamp: new Date().toLocaleString(),
+  });
+  saveState(); updateAdventuringTime();
 }
 
 // ============================================================
 // COUNTERS
 // ============================================================
 function resetStatus() {
-  state.inspiration = 0;
-  state.penalty = 0;
-  state.bossManualAdj = 0;
-  state.minionManualAdj = 0;
-  state.minionBattlesEarned = 0;
-  state.minionBattlesFought = 0;
-  state.minionBattlesWon = 0;
-  state.minionChestsEarned = 0;
-  state.minionChestsOpened = 0;
-  state.bossBattlesEarned = 0;
-  state.bossBattlesFought = 0;
-  state.bossBattlesWon = 0;
-  state.bossChestsEarned = 0;
-  state.bossChestsOpened = 0;
+  state.inspiration = 0; state.penalty = 0;
+  state.bossManualAdj = 0; state.minionManualAdj = 0;
+  state.minionBattlesEarned = 0; state.minionBattlesFought = 0; state.minionBattlesWon = 0;
+  state.minionChestsEarned = 0; state.minionChestsOpened = 0;
+  state.bossBattlesEarned = 0; state.bossBattlesFought = 0; state.bossBattlesWon = 0;
+  state.bossChestsEarned = 0; state.bossChestsOpened = 0;
   document.getElementById('inspirationVal').textContent = 0;
   document.getElementById('penaltyVal').textContent = 0;
-  updateBreakDC();
-  updateMinionUI();
-  updateBossUI();
-  saveState();
+  updateBreakDC(); updateMinionUI(); updateBossUI(); saveState();
   showToast('Status reset');
 }
 
 function adjustDC(which, delta) {
-  if (which === 'boss') {
-    state.bossManualAdj += delta;
-  } else {
-    state.minionManualAdj += delta;
-  }
-  updateBreakDC();
-  saveState();
+  if (which === 'boss') state.bossManualAdj += delta;
+  else state.minionManualAdj += delta;
+  updateBreakDC(); saveState();
 }
 
 function adjustCounter(which, delta) {
@@ -2689,15 +2858,17 @@ function adjustCounter(which, delta) {
     state.penalty = Math.max(0, state.penalty + delta);
     document.getElementById('penaltyVal').textContent = state.penalty;
   }
-  updateBreakDC();
-  saveState();
+  updateBreakDC(); saveState();
 }
 
 function updateBreakDC() {
   const bossDC = state.dcDefault - state.inspiration + state.penalty + state.bossManualAdj;
   const minionDC = state.minionDcDefault - state.inspiration + state.penalty + state.minionManualAdj;
+  // Update all DC displays (quick panel + full cards)
   document.getElementById('bossDCVal').textContent = bossDC;
+  document.getElementById('bossDCValFull').textContent = bossDC;
   document.getElementById('minionDCVal').textContent = minionDC;
+  document.getElementById('minionDCValFull').textContent = minionDC;
 }
 
 // ============================================================
@@ -2719,46 +2890,29 @@ function saveSettings() {
   state.minionInterval = parseInt(document.getElementById('minionIntervalSetting').value) || 10;
   state.minionAutoFight = document.getElementById('minionAutoFightToggle').checked;
   state.bossDcScaling = parseInt(document.getElementById('bossDcScalingSetting').value) || 3;
-  // Reset countdown to new interval if not running
-  if (!state.timerRunning) {
-    state.minionCountdownSeconds = state.minionInterval * 60;
-    updateMinionCountdownDisplay();
-  }
+  state.manualBossMinutes = parseInt(document.getElementById('manualBossMinutesSetting').value) || 20;
+  if (!state.timerRunning) { state.minionCountdownSeconds = state.minionInterval * 60; updateMinionCountdownDisplay(); }
   updateBreakDC();
-
-  // Save soundtracks from table
   const rows = document.querySelectorAll('#soundtrackTableBody tr');
-  rows.forEach((row, i) => {
-    const input = row.querySelector('input[type="text"]');
-    if (input) state.soundtracks[i] = input.value;
-  });
+  rows.forEach((row, i) => { const input = row.querySelector('input[type="text"]'); if (input) state.soundtracks[i] = input.value; });
   saveState();
 }
 
 function importSoundtrackCSV(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+  const file = event.target.files[0]; if (!file) return;
   const reader = new FileReader();
   reader.onload = (e) => {
     const lines = e.target.result.split('\n').map(l => l.trim()).filter(l => l);
-    // Skip header row if it contains non-numeric first column
-    const dataLines = lines.filter(l => {
-      const first = l.split(',')[0].replace(/"/g,'').trim();
-      return !isNaN(parseInt(first));
-    });
+    const dataLines = lines.filter(l => { const first = l.split(',')[0].replace(/"/g,'').trim(); return !isNaN(parseInt(first)); });
     if (dataLines.length === 0) { showToast('No valid rows found in CSV'); return; }
     dataLines.forEach(line => {
-      // Handle quoted fields
       const match = line.match(/^"?(\d+)"?,(.+)$/);
       if (!match) return;
       const idx = parseInt(match[1]) - 1;
       const name = match[2].replace(/^"|"$/g, '').replace(/""/g, '"').trim();
-      if (idx >= 0 && idx < state.soundtracks.length) {
-        state.soundtracks[idx] = name;
-      }
+      if (idx >= 0 && idx < state.soundtracks.length) state.soundtracks[idx] = name;
     });
-    buildSoundtrackTable();
-    saveState();
+    buildSoundtrackTable(); saveState();
     showToast(`Imported ${dataLines.length} soundtrack(s)`);
     event.target.value = '';
   };
@@ -2775,91 +2929,61 @@ function buildSoundtrackTable() {
   }
 }
 
-function escapeHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
-}
+function escapeHtml(str) { return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
 
 function loadSoundFile(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+  const file = event.target.files[0]; if (!file) return;
   document.getElementById('soundFileName').textContent = file.name;
-
   const reader = new FileReader();
   reader.onload = (e) => {
     const dataURL = e.target.result;
-    state.soundFileURL = dataURL;
-    state.soundFileName = file.name;
+    state.soundFileURL = dataURL; state.soundFileName = file.name;
     document.getElementById('timerSound').src = dataURL;
-    // Persist to localStorage (only if small enough — warn if too large)
-    try {
-      localStorage.setItem('r4f_sound', JSON.stringify({ name: file.name, data: dataURL }));
-    } catch(err) {
-      showToast('File too large to persist — re-select on next open');
-    }
+    try { localStorage.setItem('r4f_sound', JSON.stringify({ name: file.name, data: dataURL })); }
+    catch(err) { showToast('File too large to persist — re-select on next open'); }
     saveState();
   };
   reader.readAsDataURL(file);
 }
 
 function startTicking() {
-  if (!state.tickingEnabled) return;
-  stopTicking();
+  if (!state.tickingEnabled) return; stopTicking();
   let audioCtx = null;
   try { audioCtx = new AudioContext(); } catch(e) { return; }
   state.tickInterval = setInterval(() => {
     if (!state.tickingEnabled) return;
     try {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
+      const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.type = 'sine'; osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
       gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.04);
-      osc.start(audioCtx.currentTime);
-      osc.stop(audioCtx.currentTime + 0.04);
+      osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.04);
     } catch(e) {}
-  }, 250); // 4 ticks per second
+  }, 250);
 }
-
-function stopTicking() {
-  if (state.tickInterval) {
-    clearInterval(state.tickInterval);
-    state.tickInterval = null;
-  }
-}
+function stopTicking() { if (state.tickInterval) { clearInterval(state.tickInterval); state.tickInterval = null; } }
 
 function loadStartSoundFile(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+  const file = event.target.files[0]; if (!file) return;
   document.getElementById('startSoundFileName').textContent = file.name;
   const reader = new FileReader();
   reader.onload = (e) => {
-    const dataURL = e.target.result;
-    document.getElementById('startSound').src = dataURL;
-    try {
-      localStorage.setItem('r4f_start_sound', JSON.stringify({ name: file.name, data: dataURL }));
-    } catch(err) {
-      showToast('File too large to persist — re-select on next open');
-    }
+    document.getElementById('startSound').src = e.target.result;
+    try { localStorage.setItem('r4f_start_sound', JSON.stringify({ name: file.name, data: e.target.result })); }
+    catch(err) { showToast('File too large to persist — re-select on next open'); }
   };
   reader.readAsDataURL(file);
 }
 
 function loadInspirationSoundFile(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+  const file = event.target.files[0]; if (!file) return;
   document.getElementById('inspirationSoundFileName').textContent = file.name;
   const reader = new FileReader();
   reader.onload = (e) => {
-    const dataURL = e.target.result;
-    document.getElementById('inspirationSound').src = dataURL;
-    try {
-      localStorage.setItem('r4f_inspiration_sound', JSON.stringify({ name: file.name, data: dataURL }));
-    } catch(err) {
-      showToast('File too large to persist — re-select on next open');
-    }
+    document.getElementById('inspirationSound').src = e.target.result;
+    try { localStorage.setItem('r4f_inspiration_sound', JSON.stringify({ name: file.name, data: e.target.result })); }
+    catch(err) { showToast('File too large to persist — re-select on next open'); }
   };
   reader.readAsDataURL(file);
 }
@@ -2867,44 +2991,28 @@ function loadInspirationSoundFile(event) {
 function playStartSound() {
   if (!state.startSoundEnabled) return;
   const audio = document.getElementById('startSound');
-  if (audio.src && audio.src !== window.location.href) {
-    audio.currentTime = 0;
-    audio.play().catch(() => {});
-  }
+  if (audio.src && audio.src !== window.location.href) { audio.currentTime = 0; audio.play().catch(() => {}); }
 }
 
 function playInspirationSound() {
   if (!state.inspirationSoundEnabled) return;
   const audio = document.getElementById('inspirationSound');
-  if (audio.src && audio.src !== window.location.href) {
-    audio.currentTime = 0;
-    audio.play().catch(() => {});
-  }
+  if (audio.src && audio.src !== window.location.href) { audio.currentTime = 0; audio.play().catch(() => {}); }
 }
 
-function stopSound() {
-  const audio = document.getElementById('timerSound');
-  audio.pause();
-  audio.currentTime = 0;
-}
+function stopSound() { const audio = document.getElementById('timerSound'); audio.pause(); audio.currentTime = 0; }
 
 function playSound() {
   const audio = document.getElementById('timerSound');
-  if (audio.src && audio.src !== window.location.href) {
-    audio.currentTime = 0;
-    audio.play().catch(() => {});
-  } else {
-    // Fallback beep using Web Audio
+  if (audio.src && audio.src !== window.location.href) { audio.currentTime = 0; audio.play().catch(() => {}); }
+  else {
     try {
-      const ctx = new AudioContext();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
+      const ctx = new AudioContext(); const osc = ctx.createOscillator(); const gain = ctx.createGain();
       osc.connect(gain); gain.connect(ctx.destination);
       osc.frequency.setValueAtTime(880, ctx.currentTime);
       gain.gain.setValueAtTime(0.3, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 1.5);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 1.5);
     } catch(e) {}
   }
 }
@@ -2939,31 +3047,20 @@ function exportCSV() {
   if (state.logs.length === 0) { showToast('No logs to export'); return; }
   const headers = ['Timestamp','Hope Roll','Fear Roll','Soundtrack Roll','Soundtrack','Duration (min)','Success'];
   const rows = state.logs.map(log => [
-    `"${log.timestamp}"`,
-    log.hope,
-    log.fear,
-    log.sound,
-    `"${(log.soundtrack || '').replace(/"/g,'""')}"`,
-    log.duration,
-    log.success ? 'Yes' : 'No'
+    `"${log.timestamp}"`, log.hope, log.fear, log.sound,
+    `"${(log.soundtrack || '').replace(/"/g,'""')}"`, log.duration, log.success ? 'Yes' : 'No'
   ]);
   const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
+  const a = document.createElement('a'); a.href = url;
   a.download = `roll4focus-logs-${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
+  a.click(); URL.revokeObjectURL(url);
   showToast('Logs exported!');
 }
 
 function clearLogs() {
-  if (confirm('Clear all session logs?')) {
-    state.logs = [];
-    saveState();
-    renderLogs();
-  }
+  if (confirm('Clear all session logs?')) { state.logs = []; saveState(); renderLogs(); }
 }
 
 // ============================================================
@@ -2971,14 +3068,12 @@ function clearLogs() {
 // ============================================================
 function flashInspiration() {
   const el = document.getElementById('inspFlash');
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 600);
+  el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 600);
 }
 
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
@@ -3005,53 +3100,28 @@ function init() {
   document.getElementById('minionAutoFightToggle').checked = state.minionAutoFight;
   document.getElementById('minionCountdownToggle').checked = state.minionCountdownEnabled;
   document.getElementById('bossDcScalingSetting').value = state.bossDcScaling;
+  document.getElementById('manualBossMinutesSetting').value = state.manualBossMinutes;
   state.minionCountdownSeconds = state.minionInterval * 60;
   checkMinionDailyReset();
-  updateMinionUI();
-  updateBossUI();
-  updateMinionCountdownDisplay();
-  updateBreakDC();
-  buildSoundtrackTable();
-  loadNotes();
-  loadNotesTab();
-  updateAdventuringTime();
+  updateMinionUI(); updateBossUI(); updateMinionCountdownDisplay(); updateBreakDC();
+  buildSoundtrackTable(); loadNotes(); loadNotesTab(); updateAdventuringTime();
 
-  // Restore persisted sound file
   try {
     const saved = JSON.parse(localStorage.getItem('r4f_sound') || 'null');
-    if (saved && saved.data) {
-      document.getElementById('timerSound').src = saved.data;
-      document.getElementById('soundFileName').textContent = saved.name;
-      state.soundFileURL = saved.data;
-    }
+    if (saved && saved.data) { document.getElementById('timerSound').src = saved.data; document.getElementById('soundFileName').textContent = saved.name; state.soundFileURL = saved.data; }
   } catch(e) {}
-
-  // Restore start sound
   try {
     const saved = JSON.parse(localStorage.getItem('r4f_start_sound') || 'null');
-    if (saved && saved.data) {
-      document.getElementById('startSound').src = saved.data;
-      document.getElementById('startSoundFileName').textContent = saved.name;
-    }
+    if (saved && saved.data) { document.getElementById('startSound').src = saved.data; document.getElementById('startSoundFileName').textContent = saved.name; }
   } catch(e) {}
-
-  // Restore inspiration sound
   try {
     const saved = JSON.parse(localStorage.getItem('r4f_inspiration_sound') || 'null');
-    if (saved && saved.data) {
-      document.getElementById('inspirationSound').src = saved.data;
-      document.getElementById('inspirationSoundFileName').textContent = saved.name;
-    }
+    if (saved && saved.data) { document.getElementById('inspirationSound').src = saved.data; document.getElementById('inspirationSoundFileName').textContent = saved.name; }
   } catch(e) {}
-
-  // Restore generic sounds
   ['battleEarned','attackSuccess','attackFail','openChest'].forEach(key => {
     try {
       const saved = JSON.parse(localStorage.getItem(`r4f_sound_${key}`) || 'null');
-      if (saved && saved.data) {
-        document.getElementById(`${key}Sound`).src = saved.data;
-        document.getElementById(`${key}SoundFileName`).textContent = saved.name;
-      }
+      if (saved && saved.data) { document.getElementById(`${key}Sound`).src = saved.data; document.getElementById(`${key}SoundFileName`).textContent = saved.name; }
     } catch(e) {}
   });
 }
