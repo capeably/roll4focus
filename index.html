@@ -2651,7 +2651,7 @@ function minionAttack() {
   if (remaining <= 0) return;
   const roll = Math.ceil(Math.random() * 20);
   const minionDC = getMinionDC();
-  const won = roll === 20 || roll > minionDC;
+  const won = roll === 20 || roll >= minionDC;
   state.minionBattlesFought++;
   if (won) {
     state.minionBattlesWon++; state.minionChestsEarned++;
@@ -2723,7 +2723,7 @@ function bossAttack() {
   }
 
   const bossDC = getBossDC();
-  const won = roll === 20 || roll > bossDC;
+  const won = roll === 20 || roll >= bossDC;
   state.bossBattlesFought++;
   if (won) {
     state.bossBattlesWon++; state.bossChestsEarned++;
