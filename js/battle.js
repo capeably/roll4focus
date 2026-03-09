@@ -85,7 +85,12 @@ function createBattleSystem(c) {
       }
     } else {
       playAttackResultSound(false);
-      showToast(`💨 ${c.label}Miss! Rolled ${roll} vs DC ${dc}`);
+      if (roll === 1) {
+        adjustCounter('inspiration', -1);
+        showToast(`💀 ${c.label}Critical Fail! Rolled 1 vs DC ${dc} — -1 Inspiration!`);
+      } else {
+        showToast(`💨 ${c.label}Miss! Rolled ${roll} vs DC ${dc}`);
+      }
     }
     const mainEl = document.getElementById(c.resultId);
     if (mainEl) { mainEl.textContent = roll; mainEl.className = `attack-result ${won ? 'win' : 'fail'}`; }

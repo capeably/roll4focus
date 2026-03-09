@@ -37,3 +37,12 @@ js/app.js         ← Roll logic, init(), keyboard shortcuts, DOMContentLoaded
 - State changes go through `markDirty()` which debounces a save after 1.5s
 - Sound channels are registered with `Sound.register()` and played with `Sound.play(key)`
 - HTML `onclick` handlers call global functions (wrapper aliases for module methods)
+
+## Git & Version Control
+- **Repo:** `capeably/roll4focus` on GitHub
+- **Working directory:** `C:\Users\Adam\Projects\roll4focus\` (NOT the OneDrive copy)
+- **Workflow:** make changes → user tests in browser → commit when asked → push when asked
+- **Commit timing:** commit when there's a working state worth keeping (completed feature, bug fix). Don't commit half-finished work.
+- **Branches:** use for big features — create branch, work on it, merge to `main` when done. Small fixes can go directly on `main`.
+- **Never** commit without the user explicitly asking
+- **Never** push without the user explicitly asking

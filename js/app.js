@@ -127,6 +127,7 @@ document.addEventListener('keydown', function(e) {
   else if (e.key === ' ' && noMod) { e.preventDefault(); if (state.timerRunning) pauseTimer(); else startTimer(); }
   else if ((e.key === 'a' || e.key === 'A') && noMod) { e.preventDefault(); minionAttack(); }
   else if ((e.key === 'c' || e.key === 'C') && noMod) { e.preventDefault(); openMinionChest(); }
+  else if ((e.key === 'b' || e.key === 'B') && noMod) { e.preventDefault(); openBossEditModal(); }
 });
 
 init();
