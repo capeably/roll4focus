@@ -10,6 +10,7 @@ function rerollSoundtrack() {
   el.style.boxShadow = '0 0 0 3px rgba(200,150,62,0.3)';
   setTimeout(() => el.style.boxShadow = '', 400);
   onRollInput();
+  if (state.currentSession) state.currentSession.soundRollType = 'auto';
 }
 
 function rollForMe() {
@@ -28,6 +29,7 @@ function rollForMe() {
     setTimeout(() => el.style.boxShadow = '', 400);
   });
   onRollInput();
+  if (state.currentSession) { state.currentSession.hopeFearRollType = 'auto'; state.currentSession.soundRollType = 'auto'; }
 }
 
 function onHopeInput(val) {
@@ -63,6 +65,8 @@ function onRollInput() {
     state.currentSession.hope = hope;
     state.currentSession.fear = fear;
     state.currentSession.totalMinutes = totalMinutes;
+    state.currentSession.hopeFearRollType = 'manual';
+    state.currentSession.hopeFearDie = state.hopeFearDie;
     setTimer(totalMinutes * 60);
   }
   if (sound >= 1 && sound <= 20) {
@@ -70,6 +74,8 @@ function onRollInput() {
     state.currentSession = state.currentSession || {};
     state.currentSession.sound = sound;
     state.currentSession.soundtrackName = name;
+    state.currentSession.soundRollType = 'manual';
+    state.currentSession.soundtrackDie = state.soundtrackDie;
     document.getElementById('soundtrackDisplay').textContent = '🎵 ' + name;
     document.getElementById('soundtrackDisplay').style.color = 'var(--gold3)';
   } else {

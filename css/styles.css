@@ -774,6 +774,51 @@
     color: var(--text3);
   }
   .log-timestamp { font-size: 0.75rem; color: var(--text3); text-align: right; }
+  .log-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  .btn-log-edit {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    line-height: 1;
+  }
+  .btn-log-edit:hover { border-color: var(--gold); color: var(--gold); }
+  .log-edit-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .log-edit-label {
+    font-family: var(--font-heading);
+    font-size: 0.55rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+    min-width: 100px;
+  }
+  .log-edit-input {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    padding: 6px 10px;
+    border-radius: 4px;
+    width: 100px;
+    text-align: center;
+  }
+  .log-edit-input:focus { border-color: var(--gold); outline: none; }
+  select.log-edit-input { cursor: pointer; }
   .log-result {
     display: inline-block;
     font-family: var(--font-heading);

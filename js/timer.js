@@ -94,6 +94,10 @@ function sessionResult(success) {
     hope: session.hope || '—', fear: session.fear || '—', sound: session.sound || '—',
     soundtrack: session.soundtrackName || '—',
     duration: session.totalMinutes || Math.round(state.timerTotal / 60),
+    hopeFearRollType: session.hopeFearRollType || '—',
+    soundRollType: session.soundRollType || '—',
+    hopeFearDie: session.hopeFearDie || '—',
+    soundtrackDie: session.soundtrackDie || '—',
     success, timestamp: new Date().toLocaleString(),
   });
   const sess = state.currentSession || {};

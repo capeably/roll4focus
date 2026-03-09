@@ -95,9 +95,9 @@ function importBattleCSV(event) {
     for (let i = 1; i < lines.length; i++) {
       const cols = parseCSVLine(lines[i]);
       if (cols.length < 6) continue;
-      let timestamp, type, rollType, diceName = '', roll, dc, success;
+      let timestamp, type, rollType, diceName = '', roll, dc, success, diceSides;
       if (cols.length >= 7) {
-        [timestamp, type, rollType, diceName, roll, dc, success] = cols;
+        [timestamp, type, rollType, diceName, roll, dc, success, diceSides] = cols;
       } else {
         [timestamp, type, rollType, roll, dc, success] = cols;
       }
@@ -107,6 +107,7 @@ function importBattleCSV(event) {
         type: type.trim(), rollType: rollType.trim(),
         diceName: diceName ? diceName.trim() : '',
         roll: rollNum, dc: dcNum,
+        diceSides: parseInt(diceSides) || 20,
         won: (success || '').trim().toLowerCase().startsWith('y'),
         timestamp: timestamp.trim(),
       });
@@ -133,12 +134,17 @@ function importSessionCSV(event) {
     for (let i = 1; i < lines.length; i++) {
       const cols = parseCSVLine(lines[i]);
       if (cols.length < 6) continue;
-      const [timestamp, hope, fear, sound, soundtrack, duration, success] = cols;
+      const [timestamp, hope, fear, sound, soundtrack, duration, success,
+        hfRollType, sRollType, hfDie, sDie] = cols;
       state.logs.push({
         hope: hope.trim() || '—', fear: fear.trim() || '—',
         sound: sound.trim() || '—', soundtrack: soundtrack.trim() || '—',
         duration: parseInt(duration) || 0,
         success: (success || '').trim().toLowerCase().startsWith('y'),
+        hopeFearRollType: (hfRollType || '').trim() || '—',
+        soundRollType: (sRollType || '').trim() || '—',
+        hopeFearDie: parseInt(hfDie) || '—',
+        soundtrackDie: parseInt(sDie) || '—',
         timestamp: timestamp.trim(),
       });
       imported++;
@@ -426,8 +432,8 @@ function switchSubTab(name, e) {
 // CSV EXPORT HELPER
 // ============================================================
 function downloadCSV(filename, headers, rows) {
-  const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
+  const csv = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href = url;
   a.download = `${filename}-${new Date().toISOString().slice(0,10)}.csv`;
@@ -441,6 +447,7 @@ function logBattle(type, rollType, roll, won, dc) {
   state.battleLogs = state.battleLogs || [];
   state.battleLogs.unshift({
     type, rollType, roll, won, dc,
+    diceSides: 20,
     diceName: rollType === 'manual' ? (state.currentDiceName || '') : '',
     timestamp: new Date().toLocaleString(),
   });
@@ -455,7 +462,7 @@ function renderBattleLogs() {
     container.innerHTML = '<div class="logs-empty">No battles logged yet.<br>Attack a Boss or Minion to see battles here.</div>';
     return;
   }
-  container.innerHTML = state.battleLogs.map(log => {
+  container.innerHTML = state.battleLogs.map((log, i) => {
     const diceTag = (log.rollType === 'manual' && log.diceName)
       ? `<span class="dice-name-badge">${escapeHtml(log.diceName)}</span>` : '';
     return `
@@ -469,7 +476,10 @@ function renderBattleLogs() {
         <span class="log-result ${log.won ? 'success' : 'fail'}">${log.won ? 'Success' : 'Fail'}</span>
         <span class="battle-log-dc">DC ${log.dc} · Rolled ${log.roll}</span>
       </div>
-      <div class="log-timestamp">${escapeHtml(log.timestamp)}</div>
+      <div class="log-actions">
+        <div class="log-timestamp">${escapeHtml(log.timestamp)}</div>
+        <button class="btn-log-edit" onclick="openBattleLogEdit(${i})" title="Edit">✎</button>
+      </div>
     </div>`;
   }).join('');
 }
@@ -478,11 +488,11 @@ function clearBattleLogs() { if (confirm('Clear all battle logs?')) { state.batt
 
 function exportBattleCSV() {
   if (!state.battleLogs || state.battleLogs.length === 0) { showToast('No battle logs to export'); return; }
-  const headers = ['Timestamp','Battle Type','Roll Type','Dice Name','Roll','DC','Success'];
+  const headers = ['Timestamp','Battle Type','Roll Type','Dice Name','Roll','DC','Success','Dice Sides'];
   const rows = state.battleLogs.map(log => [
     `"${log.timestamp}"`, log.type, log.rollType || 'auto',
     `"${(log.diceName || '').replace(/"/g,'""')}"`,
-    log.roll, log.dc, log.won ? 'Yes' : 'No'
+    log.roll, log.dc, log.won ? 'Yes' : 'No', log.diceSides || ''
   ]);
   downloadCSV('roll4focus-battles', headers, rows);
   showToast('Battle logs exported!');
@@ -498,7 +508,7 @@ function renderLogs() {
     container.innerHTML = '<div class="logs-empty">No sessions logged yet.<br>Complete a session to see it here.</div>';
     return;
   }
-  container.innerHTML = state.logs.map(log => `
+  container.innerHTML = state.logs.map((log, i) => `
     <div class="log-entry ${log.success ? 'success' : 'fail'}">
       <div class="log-dice">
         <div class="log-die hope" title="Hope">⚐ ${log.hope}</div>
@@ -510,20 +520,102 @@ function renderLogs() {
         <div class="log-soundtrack">${escapeHtml(log.soundtrack)}</div>
         <div class="log-duration">${log.duration} minutes</div>
       </div>
-      <div class="log-timestamp">${escapeHtml(log.timestamp)}</div>
+      <div class="log-actions">
+        <div class="log-timestamp">${escapeHtml(log.timestamp)}</div>
+        <button class="btn-log-edit" onclick="openSessionLogEdit(${i})" title="Edit">✎</button>
+      </div>
     </div>
   `).join('');
 }
 
 function exportCSV() {
   if (state.logs.length === 0) { showToast('No logs to export'); return; }
-  const headers = ['Timestamp','Hope Roll','Fear Roll','Soundtrack Roll','Soundtrack','Duration (min)','Success'];
+  const headers = ['Timestamp','Hope Roll','Fear Roll','Soundtrack Roll','Soundtrack','Duration (min)','Success',
+    'Hope/Fear Roll Type','Soundtrack Roll Type','Hope/Fear Die','Soundtrack Die'];
   const rows = state.logs.map(log => [
     `"${log.timestamp}"`, log.hope, log.fear, log.sound,
-    `"${(log.soundtrack || '').replace(/"/g,'""')}"`, log.duration, log.success ? 'Yes' : 'No'
+    `"${(log.soundtrack || '').replace(/"/g,'""')}"`, log.duration, log.success ? 'Yes' : 'No',
+    log.hopeFearRollType || '', log.soundRollType || '', log.hopeFearDie || '', log.soundtrackDie || ''
   ]);
   downloadCSV('roll4focus-logs', headers, rows);
   showToast('Logs exported!');
 }
 
 function clearLogs() { if (confirm('Clear all session logs?')) { state.logs = []; markDirty(); renderLogs(); } }
+
+// ============================================================
+// LOG EDITING
+// ============================================================
+let _editingSessionIdx = -1;
+let _editingBattleIdx = -1;
+
+function openSessionLogEdit(idx) {
+  _editingSessionIdx = idx;
+  const log = state.logs[idx];
+  if (!log) return;
+  document.getElementById('editSessionHope').value = log.hope === '—' ? '' : log.hope;
+  document.getElementById('editSessionFear').value = log.fear === '—' ? '' : log.fear;
+  document.getElementById('editSessionSound').value = log.sound === '—' ? '' : log.sound;
+  document.getElementById('editSessionSoundtrack').value = log.soundtrack === '—' ? '' : log.soundtrack;
+  document.getElementById('editSessionDuration').value = log.duration || '';
+  document.getElementById('editSessionSuccess').value = log.success ? 'yes' : 'no';
+  document.getElementById('editSessionHFRollType').value = log.hopeFearRollType === 'auto' ? 'auto' : 'manual';
+  document.getElementById('editSessionSRollType').value = log.soundRollType === 'auto' ? 'auto' : 'manual';
+  document.getElementById('editSessionHFDie').value = log.hopeFearDie === '—' ? '' : (log.hopeFearDie || '');
+  document.getElementById('editSessionSDie').value = log.soundtrackDie === '—' ? '' : (log.soundtrackDie || '');
+  document.getElementById('editSessionTimestamp').value = log.timestamp || '';
+  openModal('sessionLogEditModal');
+}
+
+function saveSessionLogEdit() {
+  if (_editingSessionIdx < 0 || !state.logs[_editingSessionIdx]) return;
+  const log = state.logs[_editingSessionIdx];
+  const hopeVal = document.getElementById('editSessionHope').value.trim();
+  const fearVal = document.getElementById('editSessionFear').value.trim();
+  const soundVal = document.getElementById('editSessionSound').value.trim();
+  log.hope = hopeVal ? parseInt(hopeVal) : '—';
+  log.fear = fearVal ? parseInt(fearVal) : '—';
+  log.sound = soundVal ? parseInt(soundVal) : '—';
+  log.soundtrack = document.getElementById('editSessionSoundtrack').value.trim() || '—';
+  log.duration = parseInt(document.getElementById('editSessionDuration').value) || 0;
+  log.success = document.getElementById('editSessionSuccess').value === 'yes';
+  log.hopeFearRollType = document.getElementById('editSessionHFRollType').value;
+  log.soundRollType = document.getElementById('editSessionSRollType').value;
+  const hfDie = document.getElementById('editSessionHFDie').value.trim();
+  const sDie = document.getElementById('editSessionSDie').value.trim();
+  log.hopeFearDie = hfDie ? parseInt(hfDie) : '—';
+  log.soundtrackDie = sDie ? parseInt(sDie) : '—';
+  log.timestamp = document.getElementById('editSessionTimestamp').value.trim() || log.timestamp;
+  markDirty(); renderLogs(); closeModal('sessionLogEditModal');
+  showToast('Session log updated');
+}
+
+function openBattleLogEdit(idx) {
+  _editingBattleIdx = idx;
+  const log = state.battleLogs[idx];
+  if (!log) return;
+  document.getElementById('editBattleType').value = log.type || 'boss';
+  document.getElementById('editBattleRollType').value = log.rollType || 'auto';
+  document.getElementById('editBattleRoll').value = log.roll || '';
+  document.getElementById('editBattleDC').value = log.dc || '';
+  document.getElementById('editBattleSuccess').value = log.won ? 'yes' : 'no';
+  document.getElementById('editBattleDiceSides').value = log.diceSides || 20;
+  document.getElementById('editBattleDiceName').value = log.diceName || '';
+  document.getElementById('editBattleTimestamp').value = log.timestamp || '';
+  openModal('battleLogEditModal');
+}
+
+function saveBattleLogEdit() {
+  if (_editingBattleIdx < 0 || !state.battleLogs[_editingBattleIdx]) return;
+  const log = state.battleLogs[_editingBattleIdx];
+  log.type = document.getElementById('editBattleType').value;
+  log.rollType = document.getElementById('editBattleRollType').value;
+  log.roll = parseInt(document.getElementById('editBattleRoll').value) || log.roll;
+  log.dc = parseInt(document.getElementById('editBattleDC').value) || log.dc;
+  log.won = document.getElementById('editBattleSuccess').value === 'yes';
+  log.diceSides = parseInt(document.getElementById('editBattleDiceSides').value) || 20;
+  log.diceName = document.getElementById('editBattleDiceName').value.trim();
+  log.timestamp = document.getElementById('editBattleTimestamp').value.trim() || log.timestamp;
+  markDirty(); renderBattleLogs(); updateMetrics(); closeModal('battleLogEditModal');
+  showToast('Battle log updated');
+}

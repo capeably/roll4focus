@@ -916,6 +916,128 @@
 </div>
 
 
+<!-- ======================== SESSION LOG EDIT MODAL ======================== -->
+<div class="modal-overlay" id="sessionLogEditModal">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-icon">📝</div>
+    <div class="modal-title">Edit Session Log</div>
+    <div style="margin:16px 0 20px;display:flex;flex-direction:column;gap:10px;">
+      <div class="log-edit-row">
+        <label class="log-edit-label">Hope</label>
+        <input type="number" id="editSessionHope" class="log-edit-input" min="1" max="20">
+      </div>
+      <div class="log-edit-row">
+        <label class="log-edit-label">Fear</label>
+        <input type="number" id="editSessionFear" class="log-edit-input" min="1" max="20">
+      </div>
+      <div class="log-edit-row">
+        <label class="log-edit-label">Sound</label>
+        <input type="number" id="editSessionSound" class="log-edit-input" min="1" max="20">
+      </div>
+      <div class="log-edit-row">
+        <label class="log-edit-label">Soundtrack</label>
+        <input type="text" id="editSessionSoundtrack" class="log-edit-input" style="width:180px;">
+      </div>
+      <div class="log-edit-row">
+        <label class="log-edit-label">Duration (min)</label>
+        <input type="number" id="editSessionDuration" class="log-edit-input" min="0">
+      </div>
+      <div class="log-edit-row">
+        <label class="log-edit-label">Success</label>
+        <select id="editSessionSuccess" class="log-edit-input">
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+      <div class="log-edit-row">
+        <label class="log-edit-label">H/F Roll Type</label>
+        <select id="editSessionHFRollType" class="log-edit-input">
+          <option value="auto">Auto</option>
+          <option value="manual">Manual</option>
+        </select>
+      </div>
+      <div class="log-edit-row">
+        <label class="log-edit-label">Sound Roll Type</label>
+        <select id="editSessionSRollType" class="log-edit-input">
+          <option value="auto">Auto</option>
+          <option value="manual">Manual</option>
+        </select>
+      </div>
+      <div class="log-edit-row">
+        <label class="log-edit-label">H/F Die</label>
+        <input type="number" id="editSessionHFDie" class="log-edit-input" min="2" max="100">
+      </div>
+      <div class="log-edit-row">
+        <label class="log-edit-label">Sound Die</label>
+        <input type="number" id="editSessionSDie" class="log-edit-input" min="2" max="100">
+      </div>
+      <div class="log-edit-row">
+        <label class="log-edit-label">Timestamp</label>
+        <input type="text" id="editSessionTimestamp" class="log-edit-input" style="width:180px;">
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <button class="btn-yes" onclick="saveSessionLogEdit()">✓ Save</button>
+      <button class="btn-no" onclick="closeModal('sessionLogEditModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== BATTLE LOG EDIT MODAL ======================== -->
+<div class="modal-overlay" id="battleLogEditModal">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-icon">⚔</div>
+    <div class="modal-title">Edit Battle Log</div>
+    <div style="margin:16px 0 20px;display:flex;flex-direction:column;gap:10px;">
+      <div class="log-edit-row">
+        <label class="log-edit-label">Battle Type</label>
+        <select id="editBattleType" class="log-edit-input">
+          <option value="boss">Boss</option>
+          <option value="minion">Minion</option>
+        </select>
+      </div>
+      <div class="log-edit-row">
+        <label class="log-edit-label">Roll Type</label>
+        <select id="editBattleRollType" class="log-edit-input">
+          <option value="auto">Auto</option>
+          <option value="manual">Manual</option>
+        </select>
+      </div>
+      <div class="log-edit-row">
+        <label class="log-edit-label">Roll</label>
+        <input type="number" id="editBattleRoll" class="log-edit-input" min="1" max="20">
+      </div>
+      <div class="log-edit-row">
+        <label class="log-edit-label">DC</label>
+        <input type="number" id="editBattleDC" class="log-edit-input" min="1" max="40">
+      </div>
+      <div class="log-edit-row">
+        <label class="log-edit-label">Success</label>
+        <select id="editBattleSuccess" class="log-edit-input">
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+      <div class="log-edit-row">
+        <label class="log-edit-label">Dice Sides</label>
+        <input type="number" id="editBattleDiceSides" class="log-edit-input" min="2" max="100">
+      </div>
+      <div class="log-edit-row">
+        <label class="log-edit-label">Dice Name</label>
+        <input type="text" id="editBattleDiceName" class="log-edit-input" style="width:180px;">
+      </div>
+      <div class="log-edit-row">
+        <label class="log-edit-label">Timestamp</label>
+        <input type="text" id="editBattleTimestamp" class="log-edit-input" style="width:180px;">
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <button class="btn-yes" onclick="saveBattleLogEdit()">✓ Save</button>
+      <button class="btn-no" onclick="closeModal('battleLogEditModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <audio id="timerSound" src="sounds/Timer Sound.mp3"></audio>
