@@ -73,6 +73,13 @@ const Sound = {
         if (saved && saved.data) {
           document.getElementById(reg.audioId).src = saved.data;
           document.getElementById(reg.displayId).textContent = saved.name;
+        } else {
+          const audio = document.getElementById(reg.audioId);
+          const disp = document.getElementById(reg.displayId);
+          if (audio && audio.getAttribute('src') && disp) {
+            const path = audio.getAttribute('src');
+            disp.textContent = decodeURIComponent(path.split('/').pop()) + ' (default)';
+          }
         }
       } catch(e) {}
     });
