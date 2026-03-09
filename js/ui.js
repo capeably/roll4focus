@@ -158,25 +158,60 @@ function importSessionCSV(event) {
 // METRICS
 // ============================================================
 function updateMetrics() {
-  const todayStr = new Date().toDateString();
-  const todayLogs = (state.battleLogs || []).filter(e => {
+  const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+
+  // --- Battle stats (from state counters, already scoped to adventuring day) ---
+  setText('metBossEarned', state.bossBattlesEarned);
+  setText('metBossFought', state.bossBattlesFought);
+  setText('metBossWon', state.bossBattlesWon);
+  setText('metBossRemaining', state.bossBattlesEarned - state.bossBattlesFought);
+  setText('metBossChEarned', state.bossChestsEarned);
+  setText('metBossChOpened', state.bossChestsOpened);
+  setText('metBossChRemaining', state.bossChestsEarned - state.bossChestsOpened);
+  setText('metMinEarned', state.minionBattlesEarned);
+  setText('metMinFought', state.minionBattlesFought);
+  setText('metMinWon', state.minionBattlesWon);
+  setText('metMinRemaining', state.minionBattlesEarned - state.minionBattlesFought);
+  setText('metMinChEarned', state.minionChestsEarned);
+  setText('metMinChOpened', state.minionChestsOpened);
+  setText('metMinChRemaining', state.minionChestsEarned - state.minionChestsOpened);
+
+  // --- Dice roll averages (filter battleLogs by lastResetTimestamp) ---
+  const resetTs = state.lastResetTimestamp ? new Date(state.lastResetTimestamp) : new Date(0);
+  const dayLogs = (state.battleLogs || []).filter(e => {
     const d = new Date(e.timestamp);
-    return !isNaN(d) && d.toDateString() === todayStr;
+    return !isNaN(d) && d >= resetTs;
   });
-  function avg(arr) {
-    if (!arr.length) return '—';
-    return (arr.reduce((s, e) => s + e.roll, 0) / arr.length).toFixed(1);
+
+  function avgAndCount(arr) {
+    if (!arr.length) return { avg: '—', count: 0 };
+    return { avg: (arr.reduce((s, e) => s + e.roll, 0) / arr.length).toFixed(1), count: arr.length };
   }
-  const vals = {
-    metricBossAuto:    avg(todayLogs.filter(e => e.type === 'boss'   && e.rollType === 'auto')),
-    metricBossManual:  avg(todayLogs.filter(e => e.type === 'boss'   && e.rollType === 'manual')),
-    metricMinionAuto:  avg(todayLogs.filter(e => e.type === 'minion' && e.rollType === 'auto')),
-    metricMinionManual:avg(todayLogs.filter(e => e.type === 'minion' && e.rollType === 'manual')),
-  };
-  Object.entries(vals).forEach(([id, val]) => {
+
+  const setMetric = (id, data) => {
     const el = document.getElementById(id);
-    if (el) el.textContent = val;
-  });
+    if (!el) return;
+    if (data.count === 0) el.textContent = '—';
+    else el.innerHTML = data.avg + ' <span class="metrics-count">(\u00d7' + data.count + ')</span>';
+  };
+
+  setMetric('metricBossAuto',    avgAndCount(dayLogs.filter(e => e.type === 'boss'   && e.rollType === 'auto')));
+  setMetric('metricBossManual',  avgAndCount(dayLogs.filter(e => e.type === 'boss'   && e.rollType === 'manual')));
+  setMetric('metricMinionAuto',  avgAndCount(dayLogs.filter(e => e.type === 'minion' && e.rollType === 'auto')));
+  setMetric('metricMinionManual',avgAndCount(dayLogs.filter(e => e.type === 'minion' && e.rollType === 'manual')));
+
+  // --- Most-rolled Hope/Fear/Sound ---
+  function mostRolled(arr) {
+    if (!arr || !arr.length) return '—';
+    const freq = {};
+    arr.forEach(v => { freq[v] = (freq[v] || 0) + 1; });
+    let maxVal = 0, maxKey = null;
+    Object.entries(freq).forEach(([k, c]) => { if (c > maxVal) { maxVal = c; maxKey = k; } });
+    return maxVal > 1 ? maxKey + ' (\u00d7' + maxVal + ')' : '' + maxKey;
+  }
+  setText('metMostHope', mostRolled(state.hopeRolls));
+  setText('metMostFear', mostRolled(state.fearRolls));
+  setText('metMostSound', mostRolled(state.soundRolls));
 }
 
 // ============================================================

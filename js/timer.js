@@ -96,7 +96,11 @@ function sessionResult(success) {
     duration: session.totalMinutes || Math.round(state.timerTotal / 60),
     success, timestamp: new Date().toLocaleString(),
   });
-  markDirty(); updateAdventuringTime();
+  const sess = state.currentSession || {};
+  if (sess.hope && sess.hope !== '—') state.hopeRolls.push(Number(sess.hope));
+  if (sess.fear && sess.fear !== '—') state.fearRolls.push(Number(sess.fear));
+  if (sess.sound && sess.sound !== '—') state.soundRolls.push(Number(sess.sound));
+  markDirty(); updateAdventuringTime(); updateMetrics();
 }
 
 

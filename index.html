@@ -173,12 +173,45 @@
       </div>
     </div>
     <div class="metrics-divider"></div>
-    <div style="font-family:var(--font-heading);font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">Roll Averages — Today</div>
-    <div id="battleMetrics">
+    <div class="metrics-panel" id="metricsPanel">
+
+      <!-- Battle Stats -->
+      <div class="metrics-section-header">Battle Stats</div>
+      <div class="metrics-table">
+        <div class="mt-header"></div>
+        <div class="mt-header" title="Earned">Earned</div>
+        <div class="mt-header" title="Fought">Fought</div>
+        <div class="mt-header" title="Won">Won</div>
+        <div class="mt-header" title="Remaining">Rem</div>
+        <div class="mt-header" title="Chests Earned">Ch.E</div>
+        <div class="mt-header" title="Chests Opened">Ch.O</div>
+        <div class="mt-header" title="Chests Remaining">Ch.R</div>
+
+        <div class="mt-label" style="color:var(--gold)">Boss</div>
+        <div class="mt-val" id="metBossEarned">0</div>
+        <div class="mt-val" id="metBossFought">0</div>
+        <div class="mt-val" id="metBossWon">0</div>
+        <div class="mt-val" id="metBossRemaining">0</div>
+        <div class="mt-val" id="metBossChEarned">0</div>
+        <div class="mt-val" id="metBossChOpened">0</div>
+        <div class="mt-val" id="metBossChRemaining">0</div>
+
+        <div class="mt-label" style="color:var(--minion)">Minion</div>
+        <div class="mt-val" id="metMinEarned">0</div>
+        <div class="mt-val" id="metMinFought">0</div>
+        <div class="mt-val" id="metMinWon">0</div>
+        <div class="mt-val" id="metMinRemaining">0</div>
+        <div class="mt-val" id="metMinChEarned">0</div>
+        <div class="mt-val" id="metMinChOpened">0</div>
+        <div class="mt-val" id="metMinChRemaining">0</div>
+      </div>
+
+      <!-- Roll Averages -->
+      <div class="metrics-section-header">Roll Averages</div>
       <div class="metrics-grid">
         <div class="metrics-col-header"></div>
-        <div class="metrics-col-header">Auto Avg</div>
-        <div class="metrics-col-header">Manual Avg</div>
+        <div class="metrics-col-header">Auto</div>
+        <div class="metrics-col-header">Manual</div>
         <div class="metrics-row-label" style="color:var(--gold)">Boss</div>
         <div class="metrics-val" id="metricBossAuto" style="color:var(--gold2)">—</div>
         <div class="metrics-val" id="metricBossManual" style="color:var(--gold2)">—</div>
@@ -186,6 +219,24 @@
         <div class="metrics-val" id="metricMinionAuto" style="color:var(--minion)">—</div>
         <div class="metrics-val" id="metricMinionManual" style="color:var(--minion)">—</div>
       </div>
+
+      <!-- Most Rolled -->
+      <div class="metrics-section-header">Most Rolled</div>
+      <div class="metrics-most-rolled">
+        <div class="mr-item">
+          <span class="mr-label" style="color:var(--teal)">Hope</span>
+          <span class="mr-value" id="metMostHope">—</span>
+        </div>
+        <div class="mr-item">
+          <span class="mr-label" style="color:var(--red2)">Fear</span>
+          <span class="mr-value" id="metMostFear">—</span>
+        </div>
+        <div class="mr-item">
+          <span class="mr-label" style="color:var(--gold)">Sound</span>
+          <span class="mr-value" id="metMostSound">—</span>
+        </div>
+      </div>
+
     </div>
   </div>
 

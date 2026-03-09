@@ -90,9 +90,11 @@ function resetStatus() {
   state.minionChestsEarned = 0; state.minionChestsOpened = 0;
   state.bossBattlesEarned = 0; state.bossBattlesFought = 0; state.bossBattlesWon = 0;
   state.bossChestsEarned = 0; state.bossChestsOpened = 0;
+  state.lastResetTimestamp = new Date().toISOString();
+  state.hopeRolls = []; state.fearRolls = []; state.soundRolls = [];
   document.getElementById('inspirationVal').textContent = 0;
   document.getElementById('penaltyVal').textContent = 0;
-  updateDCDisplays(); updateMinionUI(); updateBossUI(); updateStatsDisplay(); markDirty();
+  updateDCDisplays(); updateMinionUI(); updateBossUI(); updateStatsDisplay(); updateMetrics(); markDirty();
   showToast('Status reset');
 }
 
@@ -102,6 +104,10 @@ function resetStatus() {
 // ============================================================
 function init() {
   loadState();
+  if (!state.lastResetTimestamp) state.lastResetTimestamp = new Date().toISOString();
+  if (!state.hopeRolls) state.hopeRolls = [];
+  if (!state.fearRolls) state.fearRolls = [];
+  if (!state.soundRolls) state.soundRolls = [];
   document.getElementById('inspirationVal').textContent = state.inspiration;
   document.getElementById('penaltyVal').textContent = state.penalty;
   hydrateSettings();

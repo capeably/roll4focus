@@ -1814,3 +1814,80 @@
     text-align: center;
     color: var(--text2);
   }
+
+  /* Metrics Panel */
+  .metrics-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .metrics-section-header {
+    font-family: var(--font-heading);
+    font-size: 0.52rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(200,150,62,0.12);
+  }
+
+  /* Battle Stats Table — compact 8-column grid */
+  .metrics-table {
+    display: grid;
+    grid-template-columns: auto repeat(7, 1fr);
+    gap: 2px 6px;
+    align-items: center;
+  }
+  .mt-header {
+    font-family: var(--font-heading);
+    font-size: 0.42rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    text-align: center;
+  }
+  .mt-label {
+    font-family: var(--font-heading);
+    font-size: 0.48rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .mt-val {
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    text-align: center;
+    color: var(--text2);
+  }
+
+  /* Roll average count annotation */
+  .metrics-count {
+    font-size: 0.6rem;
+    color: var(--text3);
+    font-family: var(--font-body);
+  }
+
+  /* Most Rolled row */
+  .metrics-most-rolled {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+  .mr-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+  }
+  .mr-label {
+    font-family: var(--font-heading);
+    font-size: 0.46rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .mr-value {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    color: var(--text2);
+  }
