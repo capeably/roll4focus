@@ -96,6 +96,13 @@ function createBattleSystem(c) {
     if (mainEl) { mainEl.textContent = roll; mainEl.className = `attack-result ${won ? 'win' : 'fail'}`; }
     const qbEl = document.getElementById(c.qbResultId);
     if (qbEl) { qbEl.textContent = roll; qbEl.className = c.qbCls(won); }
+    const animClass = isCrit ? 'anim-crit' : won ? 'anim-hit' : (roll === 1) ? 'anim-crit-fail' : 'anim-miss';
+    [mainEl, qbEl].forEach(el => {
+      if (!el) return;
+      el.classList.remove('anim-hit','anim-crit','anim-miss','anim-crit-fail');
+      void el.offsetWidth;
+      el.classList.add(animClass);
+    });
     logBattle(c.type, rollType, roll, won, dc);
     if (c.type === 'boss') updateDCDisplays();
     updateUI(); markDirty();
@@ -105,7 +112,10 @@ function createBattleSystem(c) {
     if (getChRem() <= 0) return;
     state[c.prefix+'ChestsOpened']++;
     playGenericSound('openChest');
-    showToast(`🎁 ${c.label}Chest Opened!`);
+    flashChest();
+    showToast(`🎁 ${c.label}Chest — ${getChestLootText()}!`);
+    const btnEl = document.getElementById(c.btnChestId);
+    if (btnEl) { btnEl.classList.remove('chest-burst'); void btnEl.offsetWidth; btnEl.classList.add('chest-burst'); }
     updateUI(); markDirty();
   }
 

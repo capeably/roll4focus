@@ -8,6 +8,18 @@ function updateStatsDisplay() {
   document.getElementById('statSound').textContent = sess.sound !== undefined ? sess.sound : '—';
   document.getElementById('statInspiration').textContent = state.inspiration;
   document.getElementById('statPenalty').textContent = state.penalty;
+  updateStreakDisplay();
+}
+
+function updateStreakDisplay() {
+  const curEl = document.getElementById('statCurrentStreak');
+  const bestEl = document.getElementById('statLongestStreak');
+  if (curEl) {
+    curEl.textContent = state.currentStreak;
+    if (state.currentStreak > 0) curEl.classList.add('fire');
+    else curEl.classList.remove('fire');
+  }
+  if (bestEl) bestEl.textContent = state.longestStreak;
 }
 
 // Boss Edit Modal

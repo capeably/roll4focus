@@ -89,6 +89,18 @@ function sessionResult(success) {
     if (bonus > 0) showToast(`+${1 + bonus} Inspiration — ${duration}m session bonus!`);
     else showToast('+1 Inspiration — Session Complete!');
   }
+  // Streak tracking
+  if (success) {
+    state.currentStreak++;
+    if (state.currentStreak > state.longestStreak) state.longestStreak = state.currentStreak;
+    const milestones = [3, 5, 7, 10, 15, 20, 25, 30, 50];
+    if (milestones.includes(state.currentStreak)) {
+      flashStreak();
+      setTimeout(() => showToast(`🔥 ${state.currentStreak}-session streak!`), 900);
+    }
+  } else {
+    state.currentStreak = 0;
+  }
   const session = state.currentSession || {};
   state.logs.unshift({
     hope: session.hope || '—', fear: session.fear || '—', sound: session.sound || '—',
@@ -104,7 +116,7 @@ function sessionResult(success) {
   if (sess.hope && sess.hope !== '—') state.hopeRolls.push(Number(sess.hope));
   if (sess.fear && sess.fear !== '—') state.fearRolls.push(Number(sess.fear));
   if (sess.sound && sess.sound !== '—') state.soundRolls.push(Number(sess.sound));
-  markDirty(); updateAdventuringTime(); updateMetrics();
+  markDirty(); updateAdventuringTime(); updateMetrics(); updateStreakDisplay();
 }
 
 

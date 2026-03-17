@@ -12,6 +12,8 @@
 <body>
 
 <div class="inspiration-flash" id="inspFlash"></div>
+<div class="chest-flash" id="chestFlash"></div>
+<div class="streak-flash" id="streakFlash"></div>
 
 <header class="app-header">
   <div class="app-title">Roll 4 Focus</div>
@@ -220,8 +222,8 @@
         <div class="metrics-val" id="metricMinionManual" style="color:var(--minion)">—</div>
       </div>
 
-      <!-- Most Rolled -->
-      <div class="metrics-section-header">Most Rolled</div>
+      <!-- Most Rolled + Streak -->
+      <div class="metrics-section-header">Most Rolled · Streak</div>
       <div class="metrics-most-rolled">
         <div class="mr-item">
           <span class="mr-label" style="color:var(--teal)">Hope</span>
@@ -234,6 +236,15 @@
         <div class="mr-item">
           <span class="mr-label" style="color:var(--gold)">Sound</span>
           <span class="mr-value" id="metMostSound">—</span>
+        </div>
+        <div class="mr-divider"></div>
+        <div class="mr-item">
+          <span class="mr-label" style="color:var(--amber)">🔥 Current</span>
+          <span class="mr-value streak-value" id="statCurrentStreak" style="color:var(--amber)">0</span>
+        </div>
+        <div class="mr-item">
+          <span class="mr-label" style="color:var(--text3)">Best</span>
+          <span class="mr-value" id="statLongestStreak">0</span>
         </div>
       </div>
 

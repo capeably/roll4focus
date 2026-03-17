@@ -98,6 +98,7 @@ function resetStatus() {
   state.bossChestsEarned = 0; state.bossChestsOpened = 0;
   state.lastResetTimestamp = new Date().toISOString();
   state.hopeRolls = []; state.fearRolls = []; state.soundRolls = [];
+  state.currentStreak = 0;
   document.getElementById('inspirationVal').textContent = 0;
   document.getElementById('penaltyVal').textContent = 0;
   updateDCDisplays(); updateMinionUI(); updateBossUI(); updateStatsDisplay(); updateMetrics(); markDirty();
@@ -114,12 +115,14 @@ function init() {
   if (!state.hopeRolls) state.hopeRolls = [];
   if (!state.fearRolls) state.fearRolls = [];
   if (!state.soundRolls) state.soundRolls = [];
+  if (!state.currentStreak) state.currentStreak = 0;
+  if (!state.longestStreak) state.longestStreak = 0;
   document.getElementById('inspirationVal').textContent = state.inspiration;
   document.getElementById('penaltyVal').textContent = state.penalty;
   hydrateSettings();
   updateMinionUI(); updateBossUI(); updateMinionCountdownDisplay(); updateDCDisplays();
   buildSoundtrackTable(); loadNotesTab(); updateAdventuringTime(); updateStatsDisplay();
-  updateMetrics(); updateDiceNamesChip();
+  updateMetrics(); updateDiceNamesChip(); updateStreakDisplay();
   if (state.timerSeconds > 0) { updateTimerDisplay(); updateRing(); }
   Sound.restoreAll();
 }
