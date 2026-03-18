@@ -122,7 +122,7 @@ function init() {
   hydrateSettings();
   updateMinionUI(); updateBossUI(); updateMinionCountdownDisplay(); updateDCDisplays();
   buildSoundtrackTable(); loadNotesTab(); updateAdventuringTime(); updateStatsDisplay();
-  updateMetrics(); updateDiceNamesChip(); updateStreakDisplay();
+  updateMetrics(); updateDiceNamesChip(); updateStreakDisplay(); updateQuietModeUI();
   if (state.timerSeconds > 0) { updateTimerDisplay(); updateRing(); }
   Sound.restoreAll();
 }
@@ -137,12 +137,20 @@ document.addEventListener('keydown', function(e) {
   }
   const tag = document.activeElement && document.activeElement.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+  // Ctrl+Home → navigate to Home tab top
+  if (e.key === 'Home' && e.ctrlKey) {
+    e.preventDefault();
+    switchTab('timer', { target: document.querySelector('.tab-btn') });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
   const noMod = !e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey;
   if ((e.key === 'r' || e.key === 'R') && noMod) { e.preventDefault(); rollForMe(); }
   else if (e.key === ' ' && noMod) { e.preventDefault(); if (state.timerRunning) pauseTimer(); else startTimer(); }
   else if ((e.key === 'a' || e.key === 'A') && noMod) { e.preventDefault(); minionAttack(); }
   else if ((e.key === 'c' || e.key === 'C') && noMod) { e.preventDefault(); openMinionChest(); }
   else if ((e.key === 'b' || e.key === 'B') && noMod) { e.preventDefault(); openBossEditModal(); }
+  else if ((e.key === 'q' || e.key === 'Q') && noMod) { e.preventDefault(); toggleQuietMode(); }
 });
 
 init();

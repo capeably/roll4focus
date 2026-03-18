@@ -22,6 +22,27 @@ function updateStreakDisplay() {
   if (bestEl) bestEl.textContent = state.longestStreak;
 }
 
+// ============================================================
+// QUIET MODE
+// ============================================================
+function toggleQuietMode() {
+  state.quietMode = !state.quietMode;
+  updateQuietModeUI();
+  showToast(state.quietMode ? '🔇 Quiet Mode On' : '🔊 Quiet Mode Off');
+  if (state.timerRunning) {
+    stopTicking();
+    if (!state.quietMode) startTicking();
+  }
+  markDirty();
+}
+
+function updateQuietModeUI() {
+  const btn = document.getElementById('quietToggle');
+  if (!btn) return;
+  if (state.quietMode) { btn.textContent = '🔇'; btn.classList.add('active'); }
+  else { btn.textContent = '🔊'; btn.classList.remove('active'); }
+}
+
 // Boss Edit Modal
 function openBossEditModal() {
   document.getElementById('bossEditAttackInput').value = '';

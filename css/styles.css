@@ -53,10 +53,17 @@
 
   /* APP HEADER */
   .app-header {
-    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
     padding: 24px 20px 0;
     position: relative;
     z-index: 1;
+  }
+  .app-header-center {
+    flex: 1;
+    text-align: center;
   }
   .app-title {
     font-family: var(--font-display);
@@ -73,8 +80,24 @@
     text-transform: uppercase;
     margin-top: 4px;
   }
+  .header-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    border-radius: 50%;
+    width: 32px; height: 32px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .header-btn:hover { color: var(--gold); border-color: var(--gold); }
+  .header-btn.active { color: var(--amber); border-color: var(--amber); background: rgba(212,129,58,0.1); }
   .header-divider {
-    width: 180px; height: 1px;
+    width: 100%; height: 1px;
     background: linear-gradient(to right, transparent, var(--gold), transparent);
     margin: 12px auto 0;
     opacity: 0.5;
@@ -534,6 +557,14 @@
     margin-top: 4px;
   }
 
+  /* Mobile timer sizing */
+  @media (max-width: 480px) {
+    .timer-ring-container { width: 170px; height: 170px; }
+    .timer-display { font-size: 2.2rem; }
+    .timer-label { font-size: 0.55rem; }
+    .timer-centrepiece { padding: 20px 16px; }
+  }
+
   .timer-controls {
     display: flex;
     gap: 12px;
@@ -991,6 +1022,41 @@
     transition: all 0.2s;
   }
   .btn-no:hover { background: rgba(192,57,43,0.25); box-shadow: 0 0 16px rgba(192,57,43,0.2); }
+
+  /* HELP MODAL */
+  .help-section-title {
+    font-family: var(--font-heading);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 12px 0 6px;
+    text-align: left;
+  }
+  .help-text {
+    font-size: 0.8rem;
+    color: var(--text2);
+    line-height: 1.5;
+    text-align: left;
+    margin-bottom: 8px;
+  }
+  .help-hotkeys {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+  }
+  .help-hotkeys td {
+    padding: 4px 8px;
+    font-size: 0.78rem;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+  }
+  .help-key {
+    font-family: monospace;
+    color: var(--gold2);
+    white-space: nowrap;
+    width: 90px;
+  }
 
   /* INSPIRATION FLASH */
   .inspiration-flash {

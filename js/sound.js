@@ -16,6 +16,7 @@ const Sound = {
   },
 
   play(key) {
+    if (state.quietMode) return;
     const reg = this._registry[key];
     if (!reg) return;
     if (reg.enabledKey && !state[reg.enabledKey]) return;
@@ -23,6 +24,13 @@ const Sound = {
   },
 
   playTimerEnd() {
+    if (state.quietMode) {
+      const quietAudio = document.getElementById('timerQuietSound');
+      if (quietAudio && quietAudio.src && quietAudio.src !== window.location.href) {
+        quietAudio.currentTime = 0; quietAudio.play().catch(() => {});
+      }
+      return;
+    }
     const audio = document.getElementById('timerSound');
     if (audio.src && audio.src !== window.location.href) {
       audio.currentTime = 0; audio.play().catch(() => {});
@@ -96,7 +104,7 @@ const Sound = {
 
   _tickCtx: null,
   startTicking() {
-    if (!state.tickingEnabled) return;
+    if (!state.tickingEnabled || state.quietMode) return;
     this.stopTicking();
     try { this._tickCtx = new AudioContext(); } catch(e) { return; }
     const ctx = this._tickCtx;
@@ -128,6 +136,7 @@ Sound.register('attackFail',  'attackFailSound',    'attackFailSoundFileName',  
 Sound.register('openChest',   'openChestSound',     'openChestSoundFileName',   'r4f_sound_openChest',     'openChestSoundEnabled');
 Sound.register('breakStart',  'breakStartSound',    'breakStartSoundFileName',  'r4f_sound_breakStart',    'breakStartSoundEnabled');
 Sound.register('breakFinish', 'breakFinishSound',   'breakFinishSoundFileName', 'r4f_sound_breakFinish',   'breakFinishSoundEnabled');
+Sound.register('timerQuiet',  'timerQuietSound',    'timerQuietSoundFileName',  'r4f_sound_timerQuiet',    null);
 
 // Global aliases for HTML onclick handlers
 function loadSoundFile(event) { Sound.load(event, 'timer'); }

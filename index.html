@@ -16,8 +16,12 @@
 <div class="streak-flash" id="streakFlash"></div>
 
 <header class="app-header">
-  <div class="app-title">Roll 4 Focus</div>
-  <div class="app-subtitle">Gamified Pomodoro Timer</div>
+  <button class="header-btn" id="quietToggle" onclick="toggleQuietMode()" title="Quiet Mode (Q)">🔊</button>
+  <div class="app-header-center">
+    <div class="app-title">Roll 4 Focus</div>
+    <div class="app-subtitle">Gamified Pomodoro Timer</div>
+  </div>
+  <button class="header-btn" onclick="openModal('helpModal')" title="Help">?</button>
   <div class="header-divider"></div>
 </header>
 
@@ -358,6 +362,17 @@
       <div class="setting-control">
         <label class="file-btn" for="soundFileInput">Choose File</label>
         <input type="file" id="soundFileInput" accept=".mp3,.wav" onchange="loadSoundFile(event)">
+      </div>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Timer Sound (Quiet)</div>
+        <div class="setting-sub" id="timerQuietSoundFileName">No file selected</div>
+      </div>
+      <div class="setting-control">
+        <label class="file-btn" for="timerQuietSoundFileInput">Choose File</label>
+        <input type="file" id="timerQuietSoundFileInput" accept=".mp3,.wav" onchange="loadGenericSound(event, 'timerQuiet')">
       </div>
     </div>
 
@@ -1049,6 +1064,38 @@
   </div>
 </div>
 
+<!-- Help Modal -->
+<div class="modal-overlay" id="helpModal">
+  <div class="modal" style="max-width:440px;">
+    <div class="modal-icon">❓</div>
+    <div class="modal-title">Help</div>
+
+    <div class="help-section-title">How It Works</div>
+    <div class="help-text">
+      Roll 4 Focus is a gamified Pomodoro timer. Roll dice to set Hope, Fear, and Sound themes for each focus session.
+      Complete sessions to earn Inspiration, trigger battles against Bosses and Minions, and unlock treasure chests.
+      Build streaks by completing consecutive sessions!
+    </div>
+
+    <div class="help-section-title">Keyboard Shortcuts</div>
+    <table class="help-hotkeys">
+      <tr><td class="help-key">Space</td><td>Start / Pause Timer</td></tr>
+      <tr><td class="help-key">R</td><td>Roll for Me (all dice)</td></tr>
+      <tr><td class="help-key">A</td><td>Minion Attack</td></tr>
+      <tr><td class="help-key">C</td><td>Open Minion Chest</td></tr>
+      <tr><td class="help-key">B</td><td>Boss Edit</td></tr>
+      <tr><td class="help-key">Q</td><td>Toggle Quiet Mode</td></tr>
+      <tr><td class="help-key">Ctrl+Home</td><td>Go to Home tab (top)</td></tr>
+      <tr><td class="help-key">Y / Enter</td><td>Confirm session success</td></tr>
+      <tr><td class="help-key">N / Esc</td><td>Fail session / close</td></tr>
+    </table>
+
+    <div class="modal-buttons" style="grid-template-columns:1fr;">
+      <button class="btn-no" onclick="closeModal('helpModal')">Close</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <audio id="timerSound" src="sounds/Timer Sound.mp3"></audio>
@@ -1061,6 +1108,7 @@
 <audio id="openChestSound" src="sounds/Open Chest.mp3"></audio>
 <audio id="breakStartSound"></audio>
 <audio id="breakFinishSound" src="sounds/Break Timer Finish.mp3"></audio>
+<audio id="timerQuietSound" src="sounds/Timer Sound (Quiet).mp3"></audio>
 
 
 <script src="js/utils.js"></script>

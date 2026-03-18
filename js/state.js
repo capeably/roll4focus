@@ -47,7 +47,7 @@ let state = {
   diceNames: [], currentDiceName: '',
   lastResetTimestamp: new Date().toISOString(),
   hopeRolls: [], fearRolls: [], soundRolls: [],
-  currentStreak: 0, longestStreak: 0,
+  currentStreak: 0, longestStreak: 0, quietMode: false,
   timerSeconds: 0, timerTotal: 0, timerRunning: false,
   timerInterval: null, tickInterval: null, currentSession: null,
 };
@@ -70,7 +70,7 @@ const PERSIST_KEYS = [
   'timerSeconds','timerTotal','minionCountdownSeconds',
   'diceNames','currentDiceName',
   'lastResetTimestamp','hopeRolls','fearRolls','soundRolls',
-  'currentStreak','longestStreak',
+  'currentStreak','longestStreak','quietMode',
 ];
 
 let _saveDirty = false, _saveTimer = null;
