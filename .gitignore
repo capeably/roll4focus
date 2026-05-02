@@ -4,6 +4,9 @@
 # Claude Code metadata
 .claude/
 
+# Personal scratch folder
+ignore-my-stuff/
+
 # Node (future-proofing)
 node_modules/
 
