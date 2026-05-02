@@ -754,7 +754,7 @@
         <div class="dialog-counter-label" style="color:var(--gold2);margin-bottom:8px;">Attack Result</div>
         <input type="number" id="bossEditAttackInput" class="manual-time-input" min="1" max="20" placeholder="d20"
           style="width:100%;font-size:2rem;"
-          onkeydown="if(event.key==='Enter') confirmBossEdit()">
+          onkeydown="if(event.key==='Enter') confirmBossEdit(); else if(event.key==='Escape') closeModal('bossEditModal')">
       </div>
       <div class="dialog-counter-row">
         <div class="dialog-counter-label" style="color:var(--gold2)">DC</div>
@@ -780,6 +780,15 @@
           <button class="dialog-counter-btn" onclick="adjustBattleStat('bossChestsEarned',1,'boss');updateBossEditModal()">+</button>
         </div>
       </div>
+      <div class="dialog-counter-row">
+        <div class="dialog-counter-label" style="color:var(--text3)">Keep open for multiple rolls</div>
+        <div class="dialog-counter-controls">
+          <label class="toggle-switch">
+            <input type="checkbox" id="bossEditKeepOpen" onchange="state.manualEntryKeepOpen=this.checked;markDirty();syncManualEntryKeepOpen();">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
     </div>
     <div class="modal-buttons">
       <button class="btn-yes" onclick="confirmBossEdit()">⚔ Attack</button>
@@ -799,7 +808,7 @@
         <div class="dialog-counter-label" style="color:var(--minion);margin-bottom:8px;">Attack Result</div>
         <input type="number" id="minionEditAttackInput" class="manual-time-input" min="1" max="20" placeholder="d20"
           style="width:100%;font-size:2rem;"
-          onkeydown="if(event.key==='Enter') confirmMinionEdit()">
+          onkeydown="if(event.key==='Enter') confirmMinionEdit(); else if(event.key==='Escape') closeModal('minionEditModal')">
       </div>
       <div class="dialog-counter-row">
         <div class="dialog-counter-label" style="color:var(--minion)">DC</div>
@@ -830,6 +839,15 @@
         <div class="dialog-counter-controls">
           <label class="toggle-switch">
             <input type="checkbox" id="minionEditAutoFight" onchange="state.minionAutoFight=this.checked;markDirty();hydrateSettings();">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="dialog-counter-row">
+        <div class="dialog-counter-label" style="color:var(--text3)">Keep open for multiple rolls</div>
+        <div class="dialog-counter-controls">
+          <label class="toggle-switch">
+            <input type="checkbox" id="minionEditKeepOpen" onchange="state.manualEntryKeepOpen=this.checked;markDirty();syncManualEntryKeepOpen();">
             <span class="toggle-slider"></span>
           </label>
         </div>

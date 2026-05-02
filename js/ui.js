@@ -48,6 +48,7 @@ function openBossEditModal() {
   document.getElementById('bossEditAttackInput').value = '';
   document.getElementById('qbBossRoll').value = '';
   updateBossEditModal();
+  syncManualEntryKeepOpen();
   openModal('bossEditModal');
   setTimeout(() => document.getElementById('bossEditAttackInput').focus(), 50);
 }
@@ -60,15 +61,32 @@ function updateBossEditModal() {
   document.getElementById('bossEditChestsVal').textContent = chRem;
 }
 
+function syncManualEntryKeepOpen() {
+  const v = !!state.manualEntryKeepOpen;
+  const b = document.getElementById('bossEditKeepOpen');
+  const m = document.getElementById('minionEditKeepOpen');
+  if (b) b.checked = v;
+  if (m) m.checked = v;
+}
+
 function confirmBossEdit() {
-  const raw = document.getElementById('bossEditAttackInput').value.trim();
+  const input = document.getElementById('bossEditAttackInput');
+  const raw = input.value.trim();
   if (raw !== '') {
     const val = parseInt(raw);
     if (isNaN(val) || val < 1) { showToast('Enter a valid roll (1–20)'); return; }
     document.getElementById('qbBossRoll').value = val;
   }
-  closeModal('bossEditModal');
-  if (state.bossBattlesEarned - state.bossBattlesFought > 0) bossAttack();
+  if (state.manualEntryKeepOpen) {
+    if (state.bossBattlesEarned - state.bossBattlesFought > 0) bossAttack();
+    input.value = '';
+    document.getElementById('qbBossRoll').value = '';
+    updateBossEditModal();
+    input.focus();
+  } else {
+    closeModal('bossEditModal');
+    if (state.bossBattlesEarned - state.bossBattlesFought > 0) bossAttack();
+  }
 }
 
 // Minion Edit Modal
@@ -76,6 +94,7 @@ function openMinionEditModal() {
   document.getElementById('minionEditAttackInput').value = '';
   document.getElementById('qbMinionRoll').value = '';
   updateMinionEditModal();
+  syncManualEntryKeepOpen();
   openModal('minionEditModal');
   setTimeout(() => document.getElementById('minionEditAttackInput').focus(), 50);
 }
@@ -90,14 +109,23 @@ function updateMinionEditModal() {
 }
 
 function confirmMinionEdit() {
-  const raw = document.getElementById('minionEditAttackInput').value.trim();
+  const input = document.getElementById('minionEditAttackInput');
+  const raw = input.value.trim();
   if (raw !== '') {
     const val = parseInt(raw);
     if (isNaN(val) || val < 1) { showToast('Enter a valid roll (1–20)'); return; }
     document.getElementById('qbMinionRoll').value = val;
   }
-  closeModal('minionEditModal');
-  if (state.minionBattlesEarned - state.minionBattlesFought > 0) minionAttack();
+  if (state.manualEntryKeepOpen) {
+    if (state.minionBattlesEarned - state.minionBattlesFought > 0) minionAttack();
+    input.value = '';
+    document.getElementById('qbMinionRoll').value = '';
+    updateMinionEditModal();
+    input.focus();
+  } else {
+    closeModal('minionEditModal');
+    if (state.minionBattlesEarned - state.minionBattlesFought > 0) minionAttack();
+  }
 }
 
 // ============================================================
