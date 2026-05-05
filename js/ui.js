@@ -72,11 +72,10 @@ function syncManualEntryKeepOpen() {
 function confirmBossEdit() {
   const input = document.getElementById('bossEditAttackInput');
   const raw = input.value.trim();
-  if (raw !== '') {
-    const val = parseInt(raw);
-    if (isNaN(val) || val < 1) { showToast('Enter a valid roll (1–20)'); return; }
-    document.getElementById('qbBossRoll').value = val;
-  }
+  if (raw === '') { closeModal('bossEditModal'); return; }
+  const val = parseInt(raw);
+  if (isNaN(val) || val < 1) { showToast('Enter a valid roll (1–20)'); return; }
+  document.getElementById('qbBossRoll').value = val;
   if (state.manualEntryKeepOpen) {
     if (state.bossBattlesEarned - state.bossBattlesFought > 0) bossAttack();
     input.value = '';
@@ -111,11 +110,10 @@ function updateMinionEditModal() {
 function confirmMinionEdit() {
   const input = document.getElementById('minionEditAttackInput');
   const raw = input.value.trim();
-  if (raw !== '') {
-    const val = parseInt(raw);
-    if (isNaN(val) || val < 1) { showToast('Enter a valid roll (1–20)'); return; }
-    document.getElementById('qbMinionRoll').value = val;
-  }
+  if (raw === '') { closeModal('minionEditModal'); return; }
+  const val = parseInt(raw);
+  if (isNaN(val) || val < 1) { showToast('Enter a valid roll (1–20)'); return; }
+  document.getElementById('qbMinionRoll').value = val;
   if (state.manualEntryKeepOpen) {
     if (state.minionBattlesEarned - state.minionBattlesFought > 0) minionAttack();
     input.value = '';
@@ -279,6 +277,71 @@ function updateMetrics() {
   setText('metMostHope', mostRolled(state.hopeRolls));
   setText('metMostFear', mostRolled(state.fearRolls));
   setText('metMostSound', mostRolled(state.soundRolls));
+
+  renderTopRolls();
+}
+
+// --- Top d20 Rolls (Auto vs Manual, by interval) ---
+function setTopRollsInterval(interval) {
+  state.topRollsInterval = interval;
+  markDirty();
+  renderTopRolls();
+}
+
+function renderTopRolls() {
+  const interval = state.topRollsInterval || 'today';
+  // Highlight active tab
+  document.querySelectorAll('#topRollsIntervalTabs .interval-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.interval === interval);
+  });
+
+  const now = Date.now();
+  let cutoff = 0;
+  if (interval === 'today') {
+    cutoff = state.lastResetTimestamp ? new Date(state.lastResetTimestamp).getTime() : 0;
+  } else if (interval === '7d') {
+    cutoff = now - 7 * 24 * 60 * 60 * 1000;
+  }
+  // 'all' → cutoff stays 0
+
+  // Filter to d20-only logs in the interval
+  const inRange = (state.battleLogs || []).filter(e => {
+    const sides = e.diceSides || 20;
+    if (sides !== 20) return false;
+    const t = new Date(e.timestamp).getTime();
+    if (isNaN(t)) return false;
+    return t >= cutoff;
+  });
+
+  const renderCol = (listId, totalId, rollType) => {
+    const rolls = inRange.filter(e => e.rollType === rollType);
+    const total = rolls.length;
+    document.getElementById(totalId).textContent = '(' + total + ')';
+
+    const list = document.getElementById(listId);
+    if (total === 0) {
+      list.innerHTML = '<div class="top-rolls-empty">No rolls</div>';
+      return;
+    }
+    const freq = {};
+    rolls.forEach(r => { freq[r.roll] = (freq[r.roll] || 0) + 1; });
+    const sorted = Object.entries(freq)
+      .map(([face, count]) => ({ face: parseInt(face), count }))
+      .sort((a, b) => b.count - a.count || a.face - b.face)
+      .slice(0, 5);
+
+    list.innerHTML = sorted.map(r => {
+      const pct = ((r.count / total) * 100).toFixed(1);
+      return '<div class="top-rolls-row">'
+        + '<span class="top-rolls-face">' + r.face + '</span>'
+        + '<span class="top-rolls-count">×' + r.count + '</span>'
+        + '<span class="top-rolls-pct">' + pct + '%</span>'
+        + '</div>';
+    }).join('');
+  };
+
+  renderCol('topRollsAutoList',   'topRollsAutoTotal',   'auto');
+  renderCol('topRollsManualList', 'topRollsManualTotal', 'manual');
 }
 
 // ============================================================

@@ -164,6 +164,28 @@
 
   </div>
 
+  <!-- Top d20 Rolls -->
+  <div class="card">
+    <div class="card-title">
+      <span>Top d20 Rolls</span>
+      <span class="interval-tabs" id="topRollsIntervalTabs">
+        <button class="interval-tab" data-interval="today" onclick="setTopRollsInterval('today')">Today</button>
+        <button class="interval-tab" data-interval="7d" onclick="setTopRollsInterval('7d')">7d</button>
+        <button class="interval-tab" data-interval="all" onclick="setTopRollsInterval('all')">All</button>
+      </span>
+    </div>
+    <div class="top-rolls-wrap">
+      <div class="top-rolls-col">
+        <div class="top-rolls-col-header" style="color:var(--text3)">Auto <span class="top-rolls-total" id="topRollsAutoTotal">(0)</span></div>
+        <div class="top-rolls-list" id="topRollsAutoList"></div>
+      </div>
+      <div class="top-rolls-col">
+        <div class="top-rolls-col-header" style="color:var(--gold2)">Manual <span class="top-rolls-total" id="topRollsManualTotal">(0)</span></div>
+        <div class="top-rolls-list" id="topRollsManualList"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Adventuring Time -->
   <div class="card">
     <div class="card-title">Adventuring Time <button class="btn-inline" onclick="openManualTimeDialog()">+ Add Session Time</button></div>
@@ -745,7 +767,7 @@
 </div>
 
 <!-- ======================== BOSS EDIT MODAL ======================== -->
-<div class="modal-overlay" id="bossEditModal">
+<div class="modal-overlay" id="bossEditModal" onclick="if(event.target===this) closeModal('bossEditModal')">
   <div class="modal" style="max-width:340px;">
     <div class="modal-icon">⚔</div>
     <div class="modal-title" style="color:var(--gold2)">Boss — Manual Entry</div>
@@ -799,7 +821,7 @@
 </div>
 
 <!-- ======================== MINION EDIT MODAL ======================== -->
-<div class="modal-overlay" id="minionEditModal">
+<div class="modal-overlay" id="minionEditModal" onclick="if(event.target===this) closeModal('minionEditModal')">
   <div class="modal" style="max-width:340px;">
     <div class="modal-icon">⚔</div>
     <div class="modal-title" style="color:var(--minion)">Minion — Manual Entry</div>
@@ -1101,7 +1123,8 @@
       <tr><td class="help-key">R</td><td>Roll for Me (all dice)</td></tr>
       <tr><td class="help-key">A</td><td>Minion Attack</td></tr>
       <tr><td class="help-key">C</td><td>Open Minion Chest</td></tr>
-      <tr><td class="help-key">B</td><td>Boss Edit</td></tr>
+      <tr><td class="help-key">B</td><td>Boss Manual Entry</td></tr>
+      <tr><td class="help-key">M</td><td>Minion Manual Entry</td></tr>
       <tr><td class="help-key">Q</td><td>Toggle Quiet Mode</td></tr>
       <tr><td class="help-key">Ctrl+Home</td><td>Go to Home tab (top)</td></tr>
       <tr><td class="help-key">Y / Enter</td><td>Confirm session success</td></tr>

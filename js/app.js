@@ -150,6 +150,7 @@ document.addEventListener('keydown', function(e) {
   else if ((e.key === 'a' || e.key === 'A') && noMod) { e.preventDefault(); minionAttack(); }
   else if ((e.key === 'c' || e.key === 'C') && noMod) { e.preventDefault(); openMinionChest(); }
   else if ((e.key === 'b' || e.key === 'B') && noMod) { e.preventDefault(); openBossEditModal(); }
+  else if ((e.key === 'm' || e.key === 'M') && noMod) { e.preventDefault(); openMinionEditModal(); }
   else if ((e.key === 'q' || e.key === 'Q') && noMod) { e.preventDefault(); toggleQuietMode(); }
 });
 

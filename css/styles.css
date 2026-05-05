@@ -2076,3 +2076,98 @@
     align-self: stretch;
     opacity: 0.5;
   }
+
+  /* Top d20 Rolls section */
+  .interval-tabs {
+    display: inline-flex;
+    gap: 2px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px;
+    background: rgba(0,0,0,0.2);
+    margin-left: auto;
+  }
+  .interval-tab {
+    font-family: var(--font-heading);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    background: transparent;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .interval-tab:hover { color: var(--text2); }
+  .interval-tab.active {
+    background: rgba(200,150,62,0.18);
+    color: var(--gold);
+  }
+  .top-rolls-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .top-rolls-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .top-rolls-col-header {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .top-rolls-total {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    color: var(--text3);
+    letter-spacing: 0;
+    text-transform: none;
+    margin-left: 4px;
+  }
+  .top-rolls-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .top-rolls-row {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    justify-content: center;
+    font-family: var(--font-body);
+  }
+  .top-rolls-face {
+    font-family: var(--font-display);
+    color: var(--text);
+    font-size: 1.4rem;
+    min-width: 1.4em;
+    text-align: right;
+    line-height: 1.1;
+  }
+  .top-rolls-count {
+    color: var(--text2);
+    font-size: 0.93rem;
+    min-width: 1.8em;
+    text-align: left;
+  }
+  .top-rolls-pct {
+    color: var(--text3);
+    font-size: 1.2rem;
+    text-align: right;
+    min-width: 3em;
+  }
+  .top-rolls-empty {
+    color: var(--text3);
+    font-size: 1.5rem;
+    text-align: center;
+    padding: 16px 0;
+    font-style: italic;
+  }
