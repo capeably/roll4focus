@@ -116,7 +116,7 @@ function sessionResult(success) {
   if (sess.hope && sess.hope !== '—') state.hopeRolls.push(Number(sess.hope));
   if (sess.fear && sess.fear !== '—') state.fearRolls.push(Number(sess.fear));
   if (sess.sound && sess.sound !== '—') state.soundRolls.push(Number(sess.sound));
-  markDirty(); updateAdventuringTime(); updateMetrics(); updateStreakDisplay();
+  markDirty(); updateAdventuringTime(); updateMetrics(); updateStreakDisplay(); updateSessionsTodayChip();
 }
 
 

@@ -63,6 +63,22 @@ function loadTheme() {
   setTheme(saved === 'classic' ? 'classic' : 'arcade');
 }
 
+// Header status chip: count of successful sessions completed today (calendar day).
+function updateSessionsTodayChip() {
+  const el = document.getElementById('sessionsTodayCount');
+  if (!el) return;
+  const now = new Date();
+  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const end = start + 86400000;
+  const count = (state.logs || []).filter(l => {
+    if (!l.success) return false;
+    const t = new Date(l.timestamp).getTime();
+    return !isNaN(t) && t >= start && t < end;
+  }).length;
+  // Always 2-digit pad ("S04 · TODAY")
+  el.textContent = count < 10 ? '0' + count : String(count);
+}
+
 // Boss Edit Modal
 function openBossEditModal() {
   document.getElementById('bossEditAttackInput').value = '';
@@ -779,6 +795,7 @@ function updateSessionSummaryStrip() {
 
 function renderLogs() {
   updateSessionSummaryStrip();
+  updateSessionsTodayChip();
   const container = document.getElementById('logsContainer');
   if (state.logs.length === 0) {
     container.innerHTML = '<div class="logs-empty">No sessions logged yet.<br>Complete a session to see it here.</div>';

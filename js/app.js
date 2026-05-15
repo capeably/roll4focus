@@ -124,7 +124,7 @@ function init() {
   updateMinionUI(); updateBossUI(); updateMinionCountdownDisplay(); updateDCDisplays();
   buildSoundtrackTable(); loadNotesTab(); updateAdventuringTime(); updateStatsDisplay();
   updateMetrics(); updateDiceNamesChip(); updateStreakDisplay(); updateQuietModeUI();
-  updateBattleSummaryStrip(); updateSessionSummaryStrip();
+  updateBattleSummaryStrip(); updateSessionSummaryStrip(); updateSessionsTodayChip();
   if (state.timerSeconds > 0) { updateTimerDisplay(); updateRing(); }
   Sound.restoreAll();
 }

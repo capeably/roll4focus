@@ -105,14 +105,49 @@
     opacity: 0.5;
   }
 
+  /* Logo accent letter (e.g. the "4" in ROLL4FOCUS) */
+  .app-title .logo-accent {
+    color: var(--gold);
+    text-shadow: 0 0 14px rgba(200,150,62,0.6);
+  }
+
+  /* Status dot (used in subtitle + status chip) */
+  .status-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--success);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--success);
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  /* App footer flavor line */
+  .app-footer {
+    text-align: center;
+    font-family: var(--font-heading);
+    font-size: 0.6rem;
+    color: var(--text3);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    padding: 16px 20px 24px;
+    max-width: 680px;
+    margin: 0 auto;
+    opacity: 0.75;
+  }
+
   /* TABS */
   .tabs {
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: flex-start;
     gap: 0;
     padding: 16px 20px 0;
+    max-width: 680px;
+    margin: 0 auto;
     position: relative; z-index: 1;
   }
+  .tabs-spacer { flex: 1; min-width: 8px; }
   .tab-btn,
   .sub-tab-btn {
     font-family: var(--font-heading);
@@ -129,10 +164,27 @@
     padding: 9px 22px;
     position: relative;
   }
-  .tab-btn:first-child { border-radius: 4px 0 0 4px; }
-  .tab-btn:last-child { border-radius: 0 4px 4px 0; }
+  .tab-btn:first-of-type { border-radius: 4px 0 0 4px; }
+  .tab-btn:last-of-type { border-radius: 0 4px 4px 0; }
   .tab-btn + .tab-btn { border-left: none; }
   .tab-btn + .tab-btn.active { border-left: 1px solid var(--gold); }
+
+  /* Header status chip (right side of tabs row) */
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    font-family: var(--font-heading);
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 10px;
+    background: rgba(0,0,0,0.2);
+  }
+  .status-chip .status-chip-text { white-space: nowrap; }
   .tab-btn:hover { color: var(--gold2); border-color: var(--border2); background: rgba(200,150,62,0.04); }
   .tab-btn.active {
     color: var(--gold2);
@@ -1738,7 +1790,50 @@
     box-shadow: 0 0 0 1px var(--border2);
   }
 
-  /* STATS COMBINED CARD */
+  /* STATS STRIP (horizontal, replaces old Stats card) */
+  .stats-strip {
+    display: flex;
+    align-items: stretch;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .stats-chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg2);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    font-family: inherit;
+  }
+  .stats-chip:hover { border-color: var(--border2); background: var(--bg3); }
+  .stats-chip-label {
+    font-family: var(--font-heading);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+  .stats-chip-value {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    line-height: 1;
+    color: var(--text);
+    font-weight: 600;
+  }
+  .stats-strip-divider {
+    width: 1px;
+    background: var(--border);
+    margin: 4px 4px;
+    opacity: 0.6;
+    flex-shrink: 0;
+  }
+
+  /* STATS COMBINED CARD (legacy — kept for cozy theme / fallback) */
   .stats-combined-row {
     display: grid;
     grid-template-columns: 1fr auto 1fr;

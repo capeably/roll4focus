@@ -19,8 +19,8 @@
 <header class="app-header">
   <button class="header-btn" id="quietToggle" onclick="toggleQuietMode()" title="Quiet Mode (Q)">🔊</button>
   <div class="app-header-center">
-    <div class="app-title">Roll 4 Focus</div>
-    <div class="app-subtitle">Gamified Pomodoro Timer</div>
+    <div class="app-title"><span>ROLL</span><span class="logo-accent">4</span><span>FOCUS</span></div>
+    <div class="app-subtitle"><span class="status-dot"></span>SYSTEM ONLINE · V2.1</div>
   </div>
   <button class="header-btn" onclick="openModal('helpModal')" title="Help">?</button>
   <div class="header-divider"></div>
@@ -29,56 +29,37 @@
 <nav class="tabs">
   <button class="tab-btn active" onclick="switchTab('timer', event)">Home</button>
   <button class="tab-btn" onclick="switchTab('logs', event)">Logs</button>
-  <button class="tab-btn" onclick="switchTab('notes', event)">📝</button>
   <button class="tab-btn" onclick="switchTab('settings', event)">⚙️</button>
+  <div class="tabs-spacer"></div>
+  <div class="status-chip" id="sessionsTodayChip" title="Sessions completed today"><span class="status-dot"></span><span class="status-chip-text">S<span id="sessionsTodayCount">0</span> · Today</span></div>
 </nav>
 
 <!-- ======================== DASHBOARD TAB ======================== -->
 <div id="tab-timer" class="tab-content active">
 
-  <!-- ROW 1: Stats (compact unified card) -->
-  <div class="card" style="margin-bottom:16px;">
-    <div class="card-title">Stats <button class="btn-inline" onclick="resetStatus()" title="Reset all stats to defaults">↺ Reset</button></div>
-    <div class="stats-combined-row">
-
-      <!-- Dice section -->
-      <div class="stats-section" onclick="openModal('diceDialog')">
-        <div class="stats-section-title">🎲 Dice</div>
-        <div class="stats-chips">
-          <div class="stat-chip">
-            <span class="stat-chip-label" style="color:var(--teal)">Hope</span>
-            <span class="stat-chip-value" id="statHope" style="color:var(--teal)">—</span>
-          </div>
-          <div class="stat-chip">
-            <span class="stat-chip-label" style="color:var(--red2)">Fear</span>
-            <span class="stat-chip-value" id="statFear" style="color:var(--red2)">—</span>
-          </div>
-          <div class="stat-chip">
-            <span class="stat-chip-label" style="color:var(--gold)">Sound</span>
-            <span class="stat-chip-value" id="statSound">—</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="stats-section-divider"></div>
-
-      <!-- Modifiers section -->
-      <div class="stats-section" onclick="openModal('inspPenDialog')">
-        <div class="stats-section-title">✨ Modifiers</div>
-        <div class="stats-chips">
-          <div class="stat-chip">
-            <span class="stat-chip-label" style="color:var(--gold)">Insp</span>
-            <span class="stat-chip-value" id="statInspiration" style="color:var(--gold2)">0</span>
-          </div>
-          <div class="stat-chip">
-            <span class="stat-chip-label" style="color:var(--red2)">Pen</span>
-            <span class="stat-chip-value" id="statPenalty">0</span>
-          </div>
-        </div>
-      </div>
-
-
-    </div>
+  <!-- ROW 1: Stats Strip (compact horizontal) -->
+  <div class="stats-strip">
+    <button class="stats-chip" onclick="openModal('diceDialog')" title="Hope">
+      <span class="stats-chip-label" style="color:var(--teal)">HP</span>
+      <span class="stats-chip-value" id="statHope" style="color:var(--teal)">—</span>
+    </button>
+    <button class="stats-chip" onclick="openModal('diceDialog')" title="Fear">
+      <span class="stats-chip-label" style="color:var(--red2)">FR</span>
+      <span class="stats-chip-value" id="statFear" style="color:var(--red2)">—</span>
+    </button>
+    <button class="stats-chip" onclick="openModal('diceDialog')" title="Sound">
+      <span class="stats-chip-label" style="color:var(--success)">SD</span>
+      <span class="stats-chip-value" id="statSound" style="color:var(--success)">—</span>
+    </button>
+    <span class="stats-strip-divider"></span>
+    <button class="stats-chip" onclick="openModal('inspPenDialog')" title="Inspiration">
+      <span class="stats-chip-label" style="color:var(--amber)">INSP</span>
+      <span class="stats-chip-value" id="statInspiration" style="color:var(--amber)">0</span>
+    </button>
+    <button class="stats-chip" onclick="openModal('inspPenDialog')" title="Penalty">
+      <span class="stats-chip-label">PEN</span>
+      <span class="stats-chip-value" id="statPenalty">0</span>
+    </button>
   </div>
 
   <!-- ROW 2: Session + Quick Battle Controls side by side -->
@@ -322,6 +303,15 @@
       <div class="setting-control">
         <label class="file-btn" for="configImportInput">↑ Import</label>
         <input type="file" id="configImportInput" accept=".json" onchange="importSettings(event)">
+      </div>
+    </div>
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Reset Stats</div>
+        <div class="setting-sub">Clear today's Hope/Fear/Sound, Inspiration, Penalty</div>
+      </div>
+      <div class="setting-control">
+        <button class="file-btn" onclick="resetStatus()" title="Reset all stats to defaults">↺ Reset</button>
       </div>
     </div>
   </div>
@@ -1156,6 +1146,8 @@
     </div>
   </div>
 </div>
+
+<footer class="app-footer">[ FOCUS.LOOP // NAT_20 ALWAYS ]</footer>
 
 <div class="toast" id="toast"></div>
 
