@@ -749,17 +749,20 @@ function renderBattleLogs() {
   }
   container.innerHTML = state.battleLogs.map((log, i) => {
     const diceTag = (log.rollType === 'manual' && log.diceName)
-      ? `<span class="dice-name-badge">${escapeHtml(log.diceName)}</span>` : '';
+      ? `<span class="dice-name-badge">◆ ${escapeHtml(log.diceName)}</span>` : '';
+    const rollClass = log.roll === 20 ? 'crit' : (log.roll === 1 ? 'fumble' : '');
     return `
-    <div class="battle-log-entry ${log.won ? 'success' : 'fail'}">
-      <div class="battle-log-roll ${log.type}">${log.roll}</div>
+    <div class="battle-log-entry battle-log-${log.type} ${log.won ? 'success' : 'fail'}">
+      <div class="battle-log-roll ${log.type} ${rollClass}">${log.roll}</div>
       <div class="battle-log-details">
         <div class="battle-log-type">
-          ${log.type === 'boss' ? '⚔ Boss Battle' : '⚔ Minion Battle'}
+          <span class="battle-log-kind ${log.type}">⚔ ${log.type === 'boss' ? 'BOSS' : 'MINION'}</span>
           <span class="roll-type-badge ${log.rollType}">${log.rollType}</span>${diceTag}
         </div>
-        <span class="log-result ${log.won ? 'success' : 'fail'}">${log.won ? 'Success' : 'Fail'}</span>
-        <span class="battle-log-dc">DC ${log.dc} · Rolled ${log.roll}</span>
+        <div class="battle-log-bottom">
+          <span class="log-result ${log.won ? 'success' : 'fail'}">${log.won ? 'Success' : 'Fail'}</span>
+          <span class="battle-log-dc">DC <b>${log.dc}</b> · ROLLED <b>${log.roll}</b></span>
+        </div>
       </div>
       <div class="log-actions">
         <div class="log-timestamp">${escapeHtml(log.timestamp)}</div>
@@ -811,14 +814,16 @@ function renderLogs() {
   container.innerHTML = state.logs.map((log, i) => `
     <div class="log-entry ${log.success ? 'success' : 'fail'}">
       <div class="log-dice">
-        <div class="log-die hope" title="Hope">⚐ ${log.hope}</div>
-        <div class="log-die fear" title="Fear">⚑ ${log.fear}</div>
-        <div class="log-die sound" title="Soundtrack">♪ ${log.sound}</div>
+        <div class="log-die hope" title="Hope"><span class="log-die-sym">▲</span><span class="log-die-val">${log.hope}</span></div>
+        <div class="log-die fear" title="Fear"><span class="log-die-sym">▼</span><span class="log-die-val">${log.fear}</span></div>
+        <div class="log-die sound" title="Soundtrack"><span class="log-die-sym">♪</span><span class="log-die-val">${log.sound}</span></div>
       </div>
       <div class="log-details">
-        <span class="log-result ${log.success ? 'success' : 'fail'}">${log.success ? 'Success' : 'Incomplete'}</span>
-        <div class="log-soundtrack">${escapeHtml(log.soundtrack)}</div>
-        <div class="log-duration">${log.duration} minutes</div>
+        <div class="log-details-top">
+          <span class="log-result ${log.success ? 'success' : 'fail'}">${log.success ? 'Success' : 'Incomplete'}</span>
+          <div class="log-soundtrack">${escapeHtml(log.soundtrack)}</div>
+        </div>
+        <div class="log-duration"><span class="log-duration-num">${log.duration}</span><span class="log-duration-unit">MIN</span></div>
       </div>
       <div class="log-actions">
         <div class="log-timestamp">${escapeHtml(log.timestamp)}</div>

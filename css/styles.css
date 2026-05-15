@@ -1007,30 +1007,50 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
   .lss-cell {
-    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 8px;
     border: 1px solid var(--border);
     border-radius: 4px;
-    text-align: center;
     background: var(--bg2);
   }
+  .lss-value {
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
   .lss-label {
-    display: block;
     font-family: var(--font-heading);
-    font-size: 0.5rem;
+    font-size: 0.55rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--text3);
   }
-  .lss-value {
-    display: block;
-    font-family: var(--font-display);
-    font-size: 1.2rem;
-    color: var(--text2);
-    margin-top: 2px;
+  /* Per-cell color accents on the value */
+  .lss-cell-win   .lss-value { color: var(--success); text-shadow: 0 0 10px rgba(76,175,130,0.4); }
+  .lss-cell-loss  .lss-value { color: var(--red2);    text-shadow: 0 0 10px rgba(231,76,60,0.4); }
+  .lss-cell-nat20 .lss-value { color: var(--success); text-shadow: 0 0 10px rgba(76,175,130,0.4); }
+  .lss-cell-done  .lss-value { color: var(--success); text-shadow: 0 0 10px rgba(76,175,130,0.4); }
+  .lss-cell-min   .lss-value { color: var(--teal);    text-shadow: 0 0 10px rgba(46,173,168,0.4); }
+  .lss-cell-avg   .lss-value { color: var(--minion);  text-shadow: 0 0 10px rgba(155,127,212,0.4); }
+
+  /* Logs toolbar */
+  .logs-toolbar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
   }
+  .logs-toolbar .btn-icon { display: inline-block; margin-right: 6px; font-size: 0.9rem; }
+  .logs-toolbar .btn-text { letter-spacing: 0.06em; }
+
   .logs-empty {
     text-align: center;
     padding: 40px 20px;
@@ -1041,39 +1061,58 @@
     background: var(--bg3);
     border: 1px solid var(--border);
     border-radius: 6px;
-    padding: 14px 16px;
+    padding: 12px 14px;
     margin-bottom: 10px;
     display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 12px;
-    align-items: start;
+    grid-template-columns: 54px 1fr auto;
+    gap: 14px;
+    align-items: center;
     animation: logIn 0.3s ease;
   }
   @keyframes logIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-  .log-entry.success { border-left: 3px solid var(--success); }
-  .log-entry.fail { border-left: 3px solid var(--red); }
+  .log-entry.success { border-left: 3px solid var(--minion); }
+  .log-entry.fail    { border-left: 3px solid var(--red); }
   .log-dice {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 4px;
+    gap: 3px;
   }
   .log-die {
-    font-family: var(--font-display);
-    font-size: 1rem;
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
     line-height: 1;
   }
-  .log-die.hope { color: var(--teal); }
-  .log-die.fear { color: var(--red2); }
-  .log-die.sound { color: var(--gold); font-size: 0.8rem; }
-  .log-details { font-size: 0.88rem; }
-  .log-soundtrack { color: var(--text2); font-style: italic; margin-bottom: 4px; }
-  .log-duration {
+  .log-die-sym {
     font-family: var(--font-heading);
     font-size: 0.65rem;
-    letter-spacing: 0.15em;
+    width: 14px;
+    text-align: center;
+  }
+  .log-die-val {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .log-die.hope  .log-die-sym { color: var(--teal); }
+  .log-die.fear  .log-die-sym { color: var(--red2); }
+  .log-die.sound .log-die-sym { color: var(--success); }
+  .log-details { font-size: 0.88rem; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .log-details-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .log-soundtrack { color: var(--text2); font-family: var(--font-heading); font-size: 0.72rem; letter-spacing: 0.05em; }
+  .log-duration {
+    font-family: var(--font-display);
+    color: var(--text);
+  }
+  .log-duration-num { font-size: 1rem; font-weight: 700; }
+  .log-duration-unit {
+    font-family: var(--font-heading);
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--text3);
+    margin-left: 4px;
   }
   .log-timestamp { font-size: 0.75rem; color: var(--text3); text-align: right; }
   .log-actions {
@@ -1138,19 +1177,22 @@
   .btn-export-csv {
     font-family: var(--font-heading);
     font-size: 0.65rem;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     background: none;
     border: 1px solid var(--border2);
     color: var(--text3);
-    padding: 8px 16px;
-    border-radius: 6px;
+    padding: 8px 12px;
+    border-radius: 4px;
     cursor: pointer;
-    margin-bottom: 16px;
     transition: all 0.2s;
+    white-space: nowrap;
+    text-align: center;
   }
-  .btn-clear-logs:hover { border-color: var(--red); color: var(--red2); }
-  .btn-export-csv:hover { border-color: var(--teal); color: var(--teal); }
+  .btn-clear-logs { border-color: rgba(231,76,60,0.4); color: var(--red2); }
+  .btn-clear-logs:hover { border-color: var(--red2); background: rgba(231,76,60,0.08); }
+  .btn-export-csv { border-color: rgba(46,173,168,0.4); color: var(--teal); }
+  .btn-export-csv:hover { border-color: var(--teal); background: rgba(46,173,168,0.08); }
 
   .btn-inline,
   .btn-import-csv {
@@ -1169,7 +1211,19 @@
     vertical-align: middle;
   }
   .btn-inline:hover { border-color: var(--red); color: var(--red2); }
-  .btn-import-csv:hover { border-color: var(--teal); color: var(--teal); }
+  .btn-import-csv:hover { border-color: var(--success); background: rgba(76,175,130,0.08); }
+  /* When btn-import-csv is in the logs toolbar, use lime accent */
+  .logs-toolbar .btn-import-csv {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    padding: 8px 12px;
+    margin-left: 0;
+    border-radius: 4px;
+    border-color: rgba(76,175,130,0.4);
+    color: var(--success);
+    text-align: center;
+    white-space: nowrap;
+  }
 
   .sound-file-control {
     display: flex;
@@ -2143,6 +2197,21 @@
     background: rgba(200,150,62,0.08);
     border-color: var(--gold);
   }
+  /* Per-sub-tab accent colors when active */
+  .sub-tab-btn.sub-tab-battles.active {
+    color: var(--red2);
+    background: rgba(231,76,60,0.10);
+    border-color: var(--red2);
+    box-shadow: 0 0 12px rgba(231,76,60,0.20);
+  }
+  .sub-tab-btn.sub-tab-sessions.active {
+    color: var(--minion);
+    background: rgba(155,127,212,0.10);
+    border-color: var(--minion);
+    box-shadow: 0 0 12px rgba(155,127,212,0.20);
+  }
+  .sub-tab-btn + .sub-tab-btn.sub-tab-battles.active   { border-left: 1px solid var(--red2); }
+  .sub-tab-btn + .sub-tab-btn.sub-tab-sessions.active  { border-left: 1px solid var(--minion); }
   .sub-tab-content { display: none; }
   .sub-tab-content.active { display: block; }
 
@@ -2151,36 +2220,48 @@
     background: var(--bg3);
     border: 1px solid var(--border);
     border-radius: 6px;
-    padding: 12px 16px;
+    padding: 12px 14px;
     margin-bottom: 10px;
     display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 12px;
+    grid-template-columns: 52px 1fr auto;
+    gap: 14px;
     align-items: center;
     animation: logIn 0.3s ease;
   }
-  .battle-log-entry.success { border-left: 3px solid var(--success); }
-  .battle-log-entry.fail { border-left: 3px solid var(--red); }
+  .battle-log-entry.battle-log-boss   { border-left: 3px solid var(--red2); }
+  .battle-log-entry.battle-log-minion { border-left: 3px solid var(--minion); }
   .battle-log-roll {
     font-family: var(--font-display);
-    font-size: 1.6rem;
-    min-width: 44px;
+    font-size: 2.4rem;
+    font-weight: 700;
     text-align: center;
     line-height: 1;
+    color: var(--text);
   }
-  .battle-log-roll.boss { color: var(--gold2); }
-  .battle-log-roll.minion { color: var(--minion); }
-  .battle-log-details { font-size: 0.88rem; }
+  .battle-log-roll.crit   { color: var(--success); text-shadow: 0 0 14px rgba(76,175,130,0.55); }
+  .battle-log-roll.fumble { color: var(--red2);    text-shadow: 0 0 14px rgba(231,76,60,0.55); }
+  .battle-log-details { font-size: 0.88rem; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
   .battle-log-type {
     font-family: var(--font-heading);
     font-size: 0.65rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text2);
-    margin-bottom: 5px;
     display: flex;
     align-items: center;
     gap: 6px;
+    flex-wrap: wrap;
+  }
+  .battle-log-kind {
+    font-weight: 600;
+  }
+  .battle-log-kind.boss   { color: var(--red2); }
+  .battle-log-kind.minion { color: var(--minion); }
+  .battle-log-bottom {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
   }
   .roll-type-badge {
     font-family: var(--font-heading);
@@ -2194,13 +2275,12 @@
   .roll-type-badge.manual { background: rgba(200,150,62,0.1); color: var(--gold2); border: 1px solid rgba(200,150,62,0.3); }
   .battle-log-dc {
     font-family: var(--font-heading);
-    font-size: 0.6rem;
+    font-size: 0.62rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text3);
-    margin-top: 4px;
-    display: block;
   }
+  .battle-log-dc b { color: var(--text); font-weight: 700; }
 
   /* DICE NAME BADGE */
   .dice-name-badge {

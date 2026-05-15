@@ -660,22 +660,22 @@
 <div id="tab-logs" class="tab-content">
 
   <div class="sub-tabs">
-    <button class="sub-tab-btn active" onclick="switchSubTab('battles', event)">⚔️ Battles</button>
-    <button class="sub-tab-btn" onclick="switchSubTab('sessions', event)">⏱️ Sessions</button>
+    <button class="sub-tab-btn sub-tab-battles active" onclick="switchSubTab('battles', event)">⚔ Battles</button>
+    <button class="sub-tab-btn sub-tab-sessions" onclick="switchSubTab('sessions', event)">◐ Sessions</button>
   </div>
 
   <!-- Battles sub-tab -->
   <div id="subtab-battles" class="sub-tab-content active">
     <div class="logs-summary-strip">
-      <div class="lss-cell"><span class="lss-label">TOTAL</span><span class="lss-value" id="lssBattleTotal">0</span></div>
-      <div class="lss-cell"><span class="lss-label">WIN</span><span class="lss-value" id="lssBattleWin">0</span></div>
-      <div class="lss-cell"><span class="lss-label">LOSS</span><span class="lss-value" id="lssBattleLoss">0</span></div>
-      <div class="lss-cell"><span class="lss-label">NAT 20</span><span class="lss-value" id="lssBattleNat20">0</span></div>
+      <div class="lss-cell"><span class="lss-value" id="lssBattleTotal">0</span><span class="lss-label">TOTAL</span></div>
+      <div class="lss-cell lss-cell-win"><span class="lss-value" id="lssBattleWin">0</span><span class="lss-label">WIN</span></div>
+      <div class="lss-cell lss-cell-loss"><span class="lss-value" id="lssBattleLoss">0</span><span class="lss-label">LOSS</span></div>
+      <div class="lss-cell lss-cell-nat20"><span class="lss-value" id="lssBattleNat20">0</span><span class="lss-label">NAT 20</span></div>
     </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
-      <button class="btn-clear-logs" onclick="clearBattleLogs()">✕ Clear All</button>
-      <button class="btn-export-csv" onclick="exportBattleCSV()">↓ Export CSV</button>
-      <label class="btn-import-csv" for="battleCsvImportInput">↑ Import CSV</label>
+    <div class="logs-toolbar">
+      <button class="btn-clear-logs" onclick="clearBattleLogs()"><span class="btn-icon">✕</span><span class="btn-text">Clear All</span></button>
+      <button class="btn-export-csv" onclick="exportBattleCSV()"><span class="btn-icon">↓</span><span class="btn-text">Export CSV</span></button>
+      <label class="btn-import-csv" for="battleCsvImportInput"><span class="btn-icon">↑</span><span class="btn-text">Import CSV</span></label>
       <input type="file" id="battleCsvImportInput" accept=".csv" onchange="importBattleCSV(event)">
     </div>
     <div id="battleLogsContainer">
@@ -686,15 +686,15 @@
   <!-- Sessions sub-tab -->
   <div id="subtab-sessions" class="sub-tab-content">
     <div class="logs-summary-strip">
-      <div class="lss-cell"><span class="lss-label">SESS</span><span class="lss-value" id="lssSessTotal">0</span></div>
-      <div class="lss-cell"><span class="lss-label">DONE</span><span class="lss-value" id="lssSessDone">0</span></div>
-      <div class="lss-cell"><span class="lss-label">MIN</span><span class="lss-value" id="lssSessMin">0</span></div>
-      <div class="lss-cell"><span class="lss-label">AVG</span><span class="lss-value" id="lssSessAvg">—</span></div>
+      <div class="lss-cell"><span class="lss-value" id="lssSessTotal">0</span><span class="lss-label">SESS</span></div>
+      <div class="lss-cell lss-cell-done"><span class="lss-value" id="lssSessDone">0</span><span class="lss-label">DONE</span></div>
+      <div class="lss-cell lss-cell-min"><span class="lss-value" id="lssSessMin">0</span><span class="lss-label">MIN</span></div>
+      <div class="lss-cell lss-cell-avg"><span class="lss-value" id="lssSessAvg">—</span><span class="lss-label">AVG</span></div>
     </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
-      <button class="btn-clear-logs" onclick="clearLogs()">✕ Clear All</button>
-      <button class="btn-export-csv" onclick="exportCSV()">↓ Export CSV</button>
-      <label class="btn-import-csv" for="sessionCsvImportInput">↑ Import CSV</label>
+    <div class="logs-toolbar">
+      <button class="btn-clear-logs" onclick="clearLogs()"><span class="btn-icon">✕</span><span class="btn-text">Clear All</span></button>
+      <button class="btn-export-csv" onclick="exportCSV()"><span class="btn-icon">↓</span><span class="btn-text">Export CSV</span></button>
+      <label class="btn-import-csv" for="sessionCsvImportInput"><span class="btn-icon">↑</span><span class="btn-text">Import CSV</span></label>
       <input type="file" id="sessionCsvImportInput" accept=".csv" onchange="importSessionCSV(event)">
     </div>
     <div id="logsContainer">
