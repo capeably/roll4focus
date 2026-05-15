@@ -471,6 +471,17 @@
   .action-chip > .qb-result.win  { color: var(--success); text-shadow: 0 0 12px rgba(76,175,130,0.5); }
   .action-chip > .qb-result.fail { color: var(--red2);    text-shadow: 0 0 12px rgba(231,76,60,0.5); }
 
+  /* Card section accents (Settings tab) — colored left border + subtle glow */
+  .card-section { position: relative; }
+  .card-section-cyan    { border-left: 3px solid var(--teal);   box-shadow: 0 0 24px rgba(46,173,168,0.07); }
+  .card-section-magenta { border-left: 3px solid var(--red2);   box-shadow: 0 0 24px rgba(231,76,60,0.07); }
+  .card-section-lime    { border-left: 3px solid var(--success);box-shadow: 0 0 24px rgba(76,175,130,0.07); }
+  .card-section-amber   { border-left: 3px solid var(--amber);  box-shadow: 0 0 24px rgba(212,129,58,0.07); }
+  .card-section-cyan    > .card-title { color: var(--teal); }
+  .card-section-magenta > .card-title { color: var(--red2); }
+  .card-section-lime    > .card-title { color: var(--success); }
+  .card-section-amber   > .card-title { color: var(--amber); }
+
   /* SOUNDTRACK SELECTOR (in Session card) */
   .soundtrack-selector {
     display: flex;
@@ -985,6 +996,10 @@
   }
   .soundtrack-table tbody tr:last-child td { border-bottom: none; }
   .soundtrack-table tbody tr:hover td { background: rgba(200,150,62,0.04); }
+  /* Roll number coloring: nat 1 red, nat 20 lime, rest cyan */
+  .soundtrack-table td.roll-mid   { color: var(--teal);    font-family: var(--font-display); font-weight: 700; }
+  .soundtrack-table td.roll-nat1  { color: var(--red2);    font-family: var(--font-display); font-weight: 700; text-shadow: 0 0 10px rgba(231,76,60,0.45); }
+  .soundtrack-table td.roll-nat20 { color: var(--success); font-family: var(--font-display); font-weight: 700; text-shadow: 0 0 10px rgba(76,175,130,0.45); }
   .soundtrack-table td:first-child {
     font-family: var(--font-display);
     font-size: 1rem;
@@ -2640,10 +2655,10 @@
     gap: 6px;
   }
   .top-rolls-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
     gap: 8px;
-    align-items: baseline;
-    justify-content: center;
+    align-items: center;
     font-family: var(--font-body);
   }
   .top-rolls-face {
@@ -2654,12 +2669,32 @@
     text-align: right;
     line-height: 1.1;
   }
+  .top-rolls-face.nat20 { color: var(--success); text-shadow: 0 0 10px rgba(76,175,130,0.5); }
+  .top-rolls-face.nat1  { color: var(--red2);    text-shadow: 0 0 10px rgba(231,76,60,0.5); }
   .top-rolls-count {
     color: var(--text2);
     font-size: 0.93rem;
     min-width: 1.8em;
     text-align: left;
   }
+  /* Horizontal bar viz */
+  .top-rolls-bar {
+    position: relative;
+    height: 4px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .top-rolls-bar-fill {
+    display: block;
+    height: 100%;
+    border-radius: 2px;
+  }
+  .top-rolls-bar-fill.bar-cyan    { background: var(--minion); box-shadow: 0 0 6px rgba(155,127,212,0.5); }
+  .top-rolls-bar-fill.bar-lime    { background: var(--success);box-shadow: 0 0 6px rgba(76,175,130,0.5); }
+  .top-rolls-bar-fill.bar-magenta { background: var(--red2);   box-shadow: 0 0 6px rgba(231,76,60,0.5); }
+  .top-rolls-bar-fill.bar-amber   { background: var(--amber);  box-shadow: 0 0 6px rgba(212,129,58,0.5); }
+  .top-rolls-bar-fill.bar-teal    { background: var(--teal);   box-shadow: 0 0 6px rgba(46,173,168,0.5); }
   .top-rolls-pct {
     color: var(--text3);
     font-size: 1.2rem;

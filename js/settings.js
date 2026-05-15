@@ -74,9 +74,12 @@ function importSoundtrackCSV(event) {
 function buildSoundtrackTable() {
   const tbody = document.getElementById('soundtrackTableBody');
   tbody.innerHTML = '';
-  for (let i = 0; i < state.soundtracks.length; i++) {
+  const max = state.soundtracks.length;
+  for (let i = 0; i < max; i++) {
+    const roll = i + 1;
+    const rollCls = roll === 1 ? 'roll-nat1' : (roll === max ? 'roll-nat20' : 'roll-mid');
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${i+1}</td><td><input type="text" value="${escapeHtml(state.soundtracks[i])}" onblur="saveSettings()"></td>`;
+    tr.innerHTML = `<td class="${rollCls}">${roll}</td><td><input type="text" value="${escapeHtml(state.soundtracks[i])}" onblur="saveSettings()"></td>`;
     tbody.appendChild(tr);
   }
 }

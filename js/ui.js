@@ -441,14 +441,20 @@ function renderTopRolls() {
     return;
   }
 
-  const rowHtml = (items, total) => items.map(r => {
-    const pct = ((r.count / total) * 100).toFixed(1);
-    return '<div class="top-rolls-row">'
-      + '<span class="top-rolls-face">' + r.face + '</span>'
-      + '<span class="top-rolls-count">×' + r.count + '</span>'
-      + '<span class="top-rolls-pct">' + pct + '%</span>'
-      + '</div>';
-  }).join('');
+  const rowHtml = (items, total, colorClass) => {
+    const maxCount = items.reduce((m, r) => Math.max(m, r.count), 1);
+    return items.map(r => {
+      const pct = ((r.count / total) * 100).toFixed(1);
+      const barW = Math.max(4, Math.round((r.count / maxCount) * 100));
+      const faceCls = r.face === 20 ? 'top-rolls-face nat20' : (r.face === 1 ? 'top-rolls-face nat1' : 'top-rolls-face');
+      return '<div class="top-rolls-row">'
+        + '<span class="' + faceCls + '">' + r.face + '</span>'
+        + '<span class="top-rolls-count">×' + r.count + '</span>'
+        + '<span class="top-rolls-bar"><span class="top-rolls-bar-fill ' + colorClass + '" style="width:' + barW + '%"></span></span>'
+        + '<span class="top-rolls-pct">' + pct + '%</span>'
+        + '</div>';
+    }).join('');
+  };
 
   const topFaces = (rolls, limit) => {
     const freq = {};
@@ -457,6 +463,16 @@ function renderTopRolls() {
       .map(([face, count]) => ({ face: parseInt(face), count }))
       .sort((a, b) => b.count - a.count || a.face - b.face)
       .slice(0, limit);
+  };
+
+  // Pick a stable bar color per category — auto gets a neutral teal,
+  // named dies cycle through cyan/magenta/lime/amber by hash.
+  const barClassFor = (cat, indexHint) => {
+    if (cat.isAuto) return 'bar-teal';
+    const palette = ['bar-cyan', 'bar-lime', 'bar-magenta', 'bar-amber'];
+    let h = 0;
+    for (let i = 0; i < cat.name.length; i++) h = (h * 31 + cat.name.charCodeAt(i)) | 0;
+    return palette[Math.abs(h + (indexHint || 0)) % palette.length];
   };
 
   // Single category — single header banner spanning both columns,
@@ -469,25 +485,27 @@ function renderTopRolls() {
     const left = sorted.slice(0, half);
     const right = sorted.slice(half);
     const color = cat.isAuto ? 'var(--text3)' : 'var(--gold2)';
+    const barCls = barClassFor(cat, 0);
     wrap.innerHTML =
         '<div class="top-rolls-single-header" style="color:' + color + '">'
       +   escapeHtml(cat.name) + ' <span class="top-rolls-total">(' + total + ')</span>'
       + '</div>'
-      + '<div class="top-rolls-list">' + rowHtml(left, total) + '</div>'
-      + '<div class="top-rolls-list">' + rowHtml(right, total) + '</div>';
+      + '<div class="top-rolls-list">' + rowHtml(left, total, barCls) + '</div>'
+      + '<div class="top-rolls-list">' + rowHtml(right, total, barCls) + '</div>';
     return;
   }
 
   // Two categories — one column each.
-  wrap.innerHTML = ranked.slice(0, 2).map(cat => {
+  wrap.innerHTML = ranked.slice(0, 2).map((cat, idx) => {
     const total = cat.rolls.length;
     const sorted = topFaces(cat.rolls, 5);
     const color = cat.isAuto ? 'var(--text3)' : 'var(--gold2)';
+    const barCls = barClassFor(cat, idx);
     return '<div class="top-rolls-col">'
       + '<div class="top-rolls-col-header" style="color:' + color + '">'
       +   escapeHtml(cat.name) + ' <span class="top-rolls-total">(' + total + ')</span>'
       + '</div>'
-      + '<div class="top-rolls-list">' + rowHtml(sorted, total) + '</div>'
+      + '<div class="top-rolls-list">' + rowHtml(sorted, total, barCls) + '</div>'
       + '</div>';
   }).join('');
 }
