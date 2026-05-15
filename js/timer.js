@@ -86,8 +86,8 @@ function sessionResult(success) {
     if (duration >= 40) bonus = 3; else if (duration >= 35) bonus = 2; else if (duration >= 30) bonus = 1;
     adjustCounter('inspiration', 1 + bonus); flashInspiration(); playInspirationSound();
     state.bossBattlesEarned++; updateBossUI();
-    if (bonus > 0) showToast(`+${1 + bonus} Inspiration — ${duration}m session bonus!`);
-    else showToast('+1 Inspiration — Session Complete!');
+    if (bonus > 0) showToast('Inspiration', '+' + (1 + bonus), duration + 'm bonus', 'gain');
+    else showToast('Inspiration', '+1', 'Session complete', 'gain');
   }
   // Streak tracking
   if (success) {

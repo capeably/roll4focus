@@ -1454,26 +1454,89 @@
   }
   .chest-burst { animation: chestPulse 0.4s ease-out; }
 
-  /* Toast */
+  /* Toast — three-slot grid: // LABEL · VALUE · DETAIL (Pip-spec, Phase 2) */
   .toast {
     position: fixed;
-    bottom: 24px; left: 50%;
-    transform: translateX(-50%) translateY(20px);
+    top: 72px;
+    left: 50%;
+    transform: translate(-50%, -8px);
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    align-items: baseline;
+    gap: 12px;
+    width: min(calc(100% - 28px), 680px);
+    padding: 8px 14px;
     background: var(--card);
-    border: 1px solid var(--gold);
-    border-radius: 6px;
-    padding: 10px 20px;
-    font-family: var(--font-heading);
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
-    color: var(--gold2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
     opacity: 0;
-    transition: all 0.3s;
-    z-index: 300;
     pointer-events: none;
-    text-transform: uppercase;
+    transition: opacity 160ms ease, transform 160ms ease;
+    z-index: 300;
   }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast__label {
+    font-family: var(--font-heading);
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text2);
+    white-space: nowrap;
+  }
+  .toast__label::before { content: '// '; opacity: 0.7; }
+  .toast__value {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+    /* color inherits from .toast — overridden per modifier */
+  }
+  .toast__detail {
+    font-family: var(--font-heading);
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+    justify-self: end;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  /* Event modifiers — set the surface color so value + clips inherit. */
+  .toast--gain  { color: var(--amber); border-color: color-mix(in srgb, var(--amber) 55%, transparent); }
+  .toast--loss  { color: var(--red);   border-color: color-mix(in srgb, var(--red)   55%, transparent); }
+  .toast--chest { color: var(--amber); border-color: color-mix(in srgb, var(--amber) 55%, transparent); }
+  .toast--chest .toast__value { font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+
+  /* Fallback for browsers without color-mix support — solid muted border */
+  @supports not (border-color: color-mix(in srgb, red 50%, transparent)) {
+    .toast--gain, .toast--chest { border-color: var(--amber); }
+    .toast--loss { border-color: var(--red); }
+  }
+
+  /* Arcade corner clips — inherit color from variant */
+  body.theme-arcade .toast::before,
+  body.theme-arcade .toast::after {
+    content: '';
+    position: absolute;
+    width: 8px; height: 8px;
+    border-color: currentColor;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  body.theme-arcade .toast::before {
+    top: -1px; right: -1px;
+    border-top: 1px solid; border-right: 1px solid;
+  }
+  body.theme-arcade .toast::after {
+    bottom: -1px; left: -1px;
+    border-bottom: 1px solid; border-left: 1px solid;
+  }
 
   input[type="file"] { display: none; }
 

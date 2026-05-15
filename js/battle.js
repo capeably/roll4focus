@@ -71,6 +71,7 @@ function createBattleSystem(c) {
     const dc = c.dcFn();
     const isCrit = roll === 20;
     const won = isCrit || roll >= dc;
+    const actor = c.type === 'boss' ? 'Boss' : 'Minion';
     state[c.prefix+'BattlesFought']++;
     if (won) {
       state[c.prefix+'BattlesWon']++;
@@ -79,18 +80,16 @@ function createBattleSystem(c) {
       playAttackResultSound(true);
       if (isCrit) {
         adjustCounter('inspiration', 1); flashInspiration(); playInspirationSound();
-        showToast(`⚔ ${c.label}Critical Hit! Rolled ${roll} vs DC ${dc} — +1 Inspiration!`);
-      } else {
-        showToast(`⚔ ${c.label}Hit! Rolled ${roll} vs DC ${dc} — Chest Earned!`);
+        showToast('Inspiration', '+1', `${actor} crit · ${roll} vs DC ${dc}`, 'gain');
       }
+      // Plain Hit: no toast — dice result on ATK button + QUEUED/CHEST counters carry it.
     } else {
       playAttackResultSound(false);
       if (roll === 1) {
         adjustCounter('inspiration', -1);
-        showToast(`💀 ${c.label}Critical Fail! Rolled 1 vs DC ${dc} — -1 Inspiration!`);
-      } else {
-        showToast(`💨 ${c.label}Miss! Rolled ${roll} vs DC ${dc}`);
+        showToast('Inspiration', '−1', `${actor} crit fail · 1 vs DC ${dc}`, 'loss');
       }
+      // Plain Miss: no toast.
     }
     const mainEl = document.getElementById(c.resultId);
     if (mainEl) { mainEl.textContent = roll; mainEl.className = `attack-result ${won ? 'win' : 'fail'}`; }
@@ -113,7 +112,8 @@ function createBattleSystem(c) {
     state[c.prefix+'ChestsOpened']++;
     playGenericSound('openChest');
     flashChest();
-    showToast(`🎁 ${c.label}Chest — ${getChestLootText()}!`);
+    const actor = c.type === 'boss' ? 'Boss' : 'Minion';
+    showToast('Chest · ' + actor, getChestLootText(), '', 'chest');
     const btnEl = document.getElementById(c.btnChestId);
     if (btnEl) { btnEl.classList.remove('chest-burst'); void btnEl.offsetWidth; btnEl.classList.add('chest-burst'); }
     updateUI(); markDirty();

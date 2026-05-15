@@ -3,10 +3,59 @@
 // ============================================================
 function escapeHtml(str) { return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+// Toast — three-slot grid (label / value / detail) with event variant.
+// Calls: showToast({ label, value, detail, variant, duration })
+//   or showToast(label, value, detail, variant)     // positional shorthand
+//   or showToast('legacy single string')            // back-compat
+// variant: 'gain' (Inspiration +), 'loss' (Inspiration -), 'chest' (loot)
+// Toasts queue if fired in quick succession.
+const _toastQueue = [];
+let _toastBusy = false;
+
+function showToast(a, b, c, d) {
+  let entry;
+  if (typeof a === 'object' && a !== null) {
+    entry = a;
+  } else if (arguments.length >= 2) {
+    entry = { label: a, value: b, detail: c, variant: d };
+  } else {
+    entry = { legacy: a };
+  }
+  _toastQueue.push(entry);
+  if (!_toastBusy) _processToastQueue();
+}
+
+function _processToastQueue() {
+  const next = _toastQueue.shift();
+  if (!next) { _toastBusy = false; return; }
+  _toastBusy = true;
+  const el = document.getElementById('toast');
+  if (!el) { _toastBusy = false; return; }
+  // Reset
+  el.className = 'toast';
+  el.classList.remove('show');
+  if (next.legacy !== undefined) {
+    // Legacy single-string call — render as a centered label
+    el.innerHTML = '<span class="toast__label" style="grid-column:1/-1;text-align:center;">'
+      + escapeHtml(String(next.legacy)) + '</span>';
+  } else {
+    if (next.variant) el.classList.add('toast--' + next.variant);
+    el.innerHTML =
+      (next.label  ? '<span class="toast__label">'  + escapeHtml(next.label)  + '</span>' : '<span></span>')
+    + (next.value  ? '<span class="toast__value">'  + escapeHtml(next.value)  + '</span>' : '<span></span>')
+    + (next.detail ? '<span class="toast__detail">' + escapeHtml(next.detail) + '</span>' : '<span></span>');
+  }
+  // Show
+  // Force reflow so the transition runs even for back-to-back queue items
+  void el.offsetWidth;
+  el.classList.add('show');
+  const dwell = (next.duration != null)
+    ? next.duration
+    : (next.variant === 'chest' ? 2800 : 1800);
+  setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(_processToastQueue, 220); // wait for fade
+  }, dwell);
 }
 
 function flashInspiration() {

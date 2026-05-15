@@ -55,7 +55,7 @@ function onRollInput() {
       if (!state._lastEqualRoll || state._lastEqualRoll !== equalKey) {
         state._lastEqualRoll = equalKey;
         adjustCounter('inspiration', 1); playInspirationSound();
-        showToast('Hope = Fear — +1 Inspiration!');
+        showToast('Inspiration', '+1', 'Hope = Fear', 'gain');
       }
     } else {
       state._lastEqualRoll = null;
