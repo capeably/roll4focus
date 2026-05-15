@@ -293,7 +293,7 @@ function updateMetrics() {
     const el = document.getElementById(id);
     if (!el) return;
     if (data.count === 0) el.textContent = '—';
-    else el.innerHTML = data.avg + ' <span class="metrics-count">(\u00d7' + data.count + ')</span>';
+    else el.innerHTML = '<span class="metrics-avg">' + data.avg + '</span> <span class="metrics-plus">+' + data.count + '</span>';
   };
 
   setMetric('metricBossAuto',    avgAndCount(dayLogs.filter(e => e.type === 'boss'   && e.rollType === 'auto')));
@@ -308,11 +308,18 @@ function updateMetrics() {
     arr.forEach(v => { freq[v] = (freq[v] || 0) + 1; });
     let maxVal = 0, maxKey = null;
     Object.entries(freq).forEach(([k, c]) => { if (c > maxVal) { maxVal = c; maxKey = k; } });
-    return maxVal > 1 ? maxKey + ' (\u00d7' + maxVal + ')' : '' + maxKey;
+    let html = '<span class="mr-mainval">' + maxKey + '</span>';
+    if (maxVal > 1) html += '<span class="mr-count">\u00d7' + maxVal + '</span>';
+    return html;
   }
-  setText('metMostHope', mostRolled(state.hopeRolls));
-  setText('metMostFear', mostRolled(state.fearRolls));
-  setText('metMostSound', mostRolled(state.soundRolls));
+  function mostRolledHTML(arr) {
+    if (!arr || !arr.length) return '<span class="mr-mainval">\u2014</span>';
+    return mostRolled(arr);
+  }
+  const setHTML = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
+  setHTML('metMostHope', mostRolledHTML(state.hopeRolls));
+  setHTML('metMostFear', mostRolledHTML(state.fearRolls));
+  setHTML('metMostSound', mostRolledHTML(state.soundRolls));
 
   renderTopRolls();
 }
@@ -633,9 +640,9 @@ function updateAdventuringTime() {
     if (entryDate >= weekStart) weekMins += (entry.mins || 0);
   });
   const fmt = (mins) => {
-    if (mins < 60) return `${mins}m`;
+    if (mins < 60) return `${mins}M`;
     const h = Math.floor(mins / 60), m = mins % 60;
-    return m > 0 ? `${h}h ${m}m` : `${h}h`;
+    return m > 0 ? `${h}H ${m}M` : `${h}H`;
   };
   document.getElementById('advTimeToday').textContent = fmt(todayMins);
   document.getElementById('advTimeWeek').textContent = fmt(weekMins);

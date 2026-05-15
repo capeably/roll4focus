@@ -1489,33 +1489,37 @@
 
   /* ADVENTURING TIME */
   .adv-time-row {
-    display: flex;
-    align-items: center;
-    gap: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
   }
   .adv-time-field {
-    flex: 1;
-    text-align: center;
-    padding: 8px 0;
+    text-align: left;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    border-radius: 4px;
   }
   .adv-time-label {
     font-family: var(--font-heading);
-    font-size: 0.65rem;
+    font-size: 0.55rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--text3);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
   .adv-time-value {
     font-family: var(--font-display);
-    font-size: 1.6rem;
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1;
     color: var(--gold2);
     text-shadow: 0 0 20px rgba(200,150,62,0.3);
+    letter-spacing: 0.04em;
   }
   .adv-time-divider {
-    width: 1px;
-    height: 48px;
-    background: linear-gradient(to bottom, transparent, var(--border2), transparent);
+    display: none; /* replaced by grid gap */
   }
 
   /* MINION BATTLE ROW */
@@ -2314,13 +2318,17 @@
   }
   .metrics-section-header {
     font-family: var(--font-heading);
-    font-size: 0.52rem;
-    letter-spacing: 0.2em;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 2px;
+    color: var(--text3);
+    margin-bottom: 6px;
     padding-bottom: 4px;
-    border-bottom: 1px solid rgba(200,150,62,0.12);
+  }
+  .metrics-section-header::before {
+    content: '// ';
+    color: var(--text3);
+    opacity: 0.7;
   }
 
   /* Battle Stats Table — compact 8-column grid */
@@ -2351,42 +2359,86 @@
     color: var(--text2);
   }
 
-  /* Roll average count annotation */
-  .metrics-count {
+  /* Battle stats column accents (WON lime, CHE amber, CRIT/CHR amber) */
+  /* 8-col grid: label(1) + 7 stat cols(2-8). WON=col 4, CHE=col 6, CHO=col 7, CHR=col 8 */
+  .metrics-table > .mt-val:nth-child(8n+4)  { color: var(--success); font-weight: 600; }
+  .metrics-table > .mt-val:nth-child(8n+6)  { color: var(--amber); }
+  .metrics-table > .mt-header:nth-child(8n+4) { color: var(--success); }
+  .metrics-table > .mt-header:nth-child(8n+6) { color: var(--amber); }
+
+  /* Roll averages: 'X.X +N' with lime +N badge */
+  .metrics-count { /* legacy class — kept for any old refs */
     font-size: 0.6rem;
     color: var(--text3);
     font-family: var(--font-body);
   }
+  .metrics-avg {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .metrics-plus {
+    font-family: var(--font-heading);
+    font-size: 0.65rem;
+    color: var(--success);
+    margin-left: 4px;
+    letter-spacing: 0.04em;
+  }
 
-  /* Most Rolled row */
+  /* Most Rolled · Streak — 5 boxed cells */
   .metrics-most-rolled {
-    display: flex;
-    gap: 16px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
     justify-content: center;
   }
   .mr-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
-    flex: 1;
+    gap: 3px;
+    padding: 6px 4px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    border-radius: 4px;
+    min-width: 0;
   }
   .mr-label {
     font-family: var(--font-heading);
-    font-size: 0.46rem;
+    font-size: 0.48rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
+    white-space: nowrap;
   }
   .mr-value {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+  }
+  .mr-mainval {
     font-family: var(--font-display);
-    font-size: 0.9rem;
-    color: var(--text2);
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text);
+  }
+  .mr-count {
+    font-family: var(--font-heading);
+    font-size: 0.55rem;
+    letter-spacing: 0.06em;
+    color: var(--text3);
+    margin-top: 1px;
+  }
+  .mr-value.streak-value {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1;
   }
   .mr-divider {
-    width: 1px;
-    background: var(--border);
-    align-self: stretch;
-    opacity: 0.5;
+    display: none; /* using grid gap instead */
   }
 
   /* Top d20 Rolls section */
