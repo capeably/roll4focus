@@ -76,10 +76,10 @@ function onRollInput() {
     state.currentSession.soundtrackName = name;
     state.currentSession.soundRollType = 'manual';
     state.currentSession.soundtrackDie = state.soundtrackDie;
-    document.getElementById('soundtrackDisplay').textContent = '🎵 ' + name;
+    document.getElementById('soundtrackDisplay').textContent = name;
     document.getElementById('soundtrackDisplay').style.color = 'var(--gold3)';
   } else {
-    document.getElementById('soundtrackDisplay').textContent = '🎵 —';
+    document.getElementById('soundtrackDisplay').textContent = '—';
     document.getElementById('soundtrackDisplay').style.color = 'var(--text3)';
   }
   updateStatsDisplay();
