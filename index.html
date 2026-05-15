@@ -68,9 +68,10 @@
     <!-- Timer Centrepiece (2fr) -->
     <div class="card session-card">
       <div class="card-title">Session <button class="btn-roll-for-me" onclick="rollForMe()">🎲 Roll for Me</button></div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-        <button class="btn-roll-for-me" onclick="rerollSoundtrack()" title="Reroll Soundtrack">🎲</button>
-        <div id="soundtrackDisplay" style="flex:1;font-style:italic;color:var(--text3);font-size:0.9rem;">🎵 —</div>
+      <div class="soundtrack-selector">
+        <span class="soundtrack-icon">♪</span>
+        <div id="soundtrackDisplay" class="soundtrack-name">—</div>
+        <button class="soundtrack-reroll" onclick="rerollSoundtrack()" title="Reroll Soundtrack">↻</button>
       </div>
       <div class="timer-centrepiece">
         <div class="timer-ring-container">
@@ -81,7 +82,7 @@
           <div class="timer-inner">
             <div class="timer-display" id="timerDisplay" onclick="startEdit()" title="Click to edit">—:——</div>
             <input type="text" class="timer-edit" id="timerEdit" placeholder="MM:SS" onblur="finishEdit()" onkeydown="editKeydown(event)">
-            <div class="timer-label">Click to adjust</div>
+            <div class="timer-label">[ ADJUST ]</div>
           </div>
         </div>
         <div class="timer-controls">
@@ -97,49 +98,55 @@
     <div style="display:flex;flex-direction:column;gap:16px;">
 
       <!-- Boss Card -->
-      <div class="card quick-battle-card" onclick="openBossEditModal()" style="cursor:pointer;">
-        <div class="card-title">Boss</div>
-        <div class="qb-data-row">
-          <span class="qb-data-label">DC</span>
-          <span class="qb-data-value qb-editable tip" id="qbBossDCDisplay" onclick="openBossEditModal()" data-tooltip="Manual entry"><span class="dc-prefix">DC</span> 24</span>
+      <div class="card battle-card battle-card-boss quick-battle-card" onclick="openBossEditModal()" style="cursor:pointer;">
+        <div class="battle-header">
+          <span class="battle-dot battle-dot-boss"></span>
+          <span class="battle-kind battle-kind-boss">BOSS</span>
+          <span class="battle-dc" id="qbBossDCDisplay"><span class="dc-prefix">DC</span> 24</span>
         </div>
-        <div class="qb-data-row">
-          <span class="qb-data-label">Battles</span>
-          <span class="qb-data-value qb-editable tip" id="qbBossRemaining" onclick="openBossEditModal()" data-tooltip="Manual entry">0</span>
+        <div class="battle-queued">
+          <span class="battle-queued-num" id="qbBossRemaining">0</span>
+          <span class="battle-queued-label">QUEUED</span>
         </div>
-        <div class="qb-attack-row">
-          <button class="btn-qb-attack boss" id="qbBtnBossAttack" onclick="event.stopPropagation(); bossAttack();" disabled>⚔ Attack</button>
-          <div class="qb-result idle qb-editable tip" id="qbBossResult" onclick="openBossEditModal()" data-tooltip="Manual entry">—</div>
+        <div class="battle-actions">
+          <button class="action-chip atk-chip boss btn-qb-attack" id="qbBtnBossAttack" onclick="event.stopPropagation(); bossAttack();" disabled>
+            <span class="action-chip-label">⚔ ATK</span>
+            <span class="action-chip-count" id="qbBossAtkCount">0</span>
+          </button>
+          <button class="action-chip loot-chip btn-qb-chest" id="qbBtnBossChest" onclick="event.stopPropagation(); openBossChest();" disabled>
+            <span class="action-chip-label">♦ LOOT</span>
+            <span class="action-chip-count" id="qbBossChestsRemaining">0</span>
+          </button>
         </div>
-        <div class="qb-chest-row">
-          <button class="btn-qb-chest" id="qbBtnBossChest" onclick="event.stopPropagation(); openBossChest();" disabled>🎁 Chest</button>
-          <span class="qb-chest-count qb-editable tip" id="qbBossChestsRemaining" onclick="openBossEditModal()" data-tooltip="Manual entry">0</span>
-        </div>
+        <span id="qbBossResult" class="qb-result-hidden">—</span>
       </div>
 
       <!-- Minion Card -->
-      <div class="card quick-battle-card" onclick="openMinionEditModal()" style="cursor:pointer;">
-        <div class="card-title" style="color:var(--minion)">Minion</div>
-        <div class="qb-data-row">
-          <span class="qb-data-label">DC</span>
-          <span class="qb-data-value qb-editable tip" id="qbMinionDCDisplay" onclick="openMinionEditModal()" data-tooltip="Manual entry" style="color:var(--minion)"><span class="dc-prefix">DC</span> 18</span>
+      <div class="card battle-card battle-card-minion quick-battle-card" onclick="openMinionEditModal()" style="cursor:pointer;">
+        <div class="battle-header">
+          <span class="battle-dot battle-dot-minion"></span>
+          <span class="battle-kind battle-kind-minion">MINION</span>
+          <span class="battle-dc" id="qbMinionDCDisplay" style="color:var(--minion)"><span class="dc-prefix">DC</span> 18</span>
         </div>
-        <div class="qb-data-row">
-          <span class="qb-data-label">Next Battle</span>
-          <span class="minion-countdown inactive" id="minionCountdown">Off</span>
+        <div class="battle-countdown">
+          <span class="battle-countdown-label">next</span>
+          <span class="battle-countdown-time minion-countdown inactive" id="minionCountdown">Off</span>
         </div>
-        <div class="qb-data-row">
-          <span class="qb-data-label">Battles</span>
-          <span class="qb-data-value qb-editable tip" id="qbMinionRemaining" onclick="openMinionEditModal()" data-tooltip="Manual entry">0</span>
+        <div class="battle-queued">
+          <span class="battle-queued-num" id="qbMinionRemaining">0</span>
+          <span class="battle-queued-label">QUEUED</span>
         </div>
-        <div class="qb-attack-row">
-          <button class="btn-qb-attack minion" id="qbBtnMinionAttack" onclick="event.stopPropagation(); minionAttack();" disabled>⚔ Attack</button>
-          <div class="qb-result idle qb-editable tip" id="qbMinionResult" onclick="openMinionEditModal()" data-tooltip="Manual entry">—</div>
+        <div class="battle-actions">
+          <button class="action-chip atk-chip minion btn-qb-attack" id="qbBtnMinionAttack" onclick="event.stopPropagation(); minionAttack();" disabled>
+            <span class="action-chip-label">⚔ ATK</span>
+            <span class="action-chip-count" id="qbMinionAtkCount">0</span>
+          </button>
+          <button class="action-chip loot-chip btn-qb-chest" id="qbBtnMinionChest" onclick="event.stopPropagation(); openMinionChest();" disabled>
+            <span class="action-chip-label">♦ LOOT</span>
+            <span class="action-chip-count" id="qbMinionChestsRemaining">0</span>
+          </button>
         </div>
-        <div class="qb-chest-row">
-          <button class="btn-qb-chest" id="qbBtnMinionChest" onclick="event.stopPropagation(); openMinionChest();" disabled>🎁 Chest</button>
-          <span class="qb-chest-count qb-editable tip" id="qbMinionChestsRemaining" onclick="openMinionEditModal()" data-tooltip="Manual entry">0</span>
-        </div>
+        <span id="qbMinionResult" class="qb-result-hidden">—</span>
       </div>
 
     </div>

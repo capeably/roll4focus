@@ -61,6 +61,7 @@ function createBattleSystem(c) {
     dis(c.qbBtnChestId, chRem <= 0);
     set(c.qbRemainingId, rem);
     set(c.qbChestsRemainingId, chRem);
+    if (c.qbAtkCountId) set(c.qbAtkCountId, rem);
   }
 
   function attack(roll, rollType) {
@@ -135,6 +136,7 @@ const BossBattle = createBattleSystem({
   btnAttackId: 'btnBossAttack', btnChestId: 'btnOpenBossChest',
   qbBtnAttackId: 'qbBtnBossAttack', qbBtnChestId: 'qbBtnBossChest',
   qbRemainingId: 'qbBossRemaining', qbChestsRemainingId: 'qbBossChestsRemaining',
+  qbAtkCountId: 'qbBossAtkCount',
 });
 
 const MinionBattle = createBattleSystem({
@@ -150,6 +152,7 @@ const MinionBattle = createBattleSystem({
   btnAttackId: 'btnAttack', btnChestId: 'btnOpenChest',
   qbBtnAttackId: 'qbBtnMinionAttack', qbBtnChestId: 'qbBtnMinionChest',
   qbRemainingId: 'qbMinionRemaining', qbChestsRemainingId: 'qbMinionChestsRemaining',
+  qbAtkCountId: 'qbMinionAtkCount',
 });
 
 // Global aliases (HTML onclick)
