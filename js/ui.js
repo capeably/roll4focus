@@ -99,10 +99,48 @@ function updateBossEditModal() {
 
 function syncManualEntryKeepOpen() {
   const v = !!state.manualEntryKeepOpen;
+  // Old checkbox inputs (kept as no-ops if still present somewhere)
   const b = document.getElementById('bossEditKeepOpen');
   const m = document.getElementById('minionEditKeepOpen');
   if (b) b.checked = v;
   if (m) m.checked = v;
+  // New header-link buttons
+  ['bossEditKeepOpenBtn', 'minionEditKeepOpenBtn'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.setAttribute('aria-pressed', v ? 'true' : 'false');
+  });
+}
+
+function toggleManualEntryKeepOpen() {
+  state.manualEntryKeepOpen = !state.manualEntryKeepOpen;
+  markDirty();
+  syncManualEntryKeepOpen();
+}
+
+// In-modal "Last Roll" status line — updates the .last-roll element inside
+// whichever manual-entry modal is currently open.
+function setLastRoll(payload) {
+  const lr = document.querySelector('.modal-overlay.show .manual-entry .last-roll');
+  if (!lr) return false;
+  lr.dataset.variant = payload.variant || '';
+  const v = lr.querySelector('.last-roll__value');
+  const d = lr.querySelector('.last-roll__detail');
+  const c = lr.querySelector('.last-roll__cause');
+  if (v) v.textContent = payload.value != null ? payload.value : '—';
+  if (d) d.textContent = payload.detail || '';
+  if (c) c.textContent = payload.cause || '';
+  // Subtle 120ms opacity bump on the value cell
+  if (v) {
+    v.classList.remove('bump');
+    void v.offsetWidth;
+    v.classList.add('bump');
+  }
+  return true;
+}
+
+// True if a Boss/Minion manual entry modal is currently shown
+function isManualEntryOpen() {
+  return !!document.querySelector('.modal-overlay.show .manual-entry');
 }
 
 function confirmBossEdit() {

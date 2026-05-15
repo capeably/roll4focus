@@ -784,8 +784,14 @@
 <!-- ======================== BOSS EDIT MODAL ======================== -->
 <div class="modal-overlay" id="bossEditModal" onclick="if(event.target===this) closeModal('bossEditModal')">
   <div class="modal manual-entry boss-manual" style="max-width:340px;">
-    <div class="modal-icon">⚔</div>
-    <div class="modal-title" style="color:var(--gold2)">Boss — Manual Entry</div>
+    <div class="manual-entry-header">
+      <div class="modal-icon">⚔</div>
+      <div class="modal-title" style="color:var(--gold2)">Boss — Manual Entry</div>
+      <button class="keep-open-link" id="bossEditKeepOpenBtn" onclick="toggleManualEntryKeepOpen()" aria-pressed="false" title="Keep modal open after each roll">
+        <span class="keep-open-dot"></span>
+        <span class="keep-open-text">Keep Open</span>
+      </button>
+    </div>
     <div style="margin:16px 0 20px;display:flex;flex-direction:column;gap:14px;">
       <div>
         <div class="dialog-counter-label manual-section-label" style="color:var(--gold2);margin-bottom:8px;">Attack Result</div>
@@ -817,15 +823,12 @@
           <button class="dialog-counter-btn" onclick="adjustBattleStat('bossChestsEarned',1,'boss');updateBossEditModal()">+</button>
         </div>
       </div>
-      <div class="dialog-counter-row manual-toggle-row">
-        <div class="dialog-counter-label" style="color:var(--text3)">Keep open for multiple rolls</div>
-        <div class="dialog-counter-controls">
-          <label class="toggle-switch">
-            <input type="checkbox" id="bossEditKeepOpen" onchange="state.manualEntryKeepOpen=this.checked;markDirty();syncManualEntryKeepOpen();">
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-      </div>
+    </div>
+    <div class="last-roll" data-variant="">
+      <span class="last-roll__label">Last Roll</span>
+      <span class="last-roll__value">—</span>
+      <span class="last-roll__detail">no rolls yet</span>
+      <span class="last-roll__cause"></span>
     </div>
     <div class="modal-buttons">
       <button class="btn-yes" onclick="confirmBossEdit()">⚔ Attack</button>
@@ -838,8 +841,14 @@
 <!-- ======================== MINION EDIT MODAL ======================== -->
 <div class="modal-overlay" id="minionEditModal" onclick="if(event.target===this) closeModal('minionEditModal')">
   <div class="modal manual-entry" style="max-width:340px;">
-    <div class="modal-icon">⚔</div>
-    <div class="modal-title" style="color:var(--minion)">Minion — Manual Entry</div>
+    <div class="manual-entry-header">
+      <div class="modal-icon">⚔</div>
+      <div class="modal-title" style="color:var(--minion)">Minion — Manual Entry</div>
+      <button class="keep-open-link" id="minionEditKeepOpenBtn" onclick="toggleManualEntryKeepOpen()" aria-pressed="false" title="Keep modal open after each roll">
+        <span class="keep-open-dot"></span>
+        <span class="keep-open-text">Keep Open</span>
+      </button>
+    </div>
     <div style="margin:16px 0 20px;display:flex;flex-direction:column;gap:14px;">
       <div>
         <div class="dialog-counter-label manual-section-label" style="color:var(--minion);margin-bottom:8px;">Attack Result</div>
@@ -880,15 +889,12 @@
           </label>
         </div>
       </div>
-      <div class="dialog-counter-row manual-toggle-row">
-        <div class="dialog-counter-label" style="color:var(--text3)">Keep open for multiple rolls</div>
-        <div class="dialog-counter-controls">
-          <label class="toggle-switch">
-            <input type="checkbox" id="minionEditKeepOpen" onchange="state.manualEntryKeepOpen=this.checked;markDirty();syncManualEntryKeepOpen();">
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-      </div>
+    </div>
+    <div class="last-roll" data-variant="">
+      <span class="last-roll__label">Last Roll</span>
+      <span class="last-roll__value">—</span>
+      <span class="last-roll__detail">no rolls yet</span>
+      <span class="last-roll__cause"></span>
     </div>
     <div class="modal-buttons">
       <button class="btn-yes" onclick="confirmMinionEdit()">⚔ Attack</button>

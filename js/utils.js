@@ -21,6 +21,13 @@ function showToast(a, b, c, d) {
   } else {
     entry = { legacy: a };
   }
+  // If a Boss/Minion manual entry modal is open, suppress battle-event
+  // toasts (gain / loss / chest). The modal's in-line .last-roll status
+  // handles that feedback. Other toasts (errors, info) still fire.
+  if (typeof isManualEntryOpen === 'function' && isManualEntryOpen()
+      && ['gain', 'loss', 'chest'].includes(entry.variant)) {
+    return;
+  }
   _toastQueue.push(entry);
   if (!_toastBusy) _processToastQueue();
 }

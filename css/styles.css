@@ -486,6 +486,114 @@
   .card.card-section.card-section-lime    > .card-title { color: var(--success); }
   .card.card-section.card-section-amber   > .card-title { color: var(--amber); }
 
+  /* Manual entry modal — header with title + Keep Open link */
+  .manual-entry-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .manual-entry-header .modal-icon { margin: 0; flex-shrink: 0; }
+  .manual-entry-header .modal-title { flex: 1; margin: 0; text-align: left; }
+  .keep-open-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: var(--font-heading);
+    font-size: 0.55rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 4px 8px;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .keep-open-link:hover { color: var(--text2); border-color: var(--border2); }
+  .keep-open-dot {
+    width: 7px; height: 7px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    background: transparent;
+    display: inline-block;
+    transition: background 0.15s;
+  }
+  .keep-open-link[aria-pressed="true"] {
+    color: var(--success);
+    border-color: color-mix(in srgb, var(--success) 45%, transparent);
+    background: color-mix(in srgb, var(--success) 8%, transparent);
+  }
+  .keep-open-link[aria-pressed="true"] .keep-open-dot { background: currentColor; }
+
+  /* Last Roll status line inside the manual entry modal */
+  .last-roll {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    align-items: baseline;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-radius: 4px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    text-align: left;
+  }
+  .last-roll__label {
+    font-family: var(--font-heading);
+    font-size: 0.55rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text3);
+    white-space: nowrap;
+  }
+  .last-roll__label::before { content: '// '; opacity: 0.7; }
+  .last-roll__value {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    transition: opacity 120ms ease;
+    min-width: 1.6em;
+    text-align: center;
+  }
+  .last-roll__value.bump {
+    animation: lastRollBump 120ms ease-out;
+  }
+  @keyframes lastRollBump {
+    0%   { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+  .last-roll__detail {
+    font-family: var(--font-heading);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .last-roll__cause {
+    font-family: var(--font-heading);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--amber);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .last-roll[data-variant="hit"]    .last-roll__value { color: var(--text); }
+  .last-roll[data-variant="crit"]   .last-roll__value { color: var(--amber); text-shadow: 0 0 8px rgba(255,184,78,0.5); }
+  .last-roll[data-variant="fumble"] .last-roll__value { color: var(--red); }
+  .last-roll[data-variant="fumble"] .last-roll__cause { color: var(--red); }
+  .last-roll[data-variant="miss"]   .last-roll__value { color: var(--text3); }
+
   /* SOUNDTRACK SELECTOR (in Session card) */
   .soundtrack-selector {
     display: flex;

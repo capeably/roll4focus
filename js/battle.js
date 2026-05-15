@@ -73,6 +73,14 @@ function createBattleSystem(c) {
     const won = isCrit || roll >= dc;
     const actor = c.type === 'boss' ? 'Boss' : 'Minion';
     state[c.prefix+'BattlesFought']++;
+    // Determine the LAST ROLL surface payload (rendered in the manual-entry
+    // modal if open). Same data shape regardless of outcome.
+    let lrDetail, lrCause, lrVariant;
+    if (isCrit)        { lrDetail = `Crit · DC ${dc}`;   lrVariant = 'crit'; }
+    else if (won)      { lrDetail = `Hit · DC ${dc}`;    lrVariant = 'hit'; }
+    else if (roll === 1) { lrDetail = `Fumble · DC ${dc}`; lrVariant = 'fumble'; }
+    else               { lrDetail = `Miss · DC ${dc}`;   lrVariant = 'miss'; }
+
     if (won) {
       state[c.prefix+'BattlesWon']++;
       state[c.prefix+'ChestsEarned']++;
@@ -81,6 +89,9 @@ function createBattleSystem(c) {
       if (isCrit) {
         adjustCounter('inspiration', 1); flashInspiration(); playInspirationSound();
         showToast('Inspiration', '+1', `${actor} crit · ${roll} vs DC ${dc}`, 'gain');
+        lrCause = 'Insp +1 · Chest';
+      } else {
+        lrCause = 'Chest +1';
       }
       // Plain Hit: no toast — dice result on ATK button + QUEUED/CHEST counters carry it.
     } else {
@@ -88,9 +99,14 @@ function createBattleSystem(c) {
       if (roll === 1) {
         adjustCounter('inspiration', -1);
         showToast('Inspiration', '−1', `${actor} crit fail · 1 vs DC ${dc}`, 'loss');
+        lrCause = 'Insp −1';
+      } else {
+        lrCause = '';
       }
       // Plain Miss: no toast.
     }
+    // Update the in-modal LAST ROLL line (no-op if no manual-entry modal open)
+    setLastRoll({ value: roll, detail: lrDetail, cause: lrCause, variant: lrVariant });
     const mainEl = document.getElementById(c.resultId);
     if (mainEl) { mainEl.textContent = roll; mainEl.className = `attack-result ${won ? 'win' : 'fail'}`; }
     const qbEl = document.getElementById(c.qbResultId);
