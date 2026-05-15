@@ -290,7 +290,6 @@ function setTopRollsInterval(interval) {
 
 function renderTopRolls() {
   const interval = state.topRollsInterval || 'today';
-  // Highlight active tab
   document.querySelectorAll('#topRollsIntervalTabs .interval-tab').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.interval === interval);
   });
@@ -302,9 +301,7 @@ function renderTopRolls() {
   } else if (interval === '7d') {
     cutoff = now - 7 * 24 * 60 * 60 * 1000;
   }
-  // 'all' → cutoff stays 0
 
-  // Filter to d20-only logs in the interval
   const inRange = (state.battleLogs || []).filter(e => {
     const sides = e.diceSides || 20;
     if (sides !== 20) return false;
@@ -313,24 +310,43 @@ function renderTopRolls() {
     return t >= cutoff;
   });
 
-  const renderCol = (listId, totalId, rollType) => {
-    const rolls = inRange.filter(e => e.rollType === rollType);
-    const total = rolls.length;
-    document.getElementById(totalId).textContent = '(' + total + ')';
+  // Group by category: 'Auto' for auto rolls, dice name for manual rolls
+  // Manual rolls without a dice name fall into 'Manual'.
+  const categories = {};
+  inRange.forEach(r => {
+    let key;
+    if (r.rollType === 'auto') key = 'Auto';
+    else key = (r.diceName && r.diceName.trim()) ? r.diceName.trim() : 'Manual';
+    if (!categories[key]) categories[key] = { name: key, isAuto: r.rollType === 'auto', rolls: [] };
+    categories[key].rolls.push(r);
+  });
 
-    const list = document.getElementById(listId);
-    if (total === 0) {
-      list.innerHTML = '<div class="top-rolls-empty">No rolls</div>';
-      return;
-    }
+  // Top 2 categories by roll count (tie-break alphabetical)
+  const ranked = Object.values(categories)
+    .sort((a, b) => b.rolls.length - a.rolls.length || a.name.localeCompare(b.name));
+
+  const wrap = document.getElementById('topRollsWrap');
+  if (ranked.length === 0) {
+    wrap.classList.remove('single');
+    wrap.innerHTML = '<div class="top-rolls-col" style="grid-column:1/-1;"><div class="top-rolls-empty">No d20 rolls in this interval</div></div>';
+    return;
+  }
+
+  const showSingle = ranked.length === 1;
+  const limit = showSingle ? 10 : 5;
+  const cols = showSingle ? [ranked[0]] : ranked.slice(0, 2);
+  wrap.classList.toggle('single', showSingle);
+
+  wrap.innerHTML = cols.map(cat => {
+    const total = cat.rolls.length;
     const freq = {};
-    rolls.forEach(r => { freq[r.roll] = (freq[r.roll] || 0) + 1; });
+    cat.rolls.forEach(r => { freq[r.roll] = (freq[r.roll] || 0) + 1; });
     const sorted = Object.entries(freq)
       .map(([face, count]) => ({ face: parseInt(face), count }))
       .sort((a, b) => b.count - a.count || a.face - b.face)
-      .slice(0, 5);
-
-    list.innerHTML = sorted.map(r => {
+      .slice(0, limit);
+    const color = cat.isAuto ? 'var(--text3)' : 'var(--gold2)';
+    const rowsHtml = sorted.map(r => {
       const pct = ((r.count / total) * 100).toFixed(1);
       return '<div class="top-rolls-row">'
         + '<span class="top-rolls-face">' + r.face + '</span>'
@@ -338,10 +354,13 @@ function renderTopRolls() {
         + '<span class="top-rolls-pct">' + pct + '%</span>'
         + '</div>';
     }).join('');
-  };
-
-  renderCol('topRollsAutoList',   'topRollsAutoTotal',   'auto');
-  renderCol('topRollsManualList', 'topRollsManualTotal', 'manual');
+    return '<div class="top-rolls-col">'
+      + '<div class="top-rolls-col-header" style="color:' + color + '">'
+      +   escapeHtml(cat.name) + ' <span class="top-rolls-total">(' + total + ')</span>'
+      + '</div>'
+      + '<div class="top-rolls-list">' + rowsHtml + '</div>'
+      + '</div>';
+  }).join('');
 }
 
 // ============================================================
