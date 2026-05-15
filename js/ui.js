@@ -327,38 +327,57 @@ function renderTopRolls() {
 
   const wrap = document.getElementById('topRollsWrap');
   if (ranked.length === 0) {
-    wrap.classList.remove('single');
-    wrap.innerHTML = '<div class="top-rolls-col" style="grid-column:1/-1;"><div class="top-rolls-empty">No d20 rolls in this interval</div></div>';
+    wrap.innerHTML = '<div class="top-rolls-empty" style="grid-column:1/-1;">No d20 rolls in this interval</div>';
     return;
   }
 
-  const showSingle = ranked.length === 1;
-  const limit = showSingle ? 10 : 5;
-  const cols = showSingle ? [ranked[0]] : ranked.slice(0, 2);
-  wrap.classList.toggle('single', showSingle);
+  const rowHtml = (items, total) => items.map(r => {
+    const pct = ((r.count / total) * 100).toFixed(1);
+    return '<div class="top-rolls-row">'
+      + '<span class="top-rolls-face">' + r.face + '</span>'
+      + '<span class="top-rolls-count">×' + r.count + '</span>'
+      + '<span class="top-rolls-pct">' + pct + '%</span>'
+      + '</div>';
+  }).join('');
 
-  wrap.innerHTML = cols.map(cat => {
-    const total = cat.rolls.length;
+  const topFaces = (rolls, limit) => {
     const freq = {};
-    cat.rolls.forEach(r => { freq[r.roll] = (freq[r.roll] || 0) + 1; });
-    const sorted = Object.entries(freq)
+    rolls.forEach(r => { freq[r.roll] = (freq[r.roll] || 0) + 1; });
+    return Object.entries(freq)
       .map(([face, count]) => ({ face: parseInt(face), count }))
       .sort((a, b) => b.count - a.count || a.face - b.face)
       .slice(0, limit);
+  };
+
+  // Single category — single header banner spanning both columns,
+  // top 10 faces split across the two list columns.
+  if (ranked.length === 1) {
+    const cat = ranked[0];
+    const total = cat.rolls.length;
+    const sorted = topFaces(cat.rolls, 10);
+    const half = Math.ceil(sorted.length / 2);
+    const left = sorted.slice(0, half);
+    const right = sorted.slice(half);
     const color = cat.isAuto ? 'var(--text3)' : 'var(--gold2)';
-    const rowsHtml = sorted.map(r => {
-      const pct = ((r.count / total) * 100).toFixed(1);
-      return '<div class="top-rolls-row">'
-        + '<span class="top-rolls-face">' + r.face + '</span>'
-        + '<span class="top-rolls-count">×' + r.count + '</span>'
-        + '<span class="top-rolls-pct">' + pct + '%</span>'
-        + '</div>';
-    }).join('');
+    wrap.innerHTML =
+        '<div class="top-rolls-single-header" style="color:' + color + '">'
+      +   escapeHtml(cat.name) + ' <span class="top-rolls-total">(' + total + ')</span>'
+      + '</div>'
+      + '<div class="top-rolls-list">' + rowHtml(left, total) + '</div>'
+      + '<div class="top-rolls-list">' + rowHtml(right, total) + '</div>';
+    return;
+  }
+
+  // Two categories — one column each.
+  wrap.innerHTML = ranked.slice(0, 2).map(cat => {
+    const total = cat.rolls.length;
+    const sorted = topFaces(cat.rolls, 5);
+    const color = cat.isAuto ? 'var(--text3)' : 'var(--gold2)';
     return '<div class="top-rolls-col">'
       + '<div class="top-rolls-col-header" style="color:' + color + '">'
       +   escapeHtml(cat.name) + ' <span class="top-rolls-total">(' + total + ')</span>'
       + '</div>'
-      + '<div class="top-rolls-list">' + rowsHtml + '</div>'
+      + '<div class="top-rolls-list">' + rowHtml(sorted, total) + '</div>'
       + '</div>';
   }).join('');
 }

@@ -2108,9 +2108,19 @@
   .top-rolls-wrap {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 18px;
+    gap: 8px 18px;
   }
-  .top-rolls-wrap.single { grid-template-columns: 1fr; }
+  .top-rolls-single-header {
+    grid-column: 1 / -1;
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2px;
+  }
   .top-rolls-col {
     display: flex;
     flex-direction: column;
