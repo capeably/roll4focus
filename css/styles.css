@@ -471,16 +471,20 @@
   .action-chip > .qb-result.win  { color: var(--success); text-shadow: 0 0 12px rgba(76,175,130,0.5); }
   .action-chip > .qb-result.fail { color: var(--red2);    text-shadow: 0 0 12px rgba(231,76,60,0.5); }
 
-  /* Card section accents (Settings tab) — colored left border + subtle glow */
+  /* Card section accents (Settings tab) — colored left stripe via inset
+     box-shadow. We stack 3 selectors (.card.card-section.card-section-X)
+     to outrank theme overrides like `body.theme-arcade .card`. The inset
+     shadow is layered last so it sits on top of the theme's 1px border
+     shadow regardless of theme. */
   .card-section { position: relative; }
-  .card-section-cyan    { border-left: 3px solid var(--teal);   box-shadow: 0 0 24px rgba(46,173,168,0.07); }
-  .card-section-magenta { border-left: 3px solid var(--red2);   box-shadow: 0 0 24px rgba(231,76,60,0.07); }
-  .card-section-lime    { border-left: 3px solid var(--success);box-shadow: 0 0 24px rgba(76,175,130,0.07); }
-  .card-section-amber   { border-left: 3px solid var(--amber);  box-shadow: 0 0 24px rgba(212,129,58,0.07); }
-  .card-section-cyan    > .card-title { color: var(--teal); }
-  .card-section-magenta > .card-title { color: var(--red2); }
-  .card-section-lime    > .card-title { color: var(--success); }
-  .card-section-amber   > .card-title { color: var(--amber); }
+  .card.card-section.card-section-cyan    { box-shadow: inset 4px 0 0 var(--teal),    0 0 0 1px var(--border), 0 4px 16px rgba(0,0,0,0.4); }
+  .card.card-section.card-section-magenta { box-shadow: inset 4px 0 0 var(--red2),    0 0 0 1px var(--border), 0 4px 16px rgba(0,0,0,0.4); }
+  .card.card-section.card-section-lime    { box-shadow: inset 4px 0 0 var(--success), 0 0 0 1px var(--border), 0 4px 16px rgba(0,0,0,0.4); }
+  .card.card-section.card-section-amber   { box-shadow: inset 4px 0 0 var(--amber),   0 0 0 1px var(--border), 0 4px 16px rgba(0,0,0,0.4); }
+  .card.card-section.card-section-cyan    > .card-title { color: var(--teal); }
+  .card.card-section.card-section-magenta > .card-title { color: var(--red2); }
+  .card.card-section.card-section-lime    > .card-title { color: var(--success); }
+  .card.card-section.card-section-amber   > .card-title { color: var(--amber); }
 
   /* SOUNDTRACK SELECTOR (in Session card) */
   .soundtrack-selector {
