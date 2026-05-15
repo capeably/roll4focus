@@ -8,8 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/themes/neon-arcade.css">
 </head>
-<body>
+<body class="theme-arcade">
 
 <div class="inspiration-flash" id="inspFlash"></div>
 <div class="chest-flash" id="chestFlash"></div>
@@ -115,7 +116,7 @@
     <div style="display:flex;flex-direction:column;gap:16px;">
 
       <!-- Boss Card -->
-      <div class="card quick-battle-card">
+      <div class="card quick-battle-card" onclick="openBossEditModal()" style="cursor:pointer;">
         <div class="card-title">Boss</div>
         <div class="qb-data-row">
           <span class="qb-data-label">DC</span>
@@ -126,17 +127,17 @@
           <span class="qb-data-value qb-editable tip" id="qbBossRemaining" onclick="openBossEditModal()" data-tooltip="Manual entry">0</span>
         </div>
         <div class="qb-attack-row">
-          <button class="btn-qb-attack boss" id="qbBtnBossAttack" onclick="bossAttack()" disabled>⚔ Attack</button>
+          <button class="btn-qb-attack boss" id="qbBtnBossAttack" onclick="event.stopPropagation(); bossAttack();" disabled>⚔ Attack</button>
           <div class="qb-result idle qb-editable tip" id="qbBossResult" onclick="openBossEditModal()" data-tooltip="Manual entry">—</div>
         </div>
         <div class="qb-chest-row">
-          <button class="btn-qb-chest" id="qbBtnBossChest" onclick="openBossChest()" disabled>🎁 Chest</button>
+          <button class="btn-qb-chest" id="qbBtnBossChest" onclick="event.stopPropagation(); openBossChest();" disabled>🎁 Chest</button>
           <span class="qb-chest-count qb-editable tip" id="qbBossChestsRemaining" onclick="openBossEditModal()" data-tooltip="Manual entry">0</span>
         </div>
       </div>
 
       <!-- Minion Card -->
-      <div class="card quick-battle-card">
+      <div class="card quick-battle-card" onclick="openMinionEditModal()" style="cursor:pointer;">
         <div class="card-title" style="color:var(--minion)">Minion</div>
         <div class="qb-data-row">
           <span class="qb-data-label">DC</span>
@@ -151,11 +152,11 @@
           <span class="qb-data-value qb-editable tip" id="qbMinionRemaining" onclick="openMinionEditModal()" data-tooltip="Manual entry">0</span>
         </div>
         <div class="qb-attack-row">
-          <button class="btn-qb-attack minion" id="qbBtnMinionAttack" onclick="minionAttack()" disabled>⚔ Attack</button>
+          <button class="btn-qb-attack minion" id="qbBtnMinionAttack" onclick="event.stopPropagation(); minionAttack();" disabled>⚔ Attack</button>
           <div class="qb-result idle qb-editable tip" id="qbMinionResult" onclick="openMinionEditModal()" data-tooltip="Manual entry">—</div>
         </div>
         <div class="qb-chest-row">
-          <button class="btn-qb-chest" id="qbBtnMinionChest" onclick="openMinionChest()" disabled>🎁 Chest</button>
+          <button class="btn-qb-chest" id="qbBtnMinionChest" onclick="event.stopPropagation(); openMinionChest();" disabled>🎁 Chest</button>
           <span class="qb-chest-count qb-editable tip" id="qbMinionChestsRemaining" onclick="openMinionEditModal()" data-tooltip="Manual entry">0</span>
         </div>
       </div>
@@ -282,6 +283,16 @@
   <!-- Config Import / Export -->
   <div class="card">
     <div class="card-title">Configuration</div>
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Theme</div>
+        <div class="setting-sub">Visual style for the app</div>
+      </div>
+      <div class="setting-control theme-picker">
+        <button class="file-btn" id="themeClassicBtn" onclick="setTheme('classic')">Classic</button>
+        <button class="file-btn" id="themeArcadeBtn" onclick="setTheme('arcade')">Arcade</button>
+      </div>
+    </div>
     <div class="setting-row">
       <div>
         <div class="setting-label">Include Sound Files</div>
@@ -660,6 +671,12 @@
 
   <!-- Battles sub-tab -->
   <div id="subtab-battles" class="sub-tab-content active">
+    <div class="logs-summary-strip">
+      <div class="lss-cell"><span class="lss-label">TOTAL</span><span class="lss-value" id="lssBattleTotal">0</span></div>
+      <div class="lss-cell"><span class="lss-label">WIN</span><span class="lss-value" id="lssBattleWin">0</span></div>
+      <div class="lss-cell"><span class="lss-label">LOSS</span><span class="lss-value" id="lssBattleLoss">0</span></div>
+      <div class="lss-cell"><span class="lss-label">NAT 20</span><span class="lss-value" id="lssBattleNat20">0</span></div>
+    </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
       <button class="btn-clear-logs" onclick="clearBattleLogs()">✕ Clear All</button>
       <button class="btn-export-csv" onclick="exportBattleCSV()">↓ Export CSV</button>
@@ -673,6 +690,12 @@
 
   <!-- Sessions sub-tab -->
   <div id="subtab-sessions" class="sub-tab-content">
+    <div class="logs-summary-strip">
+      <div class="lss-cell"><span class="lss-label">SESS</span><span class="lss-value" id="lssSessTotal">0</span></div>
+      <div class="lss-cell"><span class="lss-label">DONE</span><span class="lss-value" id="lssSessDone">0</span></div>
+      <div class="lss-cell"><span class="lss-label">MIN</span><span class="lss-value" id="lssSessMin">0</span></div>
+      <div class="lss-cell"><span class="lss-label">AVG</span><span class="lss-value" id="lssSessAvg">—</span></div>
+    </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
       <button class="btn-clear-logs" onclick="clearLogs()">✕ Clear All</button>
       <button class="btn-export-csv" onclick="exportCSV()">↓ Export CSV</button>
@@ -765,17 +788,17 @@
 
 <!-- ======================== BOSS EDIT MODAL ======================== -->
 <div class="modal-overlay" id="bossEditModal" onclick="if(event.target===this) closeModal('bossEditModal')">
-  <div class="modal" style="max-width:340px;">
+  <div class="modal manual-entry boss-manual" style="max-width:340px;">
     <div class="modal-icon">⚔</div>
     <div class="modal-title" style="color:var(--gold2)">Boss — Manual Entry</div>
     <div style="margin:16px 0 20px;display:flex;flex-direction:column;gap:14px;">
       <div>
-        <div class="dialog-counter-label" style="color:var(--gold2);margin-bottom:8px;">Attack Result</div>
-        <input type="number" id="bossEditAttackInput" class="manual-time-input" min="1" max="20" placeholder="d20"
+        <div class="dialog-counter-label manual-section-label" style="color:var(--gold2);margin-bottom:8px;">Attack Result</div>
+        <input type="number" id="bossEditAttackInput" class="manual-time-input manual-d20" min="1" max="20" placeholder="d20"
           style="width:100%;font-size:2rem;"
           onkeydown="if(event.key==='Enter') confirmBossEdit(); else if(event.key==='Escape') closeModal('bossEditModal')">
       </div>
-      <div class="dialog-counter-row">
+      <div class="dialog-counter-row manual-stepper-row">
         <div class="dialog-counter-label" style="color:var(--gold2)">DC</div>
         <div class="dialog-counter-controls">
           <button class="dialog-counter-btn" onclick="adjustDC('boss', -1)">−</button>
@@ -783,7 +806,7 @@
           <button class="dialog-counter-btn" onclick="adjustDC('boss', 1)">+</button>
         </div>
       </div>
-      <div class="dialog-counter-row">
+      <div class="dialog-counter-row manual-stepper-row">
         <div class="dialog-counter-label" style="color:var(--text2)">Battles</div>
         <div class="dialog-counter-controls">
           <button class="dialog-counter-btn" onclick="adjustBattleStat('bossBattlesEarned',-1,'boss');updateBossEditModal()">−</button>
@@ -791,7 +814,7 @@
           <button class="dialog-counter-btn" onclick="adjustBattleStat('bossBattlesEarned',1,'boss');updateBossEditModal()">+</button>
         </div>
       </div>
-      <div class="dialog-counter-row">
+      <div class="dialog-counter-row manual-stepper-row">
         <div class="dialog-counter-label" style="color:var(--gold2)">Chests</div>
         <div class="dialog-counter-controls">
           <button class="dialog-counter-btn" onclick="adjustBattleStat('bossChestsEarned',-1,'boss');updateBossEditModal()">−</button>
@@ -799,7 +822,7 @@
           <button class="dialog-counter-btn" onclick="adjustBattleStat('bossChestsEarned',1,'boss');updateBossEditModal()">+</button>
         </div>
       </div>
-      <div class="dialog-counter-row">
+      <div class="dialog-counter-row manual-toggle-row">
         <div class="dialog-counter-label" style="color:var(--text3)">Keep open for multiple rolls</div>
         <div class="dialog-counter-controls">
           <label class="toggle-switch">
@@ -819,17 +842,17 @@
 
 <!-- ======================== MINION EDIT MODAL ======================== -->
 <div class="modal-overlay" id="minionEditModal" onclick="if(event.target===this) closeModal('minionEditModal')">
-  <div class="modal" style="max-width:340px;">
+  <div class="modal manual-entry" style="max-width:340px;">
     <div class="modal-icon">⚔</div>
     <div class="modal-title" style="color:var(--minion)">Minion — Manual Entry</div>
     <div style="margin:16px 0 20px;display:flex;flex-direction:column;gap:14px;">
       <div>
-        <div class="dialog-counter-label" style="color:var(--minion);margin-bottom:8px;">Attack Result</div>
-        <input type="number" id="minionEditAttackInput" class="manual-time-input" min="1" max="20" placeholder="d20"
+        <div class="dialog-counter-label manual-section-label" style="color:var(--minion);margin-bottom:8px;">Attack Result</div>
+        <input type="number" id="minionEditAttackInput" class="manual-time-input manual-d20" min="1" max="20" placeholder="d20"
           style="width:100%;font-size:2rem;"
           onkeydown="if(event.key==='Enter') confirmMinionEdit(); else if(event.key==='Escape') closeModal('minionEditModal')">
       </div>
-      <div class="dialog-counter-row">
+      <div class="dialog-counter-row manual-stepper-row">
         <div class="dialog-counter-label" style="color:var(--minion)">DC</div>
         <div class="dialog-counter-controls">
           <button class="dialog-counter-btn" onclick="adjustDC('minion', -1)">−</button>
@@ -837,7 +860,7 @@
           <button class="dialog-counter-btn" onclick="adjustDC('minion', 1)">+</button>
         </div>
       </div>
-      <div class="dialog-counter-row">
+      <div class="dialog-counter-row manual-stepper-row">
         <div class="dialog-counter-label" style="color:var(--text2)">Battles</div>
         <div class="dialog-counter-controls">
           <button class="dialog-counter-btn" onclick="adjustBattleStat('minionBattlesEarned',-1,'minion');updateMinionEditModal()">−</button>
@@ -845,7 +868,7 @@
           <button class="dialog-counter-btn" onclick="adjustBattleStat('minionBattlesEarned',1,'minion');updateMinionEditModal()">+</button>
         </div>
       </div>
-      <div class="dialog-counter-row">
+      <div class="dialog-counter-row manual-stepper-row">
         <div class="dialog-counter-label" style="color:var(--gold2)">Chests</div>
         <div class="dialog-counter-controls">
           <button class="dialog-counter-btn" onclick="adjustBattleStat('minionChestsEarned',-1,'minion');updateMinionEditModal()">−</button>
@@ -853,7 +876,7 @@
           <button class="dialog-counter-btn" onclick="adjustBattleStat('minionChestsEarned',1,'minion');updateMinionEditModal()">+</button>
         </div>
       </div>
-      <div class="dialog-counter-row">
+      <div class="dialog-counter-row manual-toggle-row">
         <div class="dialog-counter-label" style="color:var(--text3)">Auto-fight</div>
         <div class="dialog-counter-controls">
           <label class="toggle-switch">
@@ -862,7 +885,7 @@
           </label>
         </div>
       </div>
-      <div class="dialog-counter-row">
+      <div class="dialog-counter-row manual-toggle-row">
         <div class="dialog-counter-label" style="color:var(--text3)">Keep open for multiple rolls</div>
         <div class="dialog-counter-controls">
           <label class="toggle-switch">

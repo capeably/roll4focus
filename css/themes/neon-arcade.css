@@ -1,0 +1,500 @@
+/* ============================================================
+   Roll 4 Focus — Neon Arcade theme
+   ------------------------------------------------------------
+   Activate:  add  class="theme-arcade"  to <body>
+   Load order: load AFTER css/styles.css
+     <link rel="stylesheet" href="css/styles.css">
+     <link rel="stylesheet" href="css/themes/neon-arcade.css">
+
+   Strategy: this file overrides the :root design tokens for the
+   .theme-arcade body class, then patches specific component
+   patterns where the arcade aesthetic differs *structurally*
+   (corner clips, mono section labels, square toggles, etc).
+
+   Companion prototype: see Roll 4 Focus Redesign.html
+   (artboards: arcade-home, arcade-settings, arcade-logs-*).
+   ============================================================ */
+
+/* --- Fonts ---------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+/* --- Token overrides ----------------------------------------- */
+body.theme-arcade {
+  /* Surfaces — cool indigo/black */
+  --bg:      #08070d;
+  --bg2:     #0e0d18;
+  --bg3:     #13111e;
+  --card:    #13111e;
+  --border:  #2a2640;
+  --border2: #3d3458;
+
+  /* Brand accent — was warm gold; arcade is neon cyan.
+     We re-map the existing --gold tokens rather than introducing
+     a new name, so every selector that already uses var(--gold)
+     instantly picks up the arcade accent. */
+  --gold:  #5af0ff;
+  --gold2: #5af0ff;
+  --gold3: #8ff5ff;
+  --amber: #ffb84e;
+
+  /* Status — punchier */
+  --red:     #ff5a6e;
+  --red2:    #ff5a6e;
+  --teal:    #5af0ff;
+  --success: #b8ff4e;
+  --minion:  #5af0ff;  /* was purple; minion = cyan in arcade */
+
+  /* Foreground */
+  --text:  #e8e6f5;
+  --text2: #9a96b8;
+  --text3: #5e5a7a;
+  --shadow: rgba(0,0,0,0.7);
+
+  /* Compound — sharper radii, neon glow */
+  --card-radius:  6px;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-heading: 'JetBrains Mono', ui-monospace, monospace;
+  --font-body:    'Space Grotesk', system-ui, sans-serif;
+  --gold-glow:    0 0 12px rgba(90,240,255,0.18);
+  --gold-glow-lg: 0 0 20px rgba(90,240,255,0.30);
+
+  /* Arcade-only — used in this file for boss/minion accents */
+  --arc-magenta: #ff4ec7;  /* BOSS */
+  --arc-cyan:    #5af0ff;  /* MINION */
+  --arc-lime:    #b8ff4e;
+  --arc-amber:   #ffb84e;
+  --arc-red:     #ff5a6e;
+  --arc-rule-soft: #1f1c2e;
+}
+
+/* ============================================================
+   PAGE BACKGROUND — grid pattern, no noise
+   ============================================================ */
+body.theme-arcade {
+  background-image:
+    radial-gradient(ellipse at top, rgba(90,240,255,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom, rgba(255,78,199,0.04) 0%, transparent 50%),
+    linear-gradient(rgba(31,28,46,0.6) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(31,28,46,0.6) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 24px 24px, 24px 24px;
+}
+body.theme-arcade::before { display: none; }  /* drop noise overlay */
+
+/* ============================================================
+   TYPE
+   ============================================================ */
+body.theme-arcade .app-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-shadow: 0 0 12px rgba(90,240,255,0.5), 0 2px 4px rgba(0,0,0,0.6);
+}
+body.theme-arcade .app-title::after {
+  /* not implemented here — Claude Code can add a "system online · vN" status pill
+     under the title to match the prototype. Keep just-the-words for now. */
+}
+
+/* Mono uppercase labels — global */
+body.theme-arcade .card-title,
+body.theme-arcade .die-label,
+body.theme-arcade .setting-label,
+body.theme-arcade .counter-label,
+body.theme-arcade .qb-data-label,
+body.theme-arcade .tab-btn,
+body.theme-arcade .sub-tab-btn,
+body.theme-arcade .btn-timer,
+body.theme-arcade .btn-submit,
+body.theme-arcade .btn-roll-for-me,
+body.theme-arcade .btn-qb-attack,
+body.theme-arcade .btn-qb-chest,
+body.theme-arcade .file-btn,
+body.theme-arcade .btn-log-edit,
+body.theme-arcade .btn-clear-logs,
+body.theme-arcade .btn-export-csv,
+body.theme-arcade .btn-inline,
+body.theme-arcade .btn-import-csv,
+body.theme-arcade .log-duration,
+body.theme-arcade .log-result,
+body.theme-arcade .log-edit-label,
+body.theme-arcade .app-subtitle {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+/* Display numerals — Space Grotesk */
+body.theme-arcade .timer-display,
+body.theme-arcade .timer-edit,
+body.theme-arcade .die-oct-input,
+body.theme-arcade .die-input,
+body.theme-arcade .counter-value,
+body.theme-arcade .dc-value,
+body.theme-arcade .qb-data-value,
+body.theme-arcade .qb-result,
+body.theme-arcade .log-die {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Section header — "// CONFIGURATION" prefix */
+body.theme-arcade .card-title {
+  letter-spacing: 0.22em;
+  color: var(--text2);
+}
+body.theme-arcade .card-title::before {
+  content: '// ';
+  color: var(--text3);
+}
+
+/* ============================================================
+   HEADER + DIVIDER
+   ============================================================ */
+body.theme-arcade .header-btn {
+  border-radius: 4px;  /* was 50% — square in arcade */
+}
+body.theme-arcade .header-divider {
+  background: linear-gradient(to right, transparent, var(--arc-cyan), transparent);
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+body.theme-arcade .tab-btn,
+body.theme-arcade .sub-tab-btn {
+  border-radius: 3px;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  padding: 8px 14px;
+}
+body.theme-arcade .tab-btn.active,
+body.theme-arcade .sub-tab-btn.active {
+  background: rgba(90,240,255,0.1);
+  border-color: var(--arc-cyan);
+  color: var(--arc-cyan);
+  box-shadow: 0 0 8px rgba(90,240,255,0.4);
+  text-shadow: 0 0 4px rgba(90,240,255,0.6);
+}
+
+/* ============================================================
+   CARDS — sharp corners + corner clips
+   The base stylesheet uses .card::before for a gold gradient
+   divider above the card. We replace that with a corner-clip
+   accent (top-right + bottom-left).
+   ============================================================ */
+body.theme-arcade .card {
+  position: relative;
+  border-radius: 6px;
+  background: linear-gradient(180deg, var(--card) 0%, var(--bg2) 100%);
+  box-shadow: 0 0 0 1px var(--border), 0 4px 16px rgba(0,0,0,0.4);
+  border-color: var(--border);
+}
+body.theme-arcade .card::before {
+  /* REPLACES the base gold gradient bar with a top-right corner clip */
+  content: '';
+  position: absolute;
+  top: 0; right: 0; left: auto;
+  width: 12px; height: 12px;
+  background: none;
+  border-top: 1.5px solid var(--arc-cyan);
+  border-right: 1.5px solid var(--arc-cyan);
+  pointer-events: none;
+}
+body.theme-arcade .card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 12px; height: 12px;
+  border-bottom: 1.5px solid var(--arc-cyan);
+  border-left: 1.5px solid var(--arc-cyan);
+  pointer-events: none;
+}
+
+/* ============================================================
+   BUTTONS — sharper corners, mono caps
+   ============================================================ */
+body.theme-arcade button,
+body.theme-arcade .btn-timer,
+body.theme-arcade .btn-submit,
+body.theme-arcade .btn-roll-for-me,
+body.theme-arcade .btn-qb-attack,
+body.theme-arcade .btn-qb-chest,
+body.theme-arcade .file-btn,
+body.theme-arcade .btn-log-edit,
+body.theme-arcade .btn-clear-logs,
+body.theme-arcade .btn-export-csv,
+body.theme-arcade .btn-inline,
+body.theme-arcade .btn-import-csv,
+body.theme-arcade .counter-btn,
+body.theme-arcade .header-btn {
+  border-radius: 3px;
+}
+
+body.theme-arcade .btn-start {
+  background: var(--arc-lime);
+  color: var(--bg);
+  border-color: var(--arc-lime);
+  box-shadow: 0 0 12px rgba(184,255,78,0.4);
+}
+body.theme-arcade .btn-pause {
+  background: var(--arc-cyan);
+  color: var(--bg);
+  border-color: var(--arc-cyan);
+  box-shadow: 0 0 12px rgba(90,240,255,0.4);
+}
+body.theme-arcade .btn-start:hover,
+body.theme-arcade .btn-pause:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 18px rgba(90,240,255,0.6);
+}
+body.theme-arcade .btn-reset:hover {
+  border-color: var(--arc-magenta);
+  color: var(--arc-magenta);
+}
+
+/* ============================================================
+   TIMER RING
+   ============================================================ */
+body.theme-arcade .timer-ring-progress {
+  stroke: var(--arc-cyan);
+  filter: drop-shadow(0 0 8px rgba(90,240,255,0.7));
+}
+body.theme-arcade .timer-ring-progress.low {
+  stroke: var(--arc-magenta);
+  filter: drop-shadow(0 0 8px rgba(255,78,199,0.7));
+}
+body.theme-arcade .timer-display {
+  text-shadow: 0 0 12px rgba(90,240,255,0.5);
+}
+
+/* ============================================================
+   HOPE / FEAR / SOUND DICE
+   ============================================================ */
+body.theme-arcade .die-oct-bg {
+  fill: var(--bg);
+  stroke: var(--border);
+}
+body.theme-arcade .hope-accent {
+  stroke: var(--arc-cyan);
+  filter: drop-shadow(0 0 6px rgba(90,240,255,0.6));
+}
+body.theme-arcade .fear-accent {
+  stroke: var(--arc-magenta);
+  filter: drop-shadow(0 0 6px rgba(255,78,199,0.6));
+}
+body.theme-arcade .gold-accent {
+  stroke: var(--arc-lime);
+  filter: drop-shadow(0 0 6px rgba(184,255,78,0.6));
+}
+body.theme-arcade .die-field.hope .die-label  { color: var(--arc-cyan); }
+body.theme-arcade .die-field.fear .die-label  { color: var(--arc-magenta); }
+body.theme-arcade .die-field.soundtrack .die-label { color: var(--arc-lime); }
+
+/* ============================================================
+   BATTLE CARDS — boss=magenta, minion=cyan
+   ------------------------------------------------------------
+   The base CSS distinguishes boss via .btn-qb-attack.boss-attack.
+   The minion uses the default (var(--minion), which we re-mapped
+   to cyan above).
+   ============================================================ */
+body.theme-arcade .btn-qb-attack {
+  border-color: var(--arc-cyan);
+  background: linear-gradient(135deg, rgba(90,240,255,0.18), rgba(90,240,255,0.06));
+  color: var(--arc-cyan);
+  box-shadow: 0 0 10px rgba(90,240,255,0.25);
+}
+body.theme-arcade .btn-qb-attack.boss-attack {
+  border-color: var(--arc-magenta);
+  background: linear-gradient(135deg, rgba(255,78,199,0.18), rgba(255,78,199,0.06));
+  color: var(--arc-magenta);
+  box-shadow: 0 0 10px rgba(255,78,199,0.25);
+}
+body.theme-arcade .btn-qb-chest {
+  border-color: rgba(255,184,78,0.4);
+  color: var(--arc-amber);
+}
+body.theme-arcade .qb-result.success { text-shadow: 0 0 10px rgba(184,255,78,0.5); color: var(--arc-lime); }
+body.theme-arcade .qb-result.fail    { text-shadow: 0 0 10px rgba(255,90,110,0.5); color: var(--arc-red); }
+
+/* DC value tinting */
+body.theme-arcade .dc-value.minion { color: var(--arc-cyan); }
+body.theme-arcade .counter-value.inspiration { color: var(--arc-amber); text-shadow: 0 0 6px rgba(255,184,78,0.4); }
+
+/* ============================================================
+   COUNTER (− value +) BUTTONS
+   ============================================================ */
+body.theme-arcade .counter-btn {
+  background: var(--bg);
+  border-color: var(--border);
+}
+body.theme-arcade .counter-btn:hover {
+  border-color: var(--arc-cyan);
+  color: var(--arc-cyan);
+  box-shadow: 0 0 6px rgba(90,240,255,0.4);
+}
+
+/* ============================================================
+   SETTINGS
+   ============================================================ */
+body.theme-arcade .setting-row {
+  border-bottom-color: var(--arc-rule-soft);
+}
+body.theme-arcade .setting-control input[type="number"] {
+  font-family: var(--font-heading);
+  background: var(--bg);
+  border-radius: 3px;
+  text-align: center;
+}
+body.theme-arcade .setting-control input[type="number"]:focus {
+  border-color: var(--arc-cyan);
+  box-shadow: 0 0 0 1px var(--arc-cyan), 0 0 8px rgba(90,240,255,0.3);
+}
+
+/* ============================================================
+   SOUNDTRACK TABLE
+   ============================================================ */
+body.theme-arcade .soundtrack-table th {
+  font-family: var(--font-heading);
+  letter-spacing: 0.22em;
+  color: var(--text3);
+  font-weight: 600;
+}
+
+/* ============================================================
+   LOG ENTRIES — neon left border + corner clip
+   ============================================================ */
+body.theme-arcade .log-entry {
+  position: relative;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--arc-cyan);
+  background: linear-gradient(90deg, rgba(90,240,255,0.05) 0%, var(--bg2) 70%);
+  overflow: hidden;
+}
+body.theme-arcade .log-entry.success { border-left-color: var(--arc-lime); }
+body.theme-arcade .log-entry.fail    { border-left-color: var(--arc-red); }
+body.theme-arcade .log-entry::after {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 8px; height: 8px;
+  border-top: 1.5px solid var(--border2);
+  border-right: 1.5px solid var(--border2);
+}
+
+body.theme-arcade .log-die.hope  { color: var(--arc-cyan); }
+body.theme-arcade .log-die.fear  { color: var(--arc-magenta); }
+body.theme-arcade .log-die.sound { color: var(--arc-lime); }
+
+body.theme-arcade .log-result {
+  letter-spacing: 0.16em;
+  border-radius: 2px;
+}
+body.theme-arcade .log-result.success {
+  background: rgba(184,255,78,0.12);
+  color: var(--arc-lime);
+  border-color: var(--arc-lime);
+  box-shadow: 0 0 6px rgba(184,255,78,0.3);
+}
+body.theme-arcade .log-result.fail {
+  background: rgba(255,90,110,0.12);
+  color: var(--arc-red);
+  border-color: var(--arc-red);
+  box-shadow: 0 0 6px rgba(255,90,110,0.3);
+}
+
+/* ============================================================
+   TOGGLES — square instead of pill
+   ============================================================ */
+body.theme-arcade .toggle-switch,
+body.theme-arcade .toggle-slider {
+  border-radius: 2px;
+}
+body.theme-arcade .toggle-slider::before {
+  border-radius: 0;
+}
+body.theme-arcade .toggle-switch input:checked + .toggle-slider {
+  background: rgba(90,240,255,0.2);
+  border-color: var(--arc-cyan);
+  box-shadow: 0 0 8px rgba(90,240,255,0.4), inset 0 0 8px rgba(90,240,255,0.15);
+}
+body.theme-arcade .toggle-switch input:checked + .toggle-slider::before {
+  background: var(--arc-cyan);
+  box-shadow: 0 0 6px var(--arc-cyan);
+}
+
+/* ============================================================
+   MODALS — corner clips + neon glow
+   ============================================================ */
+body.theme-arcade .modal {
+  position: relative;
+  border-radius: 6px;
+  border-color: var(--arc-cyan);
+  background: linear-gradient(180deg, var(--card) 0%, var(--bg2) 100%);
+  box-shadow: 0 0 40px rgba(90,240,255,0.25), 0 20px 60px rgba(0,0,0,0.6);
+}
+body.theme-arcade .modal::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 14px; height: 14px;
+  border-top: 2px solid var(--arc-cyan);
+  border-left: 2px solid var(--arc-cyan);
+}
+body.theme-arcade .modal::after {
+  content: '';
+  position: absolute; bottom: 0; right: 0;
+  width: 14px; height: 14px;
+  border-bottom: 2px solid var(--arc-cyan);
+  border-right: 2px solid var(--arc-cyan);
+}
+body.theme-arcade .modal-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 8px rgba(90,240,255,0.5);
+}
+
+/* Boss manual-entry modal — magenta tint (markup hook: .modal.boss or
+   wrap modal body in <div class="manual-entry boss">). If your modal
+   markup signals kind a different way, update this selector. */
+body.theme-arcade .modal.boss-manual {
+  border-color: var(--arc-magenta);
+  box-shadow: 0 0 40px rgba(255,78,199,0.25), 0 20px 60px rgba(0,0,0,0.6);
+}
+body.theme-arcade .modal.boss-manual::before,
+body.theme-arcade .modal.boss-manual::after {
+  border-color: var(--arc-magenta) !important;
+}
+body.theme-arcade .modal.boss-manual .modal-title {
+  color: var(--arc-magenta);
+  text-shadow: 0 0 8px rgba(255,78,199,0.5);
+}
+
+/* ============================================================
+   INPUTS — sharp + mono
+   ============================================================ */
+body.theme-arcade input[type="number"],
+body.theme-arcade input[type="text"],
+body.theme-arcade input[type="search"],
+body.theme-arcade .die-input,
+body.theme-arcade .die-oct-input,
+body.theme-arcade .log-edit-input,
+body.theme-arcade .timer-edit,
+body.theme-arcade .qb-boss-roll-input,
+body.theme-arcade .boss-manual-roll {
+  font-family: var(--font-heading);
+  border-radius: 3px;
+  background: var(--bg);
+  color: var(--text);
+}
+body.theme-arcade input:focus,
+body.theme-arcade .die-input:focus,
+body.theme-arcade .die-oct-input:focus {
+  outline: none;
+  border-color: var(--arc-cyan);
+  box-shadow: 0 0 0 1px var(--arc-cyan), 0 0 12px rgba(90,240,255,0.3);
+}
+
+/* Hope / Fear / Sound focus rings */
+body.theme-arcade .die-input.hope:focus  { border-color: var(--arc-cyan);    box-shadow: 0 0 0 1px var(--arc-cyan),    0 0 12px rgba(90,240,255,0.3); }
+body.theme-arcade .die-input.fear:focus  { border-color: var(--arc-magenta); box-shadow: 0 0 0 1px var(--arc-magenta), 0 0 12px rgba(255,78,199,0.3); }
+body.theme-arcade .die-input.sound:focus { border-color: var(--arc-lime);    box-shadow: 0 0 0 1px var(--arc-lime),    0 0 12px rgba(184,255,78,0.3); }

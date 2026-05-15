@@ -43,6 +43,26 @@ function updateQuietModeUI() {
   else { btn.textContent = '🔊'; btn.classList.remove('active'); }
 }
 
+// ============================================================
+// THEME (Classic / Arcade) — stored in r4f_theme localStorage,
+// orthogonal to r4f_state so it survives config import/reset.
+// ============================================================
+function setTheme(name) {
+  if (name !== 'classic' && name !== 'arcade') name = 'arcade';
+  document.body.classList.toggle('theme-arcade', name === 'arcade');
+  try { localStorage.setItem('r4f_theme', name); } catch (e) {}
+  const classicBtn = document.getElementById('themeClassicBtn');
+  const arcadeBtn  = document.getElementById('themeArcadeBtn');
+  if (classicBtn) classicBtn.classList.toggle('active', name === 'classic');
+  if (arcadeBtn)  arcadeBtn.classList.toggle('active',  name === 'arcade');
+}
+
+function loadTheme() {
+  let saved = null;
+  try { saved = localStorage.getItem('r4f_theme'); } catch (e) {}
+  setTheme(saved === 'classic' ? 'classic' : 'arcade');
+}
+
 // Boss Edit Modal
 function openBossEditModal() {
   document.getElementById('bossEditAttackInput').value = '';
@@ -684,7 +704,20 @@ function logBattle(type, rollType, roll, won, dc) {
   updateMetrics();
 }
 
+function updateBattleSummaryStrip() {
+  const logs = state.battleLogs || [];
+  const total = logs.length;
+  const win = logs.filter(b => b.won).length;
+  const nat20 = logs.filter(b => b.roll === 20).length;
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('lssBattleTotal', total);
+  set('lssBattleWin',   win);
+  set('lssBattleLoss',  total - win);
+  set('lssBattleNat20', nat20);
+}
+
 function renderBattleLogs() {
+  updateBattleSummaryStrip();
   const container = document.getElementById('battleLogsContainer');
   if (!container) return;
   if (!state.battleLogs || state.battleLogs.length === 0) {
@@ -731,7 +764,21 @@ function exportBattleCSV() {
 // ============================================================
 // SESSION LOGS
 // ============================================================
+function updateSessionSummaryStrip() {
+  const logs = state.logs || [];
+  const total = logs.length;
+  const done = logs.filter(l => l.success).length;
+  const min = logs.filter(l => l.success).reduce((s, l) => s + (parseInt(l.duration) || 0), 0);
+  const avg = done > 0 ? Math.round(min / done) : null;
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('lssSessTotal', total);
+  set('lssSessDone',  done);
+  set('lssSessMin',   min);
+  set('lssSessAvg',   avg === null ? '—' : avg);
+}
+
 function renderLogs() {
+  updateSessionSummaryStrip();
   const container = document.getElementById('logsContainer');
   if (state.logs.length === 0) {
     container.innerHTML = '<div class="logs-empty">No sessions logged yet.<br>Complete a session to see it here.</div>';

@@ -110,6 +110,7 @@ function resetStatus() {
 // INIT
 // ============================================================
 function init() {
+  loadTheme();
   loadState();
   if (!state.lastResetTimestamp) state.lastResetTimestamp = new Date().toISOString();
   if (!state.hopeRolls) state.hopeRolls = [];
@@ -123,6 +124,7 @@ function init() {
   updateMinionUI(); updateBossUI(); updateMinionCountdownDisplay(); updateDCDisplays();
   buildSoundtrackTable(); loadNotesTab(); updateAdventuringTime(); updateStatsDisplay();
   updateMetrics(); updateDiceNamesChip(); updateStreakDisplay(); updateQuietModeUI();
+  updateBattleSummaryStrip(); updateSessionSummaryStrip();
   if (state.timerSeconds > 0) { updateTimerDisplay(); updateRing(); }
   Sound.restoreAll();
 }

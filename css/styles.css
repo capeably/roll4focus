@@ -702,6 +702,13 @@
     transition: all 0.2s;
   }
   .file-btn:hover { border-color: var(--gold); color: var(--gold2); }
+  .file-btn.active {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(200,150,62,0.12);
+    box-shadow: var(--gold-glow, 0 0 8px rgba(200,150,62,0.18));
+  }
+  .theme-picker { display: inline-flex; gap: 6px; }
   #soundFileName {
     font-style: italic;
     color: var(--text3);
@@ -762,6 +769,34 @@
   }
 
   /* LOGS */
+  .logs-summary-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .lss-cell {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    text-align: center;
+    background: var(--bg2);
+  }
+  .lss-label {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 0.5rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+  .lss-value {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: var(--text2);
+    margin-top: 2px;
+  }
   .logs-empty {
     text-align: center;
     padding: 40px 20px;
