@@ -458,34 +458,18 @@
   .action-chip.loot-chip .action-chip-label { color: var(--amber); }
   .action-chip.loot-chip .action-chip-count { color: var(--gold2); }
   .action-chip.loot-chip:hover:not(:disabled) { border-color: var(--amber); }
-  /* Result overlay inside the ATK button — appears briefly after an attack */
-  .action-chip { position: relative; overflow: hidden; }
-  .action-chip > .qb-result-hidden {
-    display: none;
-  }
+  /* Roll result inside the ATK button — shows the last rolled value,
+     colored by win/fail. Persists until the next attack. */
   .action-chip > .qb-result {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-family: var(--font-display);
-    font-size: 1.7rem;
+    font-size: 1.3rem;
     font-weight: 700;
-    background: var(--bg2);
-    z-index: 2;
-    animation: qb-result-fade 1.5s ease-out forwards;
-    pointer-events: none;
+    line-height: 1;
+    color: var(--text);
   }
-  .action-chip > .qb-result.win  { color: var(--success); text-shadow: 0 0 12px var(--success); }
-  .action-chip > .qb-result.fail { color: var(--red2);    text-shadow: 0 0 12px var(--red2); }
-  @keyframes qb-result-fade {
-    0%   { opacity: 0; transform: scale(0.7); }
-    15%  { opacity: 1; transform: scale(1.1); }
-    35%  { opacity: 1; transform: scale(1); }
-    85%  { opacity: 1; transform: scale(1); }
-    100% { opacity: 0; transform: scale(1); }
-  }
+  .action-chip > .qb-result.idle { color: var(--text3); }
+  .action-chip > .qb-result.win  { color: var(--success); text-shadow: 0 0 12px rgba(76,175,130,0.5); }
+  .action-chip > .qb-result.fail { color: var(--red2);    text-shadow: 0 0 12px rgba(231,76,60,0.5); }
 
   /* SOUNDTRACK SELECTOR (in Session card) */
   .soundtrack-selector {

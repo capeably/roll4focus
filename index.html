@@ -111,8 +111,7 @@
         <div class="battle-actions">
           <button class="action-chip atk-chip boss btn-qb-attack" id="qbBtnBossAttack" onclick="event.stopPropagation(); bossAttack();" disabled>
             <span class="action-chip-label">⚔ ATK</span>
-            <span class="action-chip-count" id="qbBossAtkCount">0</span>
-            <span id="qbBossResult" class="qb-result-hidden">—</span>
+            <span id="qbBossResult" class="qb-result idle">—</span>
           </button>
           <button class="action-chip loot-chip btn-qb-chest" id="qbBtnBossChest" onclick="event.stopPropagation(); openBossChest();" disabled>
             <span class="action-chip-label">♦ LOOT</span>
@@ -139,8 +138,7 @@
         <div class="battle-actions">
           <button class="action-chip atk-chip minion btn-qb-attack" id="qbBtnMinionAttack" onclick="event.stopPropagation(); minionAttack();" disabled>
             <span class="action-chip-label">⚔ ATK</span>
-            <span class="action-chip-count" id="qbMinionAtkCount">0</span>
-            <span id="qbMinionResult" class="qb-result-hidden">—</span>
+            <span id="qbMinionResult" class="qb-result idle">—</span>
           </button>
           <button class="action-chip loot-chip btn-qb-chest" id="qbBtnMinionChest" onclick="event.stopPropagation(); openMinionChest();" disabled>
             <span class="action-chip-label">♦ LOOT</span>

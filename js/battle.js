@@ -61,7 +61,6 @@ function createBattleSystem(c) {
     dis(c.qbBtnChestId, chRem <= 0);
     set(c.qbRemainingId, rem);
     set(c.qbChestsRemainingId, chRem);
-    if (c.qbAtkCountId) set(c.qbAtkCountId, rem);
   }
 
   function attack(roll, rollType) {
@@ -96,13 +95,7 @@ function createBattleSystem(c) {
     const mainEl = document.getElementById(c.resultId);
     if (mainEl) { mainEl.textContent = roll; mainEl.className = `attack-result ${won ? 'win' : 'fail'}`; }
     const qbEl = document.getElementById(c.qbResultId);
-    if (qbEl) {
-      qbEl.textContent = roll;
-      qbEl.className = c.qbCls(won);
-      // Auto-revert to hidden after the fade animation completes
-      clearTimeout(qbEl._hideTimer);
-      qbEl._hideTimer = setTimeout(() => { qbEl.className = 'qb-result-hidden'; }, 1500);
-    }
+    if (qbEl) { qbEl.textContent = roll; qbEl.className = c.qbCls(won); }
     const animClass = isCrit ? 'anim-crit' : won ? 'anim-hit' : (roll === 1) ? 'anim-crit-fail' : 'anim-miss';
     [mainEl, qbEl].forEach(el => {
       if (!el) return;
@@ -142,7 +135,6 @@ const BossBattle = createBattleSystem({
   btnAttackId: 'btnBossAttack', btnChestId: 'btnOpenBossChest',
   qbBtnAttackId: 'qbBtnBossAttack', qbBtnChestId: 'qbBtnBossChest',
   qbRemainingId: 'qbBossRemaining', qbChestsRemainingId: 'qbBossChestsRemaining',
-  qbAtkCountId: 'qbBossAtkCount',
 });
 
 const MinionBattle = createBattleSystem({
@@ -158,7 +150,6 @@ const MinionBattle = createBattleSystem({
   btnAttackId: 'btnAttack', btnChestId: 'btnOpenChest',
   qbBtnAttackId: 'qbBtnMinionAttack', qbBtnChestId: 'qbBtnMinionChest',
   qbRemainingId: 'qbMinionRemaining', qbChestsRemainingId: 'qbMinionChestsRemaining',
-  qbAtkCountId: 'qbMinionAtkCount',
 });
 
 // Global aliases (HTML onclick)
