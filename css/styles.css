@@ -2105,6 +2105,45 @@
     background: rgba(200,150,62,0.18);
     color: var(--gold);
   }
+  .top-rolls-navrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: -6px 0 14px;
+  }
+  .top-rolls-navrow.disabled .top-rolls-nav-btn { visibility: hidden; }
+  .top-rolls-nav-btn {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    line-height: 1;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    background: rgba(200,150,62,0.08);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.15s, color 0.15s, opacity 0.15s;
+  }
+  .top-rolls-nav-btn:hover:not(:disabled) { background: rgba(200,150,62,0.2); }
+  .top-rolls-nav-btn:disabled {
+    opacity: 0.25;
+    cursor: default;
+  }
+  .top-rolls-range-label {
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text2);
+    min-width: 11em;
+    text-align: center;
+  }
   .top-rolls-wrap {
     display: grid;
     grid-template-columns: 1fr 1fr;

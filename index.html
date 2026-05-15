@@ -171,8 +171,14 @@
       <span class="interval-tabs" id="topRollsIntervalTabs">
         <button class="interval-tab" data-interval="today" onclick="setTopRollsInterval('today')">Today</button>
         <button class="interval-tab" data-interval="7d" onclick="setTopRollsInterval('7d')">7d</button>
+        <button class="interval-tab" data-interval="month" onclick="setTopRollsInterval('month')">Month</button>
         <button class="interval-tab" data-interval="all" onclick="setTopRollsInterval('all')">All</button>
       </span>
+    </div>
+    <div class="top-rolls-navrow" id="topRollsNavRow">
+      <button class="top-rolls-nav-btn" id="topRollsNavBack" onclick="nudgeTopRollsOffset(-1)" aria-label="Previous period">‹</button>
+      <span class="top-rolls-range-label" id="topRollsRangeLabel">—</span>
+      <button class="top-rolls-nav-btn" id="topRollsNavFwd" onclick="nudgeTopRollsOffset(1)" aria-label="Next period">›</button>
     </div>
     <div class="top-rolls-wrap" id="topRollsWrap"></div>
   </div>

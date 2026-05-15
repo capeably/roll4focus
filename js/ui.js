@@ -281,33 +281,100 @@ function updateMetrics() {
   renderTopRolls();
 }
 
-// --- Top d20 Rolls (Auto vs Manual, by interval) ---
+// --- Top d20 Rolls (top categories, by interval + offset) ---
 function setTopRollsInterval(interval) {
   state.topRollsInterval = interval;
+  state.topRollsOffset = 0;
   markDirty();
   renderTopRolls();
 }
 
+function nudgeTopRollsOffset(delta) {
+  if (state.topRollsInterval === 'all') return;
+  const next = (state.topRollsOffset || 0) + delta;
+  if (next > 0) return; // can't navigate into the future
+  state.topRollsOffset = next;
+  markDirty();
+  renderTopRolls();
+}
+
+// Returns { start, end } in ms epoch for the given interval+offset.
+// end is exclusive. For 'all', start=0, end=Infinity.
+function topRollsRange(interval, offset) {
+  const off = offset || 0;
+  if (interval === 'all') return { start: 0, end: Infinity };
+  const now = new Date();
+  const today00 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if (interval === 'today') {
+    const start = new Date(today00); start.setDate(start.getDate() + off);
+    const end = new Date(start);     end.setDate(end.getDate() + 1);
+    return { start: start.getTime(), end: end.getTime() };
+  }
+  if (interval === '7d') {
+    // offset=0: last 7 days inclusive of today
+    const end = new Date(today00); end.setDate(end.getDate() + 1 + off * 7);
+    const start = new Date(end);   start.setDate(start.getDate() - 7);
+    return { start: start.getTime(), end: end.getTime() };
+  }
+  if (interval === 'month') {
+    const start = new Date(now.getFullYear(), now.getMonth() + off, 1);
+    const end   = new Date(now.getFullYear(), now.getMonth() + off + 1, 1);
+    return { start: start.getTime(), end: end.getTime() };
+  }
+  return { start: 0, end: Infinity };
+}
+
+function topRollsRangeLabel(interval, offset, range) {
+  if (interval === 'all') return 'All time';
+  const off = offset || 0;
+  const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
+  if (interval === 'today') {
+    if (off === 0)  return 'Today';
+    if (off === -1) return 'Yesterday';
+    return new Date(range.start).toLocaleDateString(undefined, dateOpts);
+  }
+  if (interval === '7d') {
+    const startStr = new Date(range.start).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    const endStr   = new Date(range.end - 1).toLocaleDateString(undefined, dateOpts);
+    return startStr + ' – ' + endStr;
+  }
+  if (interval === 'month') {
+    return new Date(range.start).toLocaleDateString(undefined, { year: 'numeric', month: 'long' });
+  }
+  return '';
+}
+
 function renderTopRolls() {
   const interval = state.topRollsInterval || 'today';
+  const offset = state.topRollsOffset || 0;
   document.querySelectorAll('#topRollsIntervalTabs .interval-tab').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.interval === interval);
   });
 
-  const now = Date.now();
-  let cutoff = 0;
-  if (interval === 'today') {
-    cutoff = state.lastResetTimestamp ? new Date(state.lastResetTimestamp).getTime() : 0;
-  } else if (interval === '7d') {
-    cutoff = now - 7 * 24 * 60 * 60 * 1000;
+  const range = topRollsRange(interval, offset);
+
+  // Update navigation row
+  const navRow = document.getElementById('topRollsNavRow');
+  const navBack = document.getElementById('topRollsNavBack');
+  const navFwd  = document.getElementById('topRollsNavFwd');
+  const rangeLabel = document.getElementById('topRollsRangeLabel');
+  if (interval === 'all') {
+    navRow.classList.add('disabled');
+    navBack.disabled = true;
+    navFwd.disabled = true;
+  } else {
+    navRow.classList.remove('disabled');
+    navBack.disabled = false;
+    navFwd.disabled = offset >= 0;
   }
+  rangeLabel.textContent = topRollsRangeLabel(interval, offset, range);
 
   const inRange = (state.battleLogs || []).filter(e => {
     const sides = e.diceSides || 20;
     if (sides !== 20) return false;
     const t = new Date(e.timestamp).getTime();
     if (isNaN(t)) return false;
-    return t >= cutoff;
+    return t >= range.start && t < range.end;
   });
 
   // Group by category: 'Auto' for auto rolls, dice name for manual rolls
