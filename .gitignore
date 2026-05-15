@@ -7,6 +7,9 @@
 # Personal scratch folder
 ignore-my-stuff/
 
+# v2 redesign handoff materials (kept local)
+_Ignore (v2 app Handoff)/
+
 # Node (future-proofing)
 node_modules/
 
