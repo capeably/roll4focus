@@ -185,6 +185,30 @@
     background: rgba(0,0,0,0.2);
   }
   .status-chip .status-chip-text { white-space: nowrap; }
+
+  /* Small icon-only Reset button in the tab bar chrome (next to status chip) */
+  .chrome-reset-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    margin-left: 6px;
+    padding: 0;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text3);
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    flex-shrink: 0;
+  }
+  .chrome-reset-btn:hover {
+    color: var(--red2);
+    border-color: color-mix(in srgb, var(--red2) 50%, transparent);
+    background: color-mix(in srgb, var(--red2) 8%, transparent);
+  }
   .tab-btn:hover { color: var(--gold2); border-color: var(--border2); background: rgba(200,150,62,0.04); }
   .tab-btn.active {
     color: var(--gold2);

@@ -32,6 +32,7 @@
   <button class="tab-btn" onclick="switchTab('settings', event)">⚙</button>
   <div class="tabs-spacer"></div>
   <div class="status-chip" id="sessionsTodayChip" title="Sessions completed today"><span class="status-dot"></span><span class="status-chip-text">S<span id="sessionsTodayCount">0</span> · Today</span></div>
+  <button class="chrome-reset-btn" onclick="if(confirm('Reset today’s stats (Inspiration, Penalty, Battles, Chests, Streak)?')) resetStatus()" title="Reset stats">↺</button>
 </nav>
 
 <!-- ======================== DASHBOARD TAB ======================== -->
@@ -308,15 +309,6 @@
       <div class="setting-control">
         <label class="file-btn" for="configImportInput">↑ Import</label>
         <input type="file" id="configImportInput" accept=".json" onchange="importSettings(event)">
-      </div>
-    </div>
-    <div class="setting-row">
-      <div>
-        <div class="setting-label">Reset Stats</div>
-        <div class="setting-sub">Clear today's Hope/Fear/Sound, Inspiration, Penalty</div>
-      </div>
-      <div class="setting-control">
-        <button class="file-btn" onclick="resetStatus()" title="Reset all stats to defaults">↺ Reset</button>
       </div>
     </div>
   </div>
