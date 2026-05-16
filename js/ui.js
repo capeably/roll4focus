@@ -118,14 +118,18 @@ function toggleManualEntryKeepOpen() {
 }
 
 // In-modal "Last Roll" status line — updates the .last-roll element inside
-// whichever manual-entry modal is currently open.
+// whichever manual-entry modal is currently open. Pass payload.actor when
+// rendering a roll that just carried over from the OTHER actor's modal
+// (auto-switch flow) so the label reads e.g. "// LAST · BOSS →".
 function setLastRoll(payload) {
   const lr = document.querySelector('.modal-overlay.show .manual-entry .last-roll');
   if (!lr) return false;
   lr.dataset.variant = payload.variant || '';
+  const label = lr.querySelector('.last-roll__label');
   const v = lr.querySelector('.last-roll__value');
   const d = lr.querySelector('.last-roll__detail');
   const c = lr.querySelector('.last-roll__cause');
+  if (label) label.textContent = payload.actor ? `Last · ${payload.actor} →` : 'Last Roll';
   if (v) v.textContent = payload.value != null ? payload.value : '—';
   if (d) d.textContent = payload.detail || '';
   if (c) c.textContent = payload.cause || '';
@@ -136,6 +140,22 @@ function setLastRoll(payload) {
     v.classList.add('bump');
   }
   return true;
+}
+
+// Read the currently-visible .last-roll back into a payload — used to carry
+// the last roll across an auto-switch from one manual-entry modal to the
+// other. Returns null if no roll has been registered yet.
+function captureLastRoll() {
+  const lr = document.querySelector('.modal-overlay.show .manual-entry .last-roll');
+  if (!lr) return null;
+  const v = lr.querySelector('.last-roll__value')?.textContent;
+  if (!v || v === '—') return null;
+  return {
+    value: v,
+    detail: lr.querySelector('.last-roll__detail')?.textContent || '',
+    cause: lr.querySelector('.last-roll__cause')?.textContent || '',
+    variant: lr.dataset.variant || ''
+  };
 }
 
 // True if a Boss/Minion manual entry modal is currently shown
@@ -152,10 +172,23 @@ function confirmBossEdit() {
   document.getElementById('qbBossRoll').value = val;
   if (state.manualEntryKeepOpen) {
     if (state.bossBattlesEarned - state.bossBattlesFought > 0) bossAttack();
-    input.value = '';
-    document.getElementById('qbBossRoll').value = '';
-    updateBossEditModal();
-    input.focus();
+    const bossRem = state.bossBattlesEarned - state.bossBattlesFought;
+    const minionRem = state.minionBattlesEarned - state.minionBattlesFought;
+    if (bossRem === 0 && minionRem > 0) {
+      // Auto-switch to Minion modal — carry the LAST ROLL line across
+      const carry = captureLastRoll();
+      closeModal('bossEditModal');
+      openMinionEditModal();
+      if (carry) setLastRoll({ ...carry, actor: 'Boss' });
+    } else if (bossRem === 0 && minionRem === 0) {
+      closeModal('bossEditModal');
+      showToast('Queue empty', '0 REM', 'boss + minion done', 'success');
+    } else {
+      input.value = '';
+      document.getElementById('qbBossRoll').value = '';
+      updateBossEditModal();
+      input.focus();
+    }
   } else {
     closeModal('bossEditModal');
     if (state.bossBattlesEarned - state.bossBattlesFought > 0) bossAttack();
@@ -190,10 +223,23 @@ function confirmMinionEdit() {
   document.getElementById('qbMinionRoll').value = val;
   if (state.manualEntryKeepOpen) {
     if (state.minionBattlesEarned - state.minionBattlesFought > 0) minionAttack();
-    input.value = '';
-    document.getElementById('qbMinionRoll').value = '';
-    updateMinionEditModal();
-    input.focus();
+    const minionRem = state.minionBattlesEarned - state.minionBattlesFought;
+    const bossRem = state.bossBattlesEarned - state.bossBattlesFought;
+    if (minionRem === 0 && bossRem > 0) {
+      // Auto-switch to Boss modal — carry the LAST ROLL line across
+      const carry = captureLastRoll();
+      closeModal('minionEditModal');
+      openBossEditModal();
+      if (carry) setLastRoll({ ...carry, actor: 'Minion' });
+    } else if (minionRem === 0 && bossRem === 0) {
+      closeModal('minionEditModal');
+      showToast('Queue empty', '0 REM', 'boss + minion done', 'success');
+    } else {
+      input.value = '';
+      document.getElementById('qbMinionRoll').value = '';
+      updateMinionEditModal();
+      input.focus();
+    }
   } else {
     closeModal('minionEditModal');
     if (state.minionBattlesEarned - state.minionBattlesFought > 0) minionAttack();

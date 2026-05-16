@@ -1655,15 +1655,17 @@
   }
 
   /* Event modifiers — set the surface color so value + clips inherit. */
-  .toast--gain  { color: var(--amber); border-color: color-mix(in srgb, var(--amber) 55%, transparent); }
-  .toast--loss  { color: var(--red);   border-color: color-mix(in srgb, var(--red)   55%, transparent); }
-  .toast--chest { color: var(--amber); border-color: color-mix(in srgb, var(--amber) 55%, transparent); }
+  .toast--gain    { color: var(--amber);   border-color: color-mix(in srgb, var(--amber)   55%, transparent); }
+  .toast--loss    { color: var(--red);     border-color: color-mix(in srgb, var(--red)     55%, transparent); }
+  .toast--chest   { color: var(--amber);   border-color: color-mix(in srgb, var(--amber)   55%, transparent); }
+  .toast--success { color: var(--success); border-color: color-mix(in srgb, var(--success) 55%, transparent); }
   .toast--chest .toast__value { font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 
   /* Fallback for browsers without color-mix support — solid muted border */
   @supports not (border-color: color-mix(in srgb, red 50%, transparent)) {
     .toast--gain, .toast--chest { border-color: var(--amber); }
     .toast--loss { border-color: var(--red); }
+    .toast--success { border-color: var(--success); }
   }
 
   /* Arcade corner clips — inherit color from variant */
