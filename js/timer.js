@@ -20,10 +20,14 @@ function updateRing() {
 
 function startTimer() {
   if (state.timerSeconds <= 0) { showToast('Set a session time first'); return; }
+  // Fresh start = timer is at its initial position (hasn't ticked down).
+  // Resume after pause = timerSeconds < timerTotal — skip the start sound.
+  const isFreshStart = state.timerSeconds === state.timerTotal;
   state.timerRunning = true;
   document.getElementById('btnStart').style.display = 'none';
   document.getElementById('btnPause').style.display = 'inline-flex';
-  playStartSound(); startTicking(); startMinionCountdown();
+  if (isFreshStart) playStartSound();
+  startTicking(); startMinionCountdown();
   state.timerInterval = setInterval(() => {
     state.timerSeconds--;
     updateTimerDisplay(); updateRing();
