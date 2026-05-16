@@ -183,6 +183,8 @@ function confirmBossEdit() {
     } else if (bossRem === 0 && minionRem === 0) {
       closeModal('bossEditModal');
       showToast('Queue empty', '0 REM', 'boss + minion done', 'success');
+      // Audible "no more rolls" cue, after the attack sound has played
+      setTimeout(() => Sound.play('popupClose'), 600);
     } else {
       input.value = '';
       document.getElementById('qbBossRoll').value = '';
@@ -234,6 +236,8 @@ function confirmMinionEdit() {
     } else if (minionRem === 0 && bossRem === 0) {
       closeModal('minionEditModal');
       showToast('Queue empty', '0 REM', 'boss + minion done', 'success');
+      // Audible "no more rolls" cue, after the attack sound has played
+      setTimeout(() => Sound.play('popupClose'), 600);
     } else {
       input.value = '';
       document.getElementById('qbMinionRoll').value = '';

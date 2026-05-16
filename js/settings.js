@@ -23,6 +23,7 @@ const SETTINGS_MAP = [
   ['minionCountdownToggle',   'minionCountdownEnabled',  'bool'],
   ['breakStartSoundToggle',   'breakStartSoundEnabled',  'bool'],
   ['breakFinishSoundToggle',  'breakFinishSoundEnabled', 'bool'],
+  ['popupCloseSoundToggle',   'popupCloseSoundEnabled',  'bool'],
 ];
 
 function hydrateSettings() {

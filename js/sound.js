@@ -136,6 +136,7 @@ Sound.register('attackFail',  'attackFailSound',    'attackFailSoundFileName',  
 Sound.register('openChest',   'openChestSound',     'openChestSoundFileName',   'r4f_sound_openChest',     'openChestSoundEnabled');
 Sound.register('breakStart',  'breakStartSound',    'breakStartSoundFileName',  'r4f_sound_breakStart',    'breakStartSoundEnabled');
 Sound.register('breakFinish', 'breakFinishSound',   'breakFinishSoundFileName', 'r4f_sound_breakFinish',   'breakFinishSoundEnabled');
+Sound.register('popupClose',  'popupCloseSound',    'popupCloseSoundFileName',  'r4f_sound_popupClose',    'popupCloseSoundEnabled');
 Sound.register('timerQuiet',  'timerQuietSound',    'timerQuietSoundFileName',  'r4f_sound_timerQuiet',    null);
 
 // Global aliases for HTML onclick handlers

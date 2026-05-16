@@ -542,6 +542,21 @@
       </div>
     </div>
 
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Manual Entry Close Sound</div>
+        <div class="setting-sub" id="popupCloseSoundFileName">No file selected</div>
+      </div>
+      <div class="setting-control sound-file-control">
+        <label class="toggle-switch">
+          <input type="checkbox" id="popupCloseSoundToggle" onchange="saveSettings()">
+          <span class="toggle-slider"></span>
+        </label>
+        <label class="file-btn" for="popupCloseSoundFileInput">Choose File</label>
+        <input type="file" id="popupCloseSoundFileInput" accept=".mp3,.wav" onchange="loadGenericSound(event,'popupClose')">
+      </div>
+    </div>
+
   </div>
 
   <!-- Minion Settings -->
@@ -1167,6 +1182,7 @@
 <audio id="openChestSound" src="sounds/Open Chest.mp3"></audio>
 <audio id="breakStartSound"></audio>
 <audio id="breakFinishSound" src="sounds/Break Timer Finish.mp3"></audio>
+<audio id="popupCloseSound" src="sounds/popup-close.mp3"></audio>
 <audio id="timerQuietSound" src="sounds/Timer Sound (Quiet).mp3"></audio>
 
 
