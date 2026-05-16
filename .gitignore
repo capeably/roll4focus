@@ -1,5 +1,7 @@
 # Backups
 *.bak
+CustomBackup.bat
+QuickBackup.bat
 
 # Claude Code metadata
 .claude/
