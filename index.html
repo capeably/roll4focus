@@ -1006,7 +1006,7 @@
 <!-- ======================== SESSION LOG EDIT MODAL ======================== -->
 <div class="modal-overlay" id="sessionLogEditModal">
   <div class="modal" style="max-width:380px;">
-    <div class="modal-icon">📝</div>
+    <div class="modal-icon">◐</div>
     <div class="modal-title">Edit Session Log</div>
     <div style="margin:16px 0 20px;display:flex;flex-direction:column;gap:10px;">
       <div class="log-edit-row">
@@ -1063,9 +1063,10 @@
         <input type="text" id="editSessionTimestamp" class="log-edit-input" style="width:180px;">
       </div>
     </div>
-    <div class="modal-buttons">
+    <div class="modal-buttons" style="grid-template-columns:1fr 1fr auto;">
       <button class="btn-yes" onclick="saveSessionLogEdit()">✓ Save</button>
-      <button class="btn-no" onclick="closeModal('sessionLogEditModal')">Cancel</button>
+      <button class="btn-neutral" onclick="closeModal('sessionLogEditModal')">Cancel</button>
+      <button class="btn-no" onclick="deleteSessionLogEntry()" title="Delete entry" style="padding:12px 14px;">⌫</button>
     </div>
   </div>
 </div>
@@ -1105,10 +1106,10 @@
           <option value="no">No</option>
         </select>
       </div>
-      <div class="log-edit-row">
-        <label class="log-edit-label">Dice Sides</label>
-        <input type="number" id="editBattleDiceSides" class="log-edit-input" min="2" max="100">
-      </div>
+      <!-- Dice Sides field hidden from UI per design review — data preserved
+           in state.battleLogs[i].diceSides; round-trip via CSV import/export
+           if it ever needs to change. -->
+      <input type="hidden" id="editBattleDiceSides">
       <div class="log-edit-row">
         <label class="log-edit-label">Dice Name</label>
         <input type="text" id="editBattleDiceName" class="log-edit-input" style="width:180px;">
@@ -1118,9 +1119,10 @@
         <input type="text" id="editBattleTimestamp" class="log-edit-input" style="width:180px;">
       </div>
     </div>
-    <div class="modal-buttons">
+    <div class="modal-buttons" style="grid-template-columns:1fr 1fr auto;">
       <button class="btn-yes" onclick="saveBattleLogEdit()">✓ Save</button>
-      <button class="btn-no" onclick="closeModal('battleLogEditModal')">Cancel</button>
+      <button class="btn-neutral" onclick="closeModal('battleLogEditModal')">Cancel</button>
+      <button class="btn-no" onclick="deleteBattleLogEntry()" title="Delete entry" style="padding:12px 14px;">⌫</button>
     </div>
   </div>
 </div>

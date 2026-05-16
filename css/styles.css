@@ -1482,6 +1482,21 @@
     transition: all 0.2s;
   }
   .btn-no:hover { background: rgba(192,57,43,0.25); box-shadow: 0 0 16px rgba(192,57,43,0.2); }
+  /* Neutral cancel/dismiss button — destructive semantics belong to .btn-no */
+  .btn-neutral {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-neutral:hover { border-color: var(--border2); color: var(--text); background: rgba(255,255,255,0.02); }
 
   /* HELP MODAL */
   .help-section-title {

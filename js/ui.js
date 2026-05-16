@@ -951,6 +951,14 @@ function saveSessionLogEdit() {
   showToast('Session log updated');
 }
 
+function deleteSessionLogEntry() {
+  if (_editingSessionIdx < 0 || !state.logs[_editingSessionIdx]) return;
+  if (!confirm('Delete this session log entry?')) return;
+  state.logs.splice(_editingSessionIdx, 1);
+  _editingSessionIdx = -1;
+  markDirty(); closeModal('sessionLogEditModal'); renderLogs();
+}
+
 function openBattleLogEdit(idx) {
   _editingBattleIdx = idx;
   const log = state.battleLogs[idx];
@@ -979,4 +987,12 @@ function saveBattleLogEdit() {
   log.timestamp = document.getElementById('editBattleTimestamp').value.trim() || log.timestamp;
   markDirty(); renderBattleLogs(); updateMetrics(); closeModal('battleLogEditModal');
   showToast('Battle log updated');
+}
+
+function deleteBattleLogEntry() {
+  if (_editingBattleIdx < 0 || !state.battleLogs[_editingBattleIdx]) return;
+  if (!confirm('Delete this battle log entry?')) return;
+  state.battleLogs.splice(_editingBattleIdx, 1);
+  _editingBattleIdx = -1;
+  markDirty(); closeModal('battleLogEditModal'); renderBattleLogs(); updateMetrics();
 }
