@@ -2705,19 +2705,26 @@
     letter-spacing: 0.04em;
   }
 
-  /* Most Rolled · Streak — 5 boxed cells */
+  /* Most Rolled — 3 compact cells, centered. The 5-cell streak layout
+     in Adventuring Time gets its own modifier below. */
   .metrics-most-rolled {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
+    grid-template-columns: repeat(3, minmax(80px, 1fr));
+    gap: 10px;
     justify-content: center;
+    max-width: 340px;
+    margin: 0 auto 4px;
+  }
+  .metrics-most-rolled.streak-only {
+    grid-template-columns: repeat(2, minmax(96px, 1fr));
+    max-width: 260px;
   }
   .mr-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px;
-    padding: 6px 4px;
+    gap: 4px;
+    padding: 8px 6px;
     border: 1px solid var(--border);
     background: var(--bg2);
     border-radius: 4px;
@@ -2725,8 +2732,8 @@
   }
   .mr-label {
     font-family: var(--font-heading);
-    font-size: 0.48rem;
-    letter-spacing: 0.15em;
+    font-size: 0.55rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     white-space: nowrap;
   }
@@ -2760,20 +2767,25 @@
     display: none; /* using grid gap instead */
   }
 
-  /* Dice Stats card — controls row (period nav + interval tabs) */
+  /* Dice Stats card — controls row (period nav + interval tabs).
+     When both fit on one line, push them to opposite edges. When the
+     row wraps, each item centers on its own line. */
   .dice-stats-controls {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+    justify-content: center;
+    column-gap: 16px;
+    row-gap: 10px;
     margin-bottom: 12px;
     flex-wrap: wrap;
   }
   .dice-stats-controls .top-rolls-navrow {
     margin: 0;
+    flex: 1 1 auto;
+    justify-content: center;
   }
   .dice-stats-controls .interval-tabs {
-    margin-left: auto;
+    flex: 0 0 auto;
   }
 
   /* Dice Stats card — filter dropdown */
