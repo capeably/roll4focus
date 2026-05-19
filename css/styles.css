@@ -2768,21 +2768,20 @@
   }
 
   /* Dice Stats card — controls row (period nav + interval tabs).
-     When both fit on one line, push them to opposite edges. When the
-     row wraps, each item centers on its own line. */
+     Both items at natural widths, centered together. When the row
+     wraps, each item ends up centered on its own line. */
   .dice-stats-controls {
     display: flex;
     align-items: center;
     justify-content: center;
-    column-gap: 16px;
+    column-gap: 24px;
     row-gap: 10px;
     margin-bottom: 12px;
     flex-wrap: wrap;
   }
   .dice-stats-controls .top-rolls-navrow {
     margin: 0;
-    flex: 1 1 auto;
-    justify-content: center;
+    flex: 0 0 auto;
   }
   .dice-stats-controls .interval-tabs {
     flex: 0 0 auto;
