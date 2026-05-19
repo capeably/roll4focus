@@ -2785,6 +2785,7 @@
   }
   .dice-stats-controls .interval-tabs {
     flex: 0 0 auto;
+    margin-left: 0; /* override the legacy auto-margin from the card-title context */
   }
 
   /* Dice Stats card — filter dropdown */
