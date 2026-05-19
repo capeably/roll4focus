@@ -365,59 +365,18 @@ function updateMetrics() {
   setText('metMinChOpened', state.minionChestsOpened);
   setText('metMinChRemaining', state.minionChestsEarned - state.minionChestsOpened);
 
-  // --- Dice roll averages (filter battleLogs by lastResetTimestamp) ---
-  const resetTs = state.lastResetTimestamp ? new Date(state.lastResetTimestamp) : new Date(0);
-  const dayLogs = (state.battleLogs || []).filter(e => {
-    const d = new Date(e.timestamp);
-    return !isNaN(d) && d >= resetTs;
-  });
-
-  function avgAndCount(arr) {
-    if (!arr.length) return { avg: '—', count: 0 };
-    return { avg: (arr.reduce((s, e) => s + e.roll, 0) / arr.length).toFixed(1), count: arr.length };
-  }
-
-  const setMetric = (id, data) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (data.count === 0) el.textContent = '—';
-    else el.innerHTML = '<span class="metrics-avg">' + data.avg + '</span> <span class="metrics-plus">+' + data.count + '</span>';
-  };
-
-  setMetric('metricBossAuto',    avgAndCount(dayLogs.filter(e => e.type === 'boss'   && e.rollType === 'auto')));
-  setMetric('metricBossManual',  avgAndCount(dayLogs.filter(e => e.type === 'boss'   && e.rollType === 'manual')));
-  setMetric('metricMinionAuto',  avgAndCount(dayLogs.filter(e => e.type === 'minion' && e.rollType === 'auto')));
-  setMetric('metricMinionManual',avgAndCount(dayLogs.filter(e => e.type === 'minion' && e.rollType === 'manual')));
-
-  // --- Most-rolled Hope/Fear/Sound ---
-  function mostRolled(arr) {
-    if (!arr || !arr.length) return '—';
-    const freq = {};
-    arr.forEach(v => { freq[v] = (freq[v] || 0) + 1; });
-    let maxVal = 0, maxKey = null;
-    Object.entries(freq).forEach(([k, c]) => { if (c > maxVal) { maxVal = c; maxKey = k; } });
-    let html = '<span class="mr-mainval">' + maxKey + '</span>';
-    if (maxVal > 1) html += '<span class="mr-count">\u00d7' + maxVal + '</span>';
-    return html;
-  }
-  function mostRolledHTML(arr) {
-    if (!arr || !arr.length) return '<span class="mr-mainval">\u2014</span>';
-    return mostRolled(arr);
-  }
-  const setHTML = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
-  setHTML('metMostHope', mostRolledHTML(state.hopeRolls));
-  setHTML('metMostFear', mostRolledHTML(state.fearRolls));
-  setHTML('metMostSound', mostRolledHTML(state.soundRolls));
-
-  renderTopRolls();
+  // Roll Averages + Most Rolled + Top Rolls all live in the Dice Stats card
+  // now and re-render together based on that card's date filter.
+  renderDiceStats();
 }
 
-// --- Top d20 Rolls (top categories, by interval + offset) ---
+// --- Dice Stats card (top rolls + roll averages + most rolled, sharing
+//     the same date filter and dice-name filter) ---
 function setTopRollsInterval(interval) {
   state.topRollsInterval = interval;
   state.topRollsOffset = 0;
   markDirty();
-  renderTopRolls();
+  renderDiceStats();
 }
 
 function nudgeTopRollsOffset(delta) {
@@ -426,7 +385,95 @@ function nudgeTopRollsOffset(delta) {
   if (next > 0) return; // can't navigate into the future
   state.topRollsOffset = next;
   markDirty();
-  renderTopRolls();
+  renderDiceStats();
+}
+
+// Returns the canonical list of selectable dice-stats categories:
+// 'Auto' first, then user-defined dice names in their saved order.
+function diceStatsAllCategories() {
+  return ['Auto'].concat(state.diceNames || []);
+}
+
+// Returns the SET of currently-selected category names. If
+// state.diceStatsFilter is null, all categories are selected (default).
+function diceStatsSelectedSet() {
+  if (state.diceStatsFilter == null) return new Set(diceStatsAllCategories());
+  return new Set(state.diceStatsFilter);
+}
+
+function diceStatsIsFiltered() {
+  if (state.diceStatsFilter == null) return false;
+  const all = diceStatsAllCategories();
+  if (state.diceStatsFilter.length !== all.length) return true;
+  return state.diceStatsFilter.some(n => !all.includes(n));
+}
+
+function setDiceStatsFilter(arr) {
+  // Pass null to clear (means "all"). Otherwise dedupe + sort to match all-cat order.
+  state.diceStatsFilter = arr == null ? null : Array.from(new Set(arr));
+  markDirty();
+  renderDiceStats();
+}
+
+function diceStatsFilterBulk(mode) {
+  if (mode === 'all') setDiceStatsFilter(null);
+  else if (mode === 'none') setDiceStatsFilter([]);
+  populateDiceStatsFilter();
+  updateDiceStatsFilterLabel();
+}
+
+function toggleDiceStatsFilter(event) {
+  if (event) event.stopPropagation();
+  const panel = document.getElementById('diceStatsFilterPanel');
+  if (!panel) return;
+  const willOpen = panel.style.display === 'none';
+  panel.style.display = willOpen ? 'block' : 'none';
+  if (willOpen) {
+    populateDiceStatsFilter();
+    // Click-outside closes
+    setTimeout(() => {
+      const onDocClick = (e) => {
+        if (!panel.contains(e.target) && !document.getElementById('diceStatsFilterBtn').contains(e.target)) {
+          panel.style.display = 'none';
+          document.removeEventListener('click', onDocClick);
+        }
+      };
+      document.addEventListener('click', onDocClick);
+    }, 0);
+  }
+}
+
+function populateDiceStatsFilter() {
+  const list = document.getElementById('diceStatsFilterList');
+  if (!list) return;
+  const all = diceStatsAllCategories();
+  const selected = diceStatsSelectedSet();
+  list.innerHTML = all.map(name => {
+    const checked = selected.has(name) ? ' checked' : '';
+    return '<label class="dsf-item"><input type="checkbox"' + checked
+      + ' value="' + escapeHtml(name) + '" onchange="onDiceStatsFilterToggle(this)">'
+      + '<span>' + escapeHtml(name) + '</span></label>';
+  }).join('');
+}
+
+function onDiceStatsFilterToggle(input) {
+  const all = diceStatsAllCategories();
+  const selected = diceStatsSelectedSet();
+  if (input.checked) selected.add(input.value);
+  else selected.delete(input.value);
+  // Normalize: if selected == all categories, store null (means "all")
+  const arr = all.filter(n => selected.has(n));
+  setDiceStatsFilter(arr.length === all.length ? null : arr);
+  updateDiceStatsFilterLabel();
+}
+
+function updateDiceStatsFilterLabel() {
+  const label = document.getElementById('diceStatsFilterLabel');
+  if (!label) return;
+  const all = diceStatsAllCategories();
+  const sel = state.diceStatsFilter;
+  if (sel == null) { label.textContent = 'Filter'; return; }
+  label.textContent = 'Filter (' + sel.length + '/' + all.length + ')';
 }
 
 // Returns { start, end } in ms epoch for the given interval+offset.
@@ -475,7 +522,7 @@ function topRollsRangeLabel(interval, offset, range) {
   return '';
 }
 
-function renderTopRolls() {
+function renderDiceStats() {
   const interval = state.topRollsInterval || 'today';
   const offset = state.topRollsOffset || 0;
   document.querySelectorAll('#topRollsIntervalTabs .interval-tab').forEach(btn => {
@@ -484,46 +531,76 @@ function renderTopRolls() {
 
   const range = topRollsRange(interval, offset);
 
-  // Update navigation row
+  // Update navigation row + range label
   const navRow = document.getElementById('topRollsNavRow');
   const navBack = document.getElementById('topRollsNavBack');
   const navFwd  = document.getElementById('topRollsNavFwd');
   const rangeLabel = document.getElementById('topRollsRangeLabel');
-  if (interval === 'all') {
-    navRow.classList.add('disabled');
-    navBack.disabled = true;
-    navFwd.disabled = true;
-  } else {
-    navRow.classList.remove('disabled');
-    navBack.disabled = false;
-    navFwd.disabled = offset >= 0;
+  if (navRow) {
+    if (interval === 'all') {
+      navRow.classList.add('disabled');
+      if (navBack) navBack.disabled = true;
+      if (navFwd)  navFwd.disabled = true;
+    } else {
+      navRow.classList.remove('disabled');
+      if (navBack) navBack.disabled = false;
+      if (navFwd)  navFwd.disabled = offset >= 0;
+    }
   }
-  rangeLabel.textContent = topRollsRangeLabel(interval, offset, range);
+  if (rangeLabel) rangeLabel.textContent = topRollsRangeLabel(interval, offset, range);
+  updateDiceStatsFilterLabel();
 
-  const inRange = (state.battleLogs || []).filter(e => {
-    const sides = e.diceSides || 20;
-    if (sides !== 20) return false;
+  // Filter battle logs to the active period
+  const inRangeBattles = (state.battleLogs || []).filter(e => {
     const t = new Date(e.timestamp).getTime();
     if (isNaN(t)) return false;
     return t >= range.start && t < range.end;
   });
 
-  // Group by category: 'Auto' for auto rolls, dice name for manual rolls
-  // Manual rolls without a dice name fall into 'Manual'.
+  // Filter session logs to the active period (for Most Rolled)
+  const inRangeSessions = (state.logs || []).filter(l => {
+    const t = new Date(l.timestamp).getTime();
+    if (isNaN(t)) return false;
+    return t >= range.start && t < range.end;
+  });
+
+  const selected = diceStatsSelectedSet();
+
+  // Categorize battle log: 'Auto' for auto rolls, dice name for manual rolls.
+  // Manual rolls WITHOUT a dice name ('Manual' bucket) are dropped from this
+  // card entirely — they can't be filtered meaningfully (per design review).
+  const categorize = (log) => {
+    if (log.rollType === 'auto') return 'Auto';
+    const name = (log.diceName || '').trim();
+    return name || null; // null → drop
+  };
+
+  _renderTopRollsSection(inRangeBattles, range, selected, categorize);
+  _renderRollAverages(inRangeBattles, selected, categorize);
+  _renderMostRolled(inRangeSessions);
+}
+
+// Back-compat alias for any leftover callers
+function renderTopRolls() { renderDiceStats(); }
+
+function _renderTopRollsSection(inRangeBattles, range, selected, categorize) {
+  const wrap = document.getElementById('topRollsWrap');
+  if (!wrap) return;
+
+  // Top Rolls viz is d20-only (bar widths assume 1–20 face range)
+  const d20 = inRangeBattles.filter(e => (e.diceSides || 20) === 20);
+
   const categories = {};
-  inRange.forEach(r => {
-    let key;
-    if (r.rollType === 'auto') key = 'Auto';
-    else key = (r.diceName && r.diceName.trim()) ? r.diceName.trim() : 'Manual';
+  d20.forEach(r => {
+    const key = categorize(r);
+    if (!key) return;                  // drop unnamed-manual
+    if (!selected.has(key)) return;    // drop filtered-out
     if (!categories[key]) categories[key] = { name: key, isAuto: r.rollType === 'auto', rolls: [] };
     categories[key].rolls.push(r);
   });
-
-  // Top 2 categories by roll count (tie-break alphabetical)
   const ranked = Object.values(categories)
     .sort((a, b) => b.rolls.length - a.rolls.length || a.name.localeCompare(b.name));
 
-  const wrap = document.getElementById('topRollsWrap');
   if (ranked.length === 0) {
     wrap.innerHTML = '<div class="top-rolls-empty" style="grid-column:1/-1;">No d20 rolls in this interval</div>';
     return;
@@ -553,8 +630,6 @@ function renderTopRolls() {
       .slice(0, limit);
   };
 
-  // Pick a stable bar color per category — auto gets a neutral teal,
-  // named dies cycle through cyan/magenta/lime/amber by hash.
   const barClassFor = (cat, indexHint) => {
     if (cat.isAuto) return 'bar-teal';
     const palette = ['bar-cyan', 'bar-lime', 'bar-magenta', 'bar-amber'];
@@ -563,8 +638,6 @@ function renderTopRolls() {
     return palette[Math.abs(h + (indexHint || 0)) % palette.length];
   };
 
-  // Single category — single header banner spanning both columns,
-  // top 10 faces split across the two list columns.
   if (ranked.length === 1) {
     const cat = ranked[0];
     const total = cat.rolls.length;
@@ -583,7 +656,6 @@ function renderTopRolls() {
     return;
   }
 
-  // Two categories — one column each.
   wrap.innerHTML = ranked.slice(0, 2).map((cat, idx) => {
     const total = cat.rolls.length;
     const sorted = topFaces(cat.rolls, 5);
@@ -596,6 +668,83 @@ function renderTopRolls() {
       + '<div class="top-rolls-list">' + rowHtml(sorted, total, barCls) + '</div>'
       + '</div>';
   }).join('');
+}
+
+// Roll Averages — rows: dice name (Auto pinned, rest by count desc).
+// Columns: Boss | Minion | All. Cells: "X.X +N".
+function _renderRollAverages(inRangeBattles, selected, categorize) {
+  const grid = document.getElementById('rollAveragesGrid');
+  if (!grid) return;
+
+  // Group: name → { boss: [], minion: [] }
+  const groups = {};
+  inRangeBattles.forEach(r => {
+    const key = categorize(r);
+    if (!key) return;
+    if (!selected.has(key)) return;
+    if (!groups[key]) groups[key] = { name: key, isAuto: r.rollType === 'auto', boss: [], minion: [] };
+    if (r.type === 'boss') groups[key].boss.push(r);
+    else if (r.type === 'minion') groups[key].minion.push(r);
+  });
+
+  const rows = Object.values(groups);
+  if (rows.length === 0) {
+    grid.innerHTML = '<div class="ra-empty">No rolls in this interval</div>';
+    return;
+  }
+
+  // Auto first, then count-desc, tie-break alphabetical
+  rows.sort((a, b) => {
+    if (a.isAuto !== b.isAuto) return a.isAuto ? -1 : 1;
+    const ac = a.boss.length + a.minion.length;
+    const bc = b.boss.length + b.minion.length;
+    if (ac !== bc) return bc - ac;
+    return a.name.localeCompare(b.name);
+  });
+
+  const cell = (rolls) => {
+    if (!rolls.length) return '<span class="ra-empty-cell">—</span>';
+    const avg = (rolls.reduce((s, r) => s + r.roll, 0) / rolls.length).toFixed(1);
+    return '<span class="ra-avg">' + avg + '</span><span class="ra-plus">+' + rolls.length + '</span>';
+  };
+
+  let html = ''
+    + '<div class="ra-header ra-col-dice"></div>'
+    + '<div class="ra-header ra-col-boss">Boss</div>'
+    + '<div class="ra-header ra-col-minion">Minion</div>'
+    + '<div class="ra-header ra-col-all">All</div>';
+  rows.forEach(row => {
+    const all = row.boss.concat(row.minion);
+    const labelColor = row.isAuto ? 'var(--text2)' : 'var(--gold2)';
+    html += '<div class="ra-label" style="color:' + labelColor + '">' + escapeHtml(row.name) + '</div>'
+         +  '<div class="ra-cell">' + cell(row.boss)   + '</div>'
+         +  '<div class="ra-cell">' + cell(row.minion) + '</div>'
+         +  '<div class="ra-cell ra-cell-all">' + cell(all) + '</div>';
+  });
+  grid.innerHTML = html;
+}
+
+// Most Rolled (session dice — Hope/Fear/Sound). Reads from state.logs
+// (which carry timestamps) so the date filter applies.
+function _renderMostRolled(inRangeSessions) {
+  const mostRolled = (arr) => {
+    if (!arr || !arr.length) return '<span class="mr-mainval">—</span>';
+    const freq = {};
+    arr.forEach(v => { freq[v] = (freq[v] || 0) + 1; });
+    let maxVal = 0, maxKey = null;
+    Object.entries(freq).forEach(([k, c]) => { if (c > maxVal) { maxVal = c; maxKey = k; } });
+    let html = '<span class="mr-mainval">' + maxKey + '</span>';
+    if (maxVal > 1) html += '<span class="mr-count">×' + maxVal + '</span>';
+    return html;
+  };
+  const collect = (key) => inRangeSessions
+    .map(l => l[key])
+    .filter(v => v !== undefined && v !== null && v !== '—' && !isNaN(Number(v)))
+    .map(Number);
+  const setHTML = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
+  setHTML('metMostHope',  mostRolled(collect('hope')));
+  setHTML('metMostFear',  mostRolled(collect('fear')));
+  setHTML('metMostSound', mostRolled(collect('sound')));
 }
 
 // ============================================================

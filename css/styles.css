@@ -2760,6 +2760,173 @@
     display: none; /* using grid gap instead */
   }
 
+  /* Dice Stats card — controls row (period nav + interval tabs) */
+  .dice-stats-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .dice-stats-controls .top-rolls-navrow {
+    margin: 0;
+  }
+  .dice-stats-controls .interval-tabs {
+    margin-left: auto;
+  }
+
+  /* Dice Stats card — filter dropdown */
+  .dice-stats-filter-wrap {
+    position: relative;
+    display: inline-flex;
+    margin-left: auto;
+    margin-right: 6px;
+  }
+  .dice-stats-filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-heading);
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text2);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .dice-stats-filter-btn:hover { color: var(--text); border-color: var(--border2); }
+  .dice-stats-filter-btn .caret { font-size: 0.55rem; opacity: 0.7; }
+  .dice-stats-filter-panel {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 50;
+    min-width: 160px;
+    padding: 8px;
+    background: var(--card);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    animation: dsfFade 100ms ease;
+  }
+  @keyframes dsfFade { from { opacity: 0; } to { opacity: 1; } }
+  .dsf-actions {
+    display: flex;
+    gap: 6px;
+    padding-bottom: 6px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dsf-actions button {
+    flex: 1;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    font-family: var(--font-heading);
+    font-size: 0.55rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 4px 6px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .dsf-actions button:hover { color: var(--text2); border-color: var(--border2); }
+  .dsf-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: 260px;
+    overflow-y: auto;
+  }
+  .dsf-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 6px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--text2);
+  }
+  .dsf-item:hover { background: rgba(255,255,255,0.04); }
+  .dsf-item input[type="checkbox"] {
+    accent-color: var(--gold);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  /* Roll Averages grid (Dice Stats card) */
+  .roll-averages-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 4px 12px;
+    align-items: baseline;
+    padding: 4px 0 4px;
+    margin-bottom: 14px;
+  }
+  .roll-averages-grid .ra-header {
+    font-family: var(--font-heading);
+    font-size: 0.55rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .roll-averages-grid .ra-header.ra-col-boss   { color: var(--gold); text-align: center; }
+  .roll-averages-grid .ra-header.ra-col-minion { color: var(--minion); text-align: center; }
+  .roll-averages-grid .ra-header.ra-col-all    { color: var(--text2); text-align: center; border-left: 1px solid var(--border); padding-left: 8px; }
+  .roll-averages-grid .ra-label {
+    font-family: var(--font-heading);
+    font-size: 0.65rem;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--text2);
+    padding: 2px 0;
+  }
+  .roll-averages-grid .ra-cell {
+    text-align: center;
+    padding: 2px 0;
+  }
+  .roll-averages-grid .ra-cell-all {
+    border-left: 1px solid var(--border);
+    padding-left: 8px;
+  }
+  .roll-averages-grid .ra-avg {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .roll-averages-grid .ra-plus {
+    font-family: var(--font-heading);
+    font-size: 0.6rem;
+    color: var(--success);
+    margin-left: 3px;
+    letter-spacing: 0.04em;
+  }
+  .roll-averages-grid .ra-empty-cell { color: var(--text3); font-size: 0.9rem; }
+  .roll-averages-grid .ra-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--text3);
+    font-style: italic;
+    padding: 12px 0;
+    font-size: 0.85rem;
+  }
+
+  /* Most Rolled · Streak — when in streak-only mode (no Hope/Fear/Sound),
+     render as just two centered streak cells */
+  .metrics-most-rolled.streak-only {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   /* Top d20 Rolls section */
   .interval-tabs {
     display: inline-flex;

@@ -51,6 +51,7 @@ let state = {
   currentStreak: 0, longestStreak: 0, quietMode: false,
   manualEntryKeepOpen: false,
   topRollsInterval: 'today', topRollsOffset: 0,
+  diceStatsFilter: null,
   timerSeconds: 0, timerTotal: 0, timerRunning: false,
   timerInterval: null, tickInterval: null, currentSession: null,
 };
@@ -74,7 +75,7 @@ const PERSIST_KEYS = [
   'diceNames','currentDiceName',
   'lastResetTimestamp','hopeRolls','fearRolls','soundRolls',
   'currentStreak','longestStreak','quietMode',
-  'manualEntryKeepOpen','topRollsInterval','topRollsOffset',
+  'manualEntryKeepOpen','topRollsInterval','topRollsOffset','diceStatsFilter',
 ];
 
 let _saveDirty = false, _saveTimer = null;

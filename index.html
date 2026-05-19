@@ -153,10 +153,29 @@
 
   </div>
 
-  <!-- Top d20 Rolls -->
+  <!-- Dice Stats -->
   <div class="card">
     <div class="card-title">
-      <span>Top d20 Rolls</span>
+      <span>Dice Stats</span>
+      <span class="dice-stats-filter-wrap">
+        <button class="dice-stats-filter-btn" id="diceStatsFilterBtn" onclick="toggleDiceStatsFilter(event)">
+          <span id="diceStatsFilterLabel">Filter</span><span class="caret">▾</span>
+        </button>
+        <div class="dice-stats-filter-panel" id="diceStatsFilterPanel" style="display:none;">
+          <div class="dsf-actions">
+            <button type="button" onclick="diceStatsFilterBulk('all')">All</button>
+            <button type="button" onclick="diceStatsFilterBulk('none')">None</button>
+          </div>
+          <div class="dsf-list" id="diceStatsFilterList"></div>
+        </div>
+      </span>
+    </div>
+    <div class="dice-stats-controls">
+      <div class="top-rolls-navrow" id="topRollsNavRow">
+        <button class="top-rolls-nav-btn" id="topRollsNavBack" onclick="nudgeTopRollsOffset(-1)" aria-label="Previous period">‹</button>
+        <span class="top-rolls-range-label" id="topRollsRangeLabel">—</span>
+        <button class="top-rolls-nav-btn" id="topRollsNavFwd" onclick="nudgeTopRollsOffset(1)" aria-label="Next period">›</button>
+      </div>
       <span class="interval-tabs" id="topRollsIntervalTabs">
         <button class="interval-tab" data-interval="today" onclick="setTopRollsInterval('today')">Today</button>
         <button class="interval-tab" data-interval="7d" onclick="setTopRollsInterval('7d')">7d</button>
@@ -164,12 +183,28 @@
         <button class="interval-tab" data-interval="all" onclick="setTopRollsInterval('all')">All</button>
       </span>
     </div>
-    <div class="top-rolls-navrow" id="topRollsNavRow">
-      <button class="top-rolls-nav-btn" id="topRollsNavBack" onclick="nudgeTopRollsOffset(-1)" aria-label="Previous period">‹</button>
-      <span class="top-rolls-range-label" id="topRollsRangeLabel">—</span>
-      <button class="top-rolls-nav-btn" id="topRollsNavFwd" onclick="nudgeTopRollsOffset(1)" aria-label="Next period">›</button>
-    </div>
+
+    <div class="metrics-section-header">Top Rolls</div>
     <div class="top-rolls-wrap" id="topRollsWrap"></div>
+
+    <div class="metrics-section-header">Roll Averages</div>
+    <div class="roll-averages-grid" id="rollAveragesGrid"></div>
+
+    <div class="metrics-section-header">Most Rolled · Session Dice</div>
+    <div class="metrics-most-rolled" id="mostRolledGrid">
+      <div class="mr-item">
+        <span class="mr-label" style="color:var(--teal)">Hope</span>
+        <span class="mr-value" id="metMostHope"><span class="mr-mainval">—</span></span>
+      </div>
+      <div class="mr-item">
+        <span class="mr-label" style="color:var(--red2)">Fear</span>
+        <span class="mr-value" id="metMostFear"><span class="mr-mainval">—</span></span>
+      </div>
+      <div class="mr-item">
+        <span class="mr-label" style="color:var(--gold)">Sound</span>
+        <span class="mr-value" id="metMostSound"><span class="mr-mainval">—</span></span>
+      </div>
+    </div>
   </div>
 
   <!-- Adventuring Time -->
@@ -220,36 +255,9 @@
         <div class="mt-val" id="metMinChRemaining">0</div>
       </div>
 
-      <!-- Roll Averages -->
-      <div class="metrics-section-header">Roll Averages</div>
-      <div class="metrics-grid">
-        <div class="metrics-col-header"></div>
-        <div class="metrics-col-header">Auto</div>
-        <div class="metrics-col-header">Manual</div>
-        <div class="metrics-row-label" style="color:var(--gold)">Boss</div>
-        <div class="metrics-val" id="metricBossAuto" style="color:var(--gold2)">—</div>
-        <div class="metrics-val" id="metricBossManual" style="color:var(--gold2)">—</div>
-        <div class="metrics-row-label" style="color:var(--minion)">Minion</div>
-        <div class="metrics-val" id="metricMinionAuto" style="color:var(--minion)">—</div>
-        <div class="metrics-val" id="metricMinionManual" style="color:var(--minion)">—</div>
-      </div>
-
-      <!-- Most Rolled + Streak -->
-      <div class="metrics-section-header">Most Rolled · Streak</div>
-      <div class="metrics-most-rolled">
-        <div class="mr-item">
-          <span class="mr-label" style="color:var(--teal)">Hope</span>
-          <span class="mr-value" id="metMostHope"><span class="mr-mainval">—</span></span>
-        </div>
-        <div class="mr-item">
-          <span class="mr-label" style="color:var(--red2)">Fear</span>
-          <span class="mr-value" id="metMostFear"><span class="mr-mainval">—</span></span>
-        </div>
-        <div class="mr-item">
-          <span class="mr-label" style="color:var(--gold)">Sound</span>
-          <span class="mr-value" id="metMostSound"><span class="mr-mainval">—</span></span>
-        </div>
-        <div class="mr-divider"></div>
+      <!-- Streak -->
+      <div class="metrics-section-header">Streak</div>
+      <div class="metrics-most-rolled streak-only">
         <div class="mr-item">
           <span class="mr-label" style="color:var(--amber)">◆ Current</span>
           <span class="mr-value streak-value" id="statCurrentStreak" style="color:var(--amber)">0</span>
