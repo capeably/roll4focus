@@ -124,7 +124,8 @@ body.theme-arcade .app-subtitle {
 
 /* Display numerals — Space Grotesk */
 body.theme-arcade .timer-display,
-body.theme-arcade .timer-edit,
+body.theme-arcade .dur-field,
+body.theme-arcade .dur-colon,
 body.theme-arcade .die-oct-input,
 body.theme-arcade .die-input,
 body.theme-arcade .counter-value,
@@ -266,6 +267,32 @@ body.theme-arcade .timer-ring-progress.low {
 body.theme-arcade .timer-display {
   text-shadow: 0 0 12px rgba(90,240,255,0.5);
 }
+
+/* Duration editor (chevron time-input) — cyan accents in Arcade */
+body.theme-arcade .dur-field { color: var(--arc-cyan); caret-color: var(--arc-cyan); border-bottom-color: var(--border2); }
+body.theme-arcade .dur-colon { color: var(--text3); }
+body.theme-arcade .dur-field:focus {
+  border-bottom-color: var(--arc-cyan);
+  box-shadow: none; /* CRITICAL: kill the global input:focus glow ring — no glow-on-glow inside the ring */
+}
+body.theme-arcade .dur-field::selection { background: rgba(90,240,255,0.28); color: var(--gold3); }
+body.theme-arcade .dur-chevron:hover { color: var(--arc-cyan); text-shadow: 0 0 8px rgba(90,240,255,0.45); }
+body.theme-arcade .dur-chevron:active,
+body.theme-arcade .dur-chevron.is-holding { color: var(--gold3); text-shadow: 0 0 10px rgba(90,240,255,0.6); }
+/* Idle / locked readout glow — cyan instead of the base warm gold */
+body.theme-arcade .dur-editor.is-idle .dur-field,
+body.theme-arcade .dur-editor.is-locked .dur-field,
+body.theme-arcade .dur-editor.is-idle .dur-colon,
+body.theme-arcade .dur-editor.is-locked .dur-colon {
+  color: var(--arc-cyan);
+  text-shadow: 0 0 12px rgba(90,240,255,0.5);
+}
+/* Break editor stays amber even in Arcade */
+body.theme-arcade .dur--break .dur-field,
+body.theme-arcade .dur--break.is-locked .dur-field,
+body.theme-arcade .dur--break.is-locked .dur-colon { color: var(--amber); caret-color: var(--amber); }
+body.theme-arcade .dur--break .dur-field:focus { border-bottom-color: var(--amber); box-shadow: none; }
+body.theme-arcade .dur--break .dur-chevron:hover { color: var(--amber); text-shadow: 0 0 8px rgba(255,184,78,0.45); }
 
 /* ============================================================
    HOPE / FEAR / SOUND DICE

@@ -915,45 +915,98 @@
     background: radial-gradient(circle, var(--bg3) 60%, var(--bg2) 100%);
     border-radius: 50%;
   }
-  .timer-display {
+  /* ============================================================
+     DURATION EDITOR — chevron time-input (shared: ring + break)
+     ============================================================ */
+  .dur-editor {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .dur-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .dur-chevron {
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    line-height: 1;
+    color: var(--text3);
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    padding: 7px 0;
+    transition: color 0.12s, text-shadow 0.12s;
+    -webkit-user-select: none; user-select: none;
+    touch-action: manipulation;
+  }
+  .dur-chevron:hover { color: var(--gold2); text-shadow: 0 0 8px rgba(200,150,62,0.4); }
+  .dur-chevron:active, .dur-chevron.is-holding { color: var(--gold3); text-shadow: 0 0 10px rgba(200,150,62,0.5); }
+  .dur-field {
     font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.9rem;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    width: 2ch;
+    text-align: center;
+    color: var(--gold2);
+    background: none;
+    border: none;
+    border-bottom: 1.5px solid var(--border2);
+    padding: 1px 0 2px;
+    outline: none;
+    -moz-appearance: textfield;
+    caret-color: var(--gold2);
+  }
+  .dur-field::-webkit-inner-spin-button,
+  .dur-field::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .dur-field:focus { border-bottom-color: var(--gold); }
+  .dur-field::selection { background: rgba(200,150,62,0.28); color: var(--gold3); }
+  .dur-colon {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.9rem;
+    line-height: 1;
+    color: var(--text3);
+    padding: 0 1px;
+    align-self: center;
+  }
+
+  /* Idle + Locked: chevrons gone, big glowing readout (like the old
+     timer-display). Idle taps to edit; locked is inert. */
+  .dur-editor.is-idle .dur-chevron,
+  .dur-editor.is-locked .dur-chevron { display: none; }
+  .dur-editor.is-idle .dur-field,
+  .dur-editor.is-locked .dur-field {
+    border-bottom-color: transparent;
     font-size: 2.6rem;
     color: var(--gold2);
     text-shadow: 0 0 20px rgba(200,150,62,0.4);
-    line-height: 1;
-    cursor: pointer;
-    letter-spacing: 0.02em;
+    pointer-events: none;
   }
-  .timer-display:hover { color: var(--gold3); }
-  .timer-edit {
-    display: none;
-    font-family: var(--font-display);
-    font-size: 2rem;
-    background: none;
-    border: none;
-    border-bottom: 1px solid var(--gold);
-    color: var(--gold2);
-    text-align: center;
-    width: 160px;
-    -moz-appearance: textfield;
-    outline: none;
+  .dur-editor.is-idle .dur-colon,
+  .dur-editor.is-locked .dur-colon {
+    font-size: 2.6rem;
+    text-shadow: 0 0 20px rgba(200,150,62,0.4);
   }
-  .timer-edit::-webkit-inner-spin-button { -webkit-appearance: none; }
-  .timer-label {
-    font-family: var(--font-heading);
-    font-size: 0.6rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--text3);
-    margin-top: 4px;
-  }
+  .dur-editor.is-idle { cursor: pointer; }
+  .dur-editor.is-idle:hover .dur-field,
+  .dur-editor.is-idle:hover .dur-colon { color: var(--gold3); }
 
-  /* Mobile timer sizing */
+  /* In-ring sizing (editing state uses the base 1.9rem) */
   @media (max-width: 480px) {
     .timer-ring-container { width: 170px; height: 170px; }
-    .timer-display { font-size: 2.2rem; }
-    .timer-label { font-size: 0.55rem; }
     .timer-centrepiece { padding: 20px 16px; }
+    .dur--ring.is-editing .dur-field,
+    .dur--ring.is-editing .dur-colon { font-size: 1.6rem; }
+    .dur--ring .dur-chevron { padding: 6px 0; }
+    .dur--ring.is-idle .dur-field,   .dur--ring.is-idle .dur-colon,
+    .dur--ring.is-locked .dur-field, .dur--ring.is-locked .dur-colon { font-size: 2.2rem; }
   }
 
   .timer-controls {
@@ -2118,64 +2171,24 @@
     font-size: 2rem;
     margin-bottom: 8px;
   }
-  .break-duration-picker {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 16px 0;
+  /* Break modal duration editor (hero) — amber instance of .dur-editor */
+  .dur--break {
+    margin: 18px 0 20px;
   }
-  .break-dur-btn {
-    font-family: var(--font-heading);
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
-    background: var(--bg3);
-    border: 1px solid var(--border2);
-    color: var(--text2);
-    padding: 8px 14px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-    min-width: 48px;
-  }
-  .break-dur-btn:hover { border-color: var(--amber); color: var(--amber); }
-  .break-dur-btn.active {
-    border-color: var(--amber);
+  .dur--break .dur-field, .dur--break .dur-colon { font-size: 2.8rem; }
+  .dur--break .dur-chevron { padding: 9px 0; font-size: 0.8rem; }
+  .dur--break .dur-field {
     color: var(--amber);
-    background: rgba(212,129,58,0.12);
-    box-shadow: 0 0 10px rgba(212,129,58,0.15);
+    caret-color: var(--amber);
   }
-  .break-timer-display {
-    font-family: var(--font-display);
-    font-size: 2.8rem;
+  .dur--break .dur-field:focus { border-bottom-color: var(--amber); }
+  .dur--break .dur-field::selection { background: rgba(212,129,58,0.28); color: var(--gold3); }
+  .dur--break .dur-chevron:hover { color: var(--amber); text-shadow: 0 0 8px rgba(212,129,58,0.4); }
+  .dur--break .dur-chevron:active, .dur--break .dur-chevron.is-holding { color: var(--gold3); }
+  /* Locked (break running): pure amber countdown readout */
+  .dur--break.is-locked .dur-field, .dur--break.is-locked .dur-colon {
     color: var(--amber);
     text-shadow: 0 0 20px rgba(212,129,58,0.3);
-    margin: 12px 0;
-    line-height: 1;
-    cursor: pointer;
-  }
-  .break-timer-display:hover { color: var(--gold3); }
-  .break-timer-edit {
-    display: none;
-    font-family: var(--font-display);
-    font-size: 2.2rem;
-    background: none;
-    border: none;
-    border-bottom: 1px solid var(--amber);
-    color: var(--amber);
-    text-align: center;
-    width: 160px;
-    outline: none;
-    margin: 12px 0;
-    line-height: 1;
-  }
-  .break-timer-label {
-    font-family: var(--font-heading);
-    font-size: 0.55rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--text3);
-    margin-bottom: 16px;
   }
   .break-controls {
     display: flex;

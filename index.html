@@ -82,9 +82,19 @@
             <circle class="timer-ring-progress" id="timerRing" cx="110" cy="110" r="100"/>
           </svg>
           <div class="timer-inner">
-            <div class="timer-display" id="timerDisplay" onclick="startEdit()" title="Click to edit">—:——</div>
-            <input type="text" class="timer-edit" id="timerEdit" placeholder="MM:SS" onblur="finishEdit()" onkeydown="editKeydown(event)">
-            <div class="timer-label">[ ADJUST ]</div>
+            <div class="dur-editor dur--ring is-idle" id="mainDurEditor" title="Click to edit">
+              <div class="dur-group">
+                <button class="dur-chevron" data-dir="up" tabindex="-1" aria-label="Increase minutes">▴</button>
+                <input class="dur-field" id="mainDurMin" data-unit="minutes" value="00" maxlength="2" inputmode="numeric" aria-label="Minutes">
+                <button class="dur-chevron" data-dir="down" tabindex="-1" aria-label="Decrease minutes">▾</button>
+              </div>
+              <span class="dur-colon">:</span>
+              <div class="dur-group">
+                <button class="dur-chevron" data-dir="up" tabindex="-1" aria-label="Increase seconds">▴</button>
+                <input class="dur-field" id="mainDurSec" data-unit="seconds" value="00" maxlength="2" inputmode="numeric" aria-label="Seconds">
+                <button class="dur-chevron" data-dir="down" tabindex="-1" aria-label="Decrease seconds">▾</button>
+              </div>
+            </div>
           </div>
         </div>
         <div class="timer-controls">
@@ -765,16 +775,19 @@
   <div class="break-modal">
     <div class="break-modal-icon">☕</div>
     <div class="break-modal-title">Break Time</div>
-    <div class="break-duration-picker" id="breakDurationPicker">
-      <button class="break-dur-btn" onclick="selectBreakDuration(5)">5m</button>
-      <button class="break-dur-btn" onclick="selectBreakDuration(10)">10m</button>
-      <button class="break-dur-btn active" onclick="selectBreakDuration(15)">15m</button>
-      <button class="break-dur-btn" onclick="selectBreakDuration(20)">20m</button>
-      <button class="break-dur-btn" onclick="selectBreakDuration(25)">25m</button>
+    <div class="dur-editor dur--break is-editing" id="breakDurEditor">
+      <div class="dur-group">
+        <button class="dur-chevron" data-dir="up" tabindex="-1" aria-label="Increase minutes">▴</button>
+        <input class="dur-field" id="breakDurMin" data-unit="minutes" value="15" maxlength="2" inputmode="numeric" aria-label="Minutes">
+        <button class="dur-chevron" data-dir="down" tabindex="-1" aria-label="Decrease minutes">▾</button>
+      </div>
+      <span class="dur-colon">:</span>
+      <div class="dur-group">
+        <button class="dur-chevron" data-dir="up" tabindex="-1" aria-label="Increase seconds">▴</button>
+        <input class="dur-field" id="breakDurSec" data-unit="seconds" value="00" maxlength="2" inputmode="numeric" aria-label="Seconds">
+        <button class="dur-chevron" data-dir="down" tabindex="-1" aria-label="Decrease seconds">▾</button>
+      </div>
     </div>
-    <div class="break-timer-display" id="breakTimerDisplay" onclick="startBreakEdit()">15:00</div>
-    <input type="text" class="break-timer-edit" id="breakTimerEdit" onblur="finishBreakEdit()" onkeydown="breakEditKeydown(event)" placeholder="MM:SS">
-    <div class="break-timer-label">Select duration &amp; start</div>
     <div class="break-controls">
       <button class="btn-break-start" id="btnBreakStart" onclick="startBreak()">▶ Start</button>
       <button class="btn-break-pause" id="btnBreakPause" onclick="pauseBreak()" style="display:none">⏸ Pause</button>

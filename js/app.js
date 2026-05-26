@@ -127,6 +127,20 @@ function init() {
   updateBattleSummaryStrip(); updateSessionSummaryStrip(); updateSessionsTodayChip();
   if (state.timerSeconds > 0) { updateTimerDisplay(); updateRing(); }
   Sound.restoreAll();
+
+  // Wire the chevron duration editors (main timer ring + break modal)
+  setupDurationEditor({
+    editorId: 'mainDurEditor', minId: 'mainDurMin', secId: 'mainDurSec',
+    commit: commitMainDuration,
+    isLocked: () => state.timerRunning,
+    onEnterEdit: () => setMainEditorState('is-editing'),
+    onExitEdit: () => { if (!state.timerRunning) setMainEditorState('is-idle'); },
+  });
+  setupDurationEditor({
+    editorId: 'breakDurEditor', minId: 'breakDurMin', secId: 'breakDurSec',
+    commit: commitBreakDuration,
+    isLocked: () => breakState.running,
+  });
 }
 
 window.addEventListener('beforeunload', saveState);
