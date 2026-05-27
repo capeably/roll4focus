@@ -41,6 +41,7 @@ function startTimer() {
     if (state.timerSeconds <= 0) {
       clearInterval(state.timerInterval); stopTicking(); stopMinionCountdown();
       state.timerRunning = false; playSound();
+      setMainEditorState('is-idle');
       document.getElementById('btnPause').style.display = 'none';
       document.getElementById('btnStart').style.display = 'inline-flex';
       setTimeout(() => openModal('sessionModal'), 500);
