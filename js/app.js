@@ -90,6 +90,12 @@ function onRollInput() {
 // STATUS RESET
 // ============================================================
 function resetStatus() {
+  // Compute leftover (unopened) chests BEFORE wiping. These carry forward
+  // as new battles in the next period — boss chests → boss battles, minion
+  // chests → minion battles.
+  const bossChestsLeft   = Math.max(0, state.bossChestsEarned   - state.bossChestsOpened);
+  const minionChestsLeft = Math.max(0, state.minionChestsEarned - state.minionChestsOpened);
+
   state.inspiration = 0; state.penalty = 0;
   state.bossManualAdj = 0; state.minionManualAdj = 0;
   state.minionBattlesEarned = 0; state.minionBattlesFought = 0; state.minionBattlesWon = 0;
@@ -99,10 +105,21 @@ function resetStatus() {
   state.lastResetTimestamp = new Date().toISOString();
   state.hopeRolls = []; state.fearRolls = []; state.soundRolls = [];
   state.currentStreak = 0;
+
+  // Carry the leftover chests forward as new battles
+  state.bossBattlesEarned   = bossChestsLeft;
+  state.minionBattlesEarned = minionChestsLeft;
+
   document.getElementById('inspirationVal').textContent = 0;
   document.getElementById('penaltyVal').textContent = 0;
   updateDCDisplays(); updateMinionUI(); updateBossUI(); updateStatsDisplay(); updateMetrics(); markDirty();
-  showToast('Status reset');
+
+  const totalCarried = bossChestsLeft + minionChestsLeft;
+  if (totalCarried > 0) {
+    showToast('Carryover', '+' + totalCarried, 'boss ' + bossChestsLeft + ' · minion ' + minionChestsLeft, 'gain');
+  } else {
+    showToast('Status reset');
+  }
 }
 
 
