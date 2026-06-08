@@ -4,6 +4,21 @@
 function getBossDC() { return state.bossDcDefault - state.inspiration + state.penalty + state.bossManualAdj; }
 function getMinionDC() { return state.minionDcDefault - state.inspiration + state.penalty + state.minionManualAdj; }
 
+// Proportional Boss DC scaling. The increment per win slides down as the
+// effective DC rises: every 5 points of DC drops the step by 1, flooring at
+// +1 once DC >= 20. state.bossDcScaling is the MAX step (the value at the
+// lowest DC band, 0-4); the rest derive from it.
+//   step = clamp(maxStep - floor(DC / 5), 1, maxStep)
+// e.g. maxStep 5 → 0-4:+5  5-9:+4  10-14:+3  15-19:+2  20+:+1
+function getBossDcStep() {
+  const maxStep = Math.max(1, state.bossDcScaling || 1);
+  const dc = getBossDC();
+  let step = maxStep - Math.floor(dc / 5);
+  if (step > maxStep) step = maxStep; // very low / negative DC → max ramp
+  if (step < 1) step = 1;             // DC >= 20 → always +1
+  return step;
+}
+
 function updateDCDisplays() {
   const bossDC = getBossDC(), minionDC = getMinionDC();
   ['bossEditDCVal'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = bossDC; });
@@ -141,7 +156,7 @@ function createBattleSystem(c) {
 const BossBattle = createBattleSystem({
   type: 'boss', prefix: 'boss', label: 'Boss ',
   dcFn: getBossDC,
-  onWin: () => { state.bossManualAdj += state.bossDcScaling; },
+  onWin: () => { state.bossManualAdj += getBossDcStep(); },
   resultId: 'bossAttackResult', qbResultId: 'qbBossResult',
   qbCls: (won) => `qb-result ${won ? 'win' : 'fail'} qb-editable tip`,
   earnedId: 'bossBattlesEarned', foughtId: 'bossBattlesFought',

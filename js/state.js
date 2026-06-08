@@ -42,7 +42,7 @@ let state = {
   bossManualAdj: 0, minionManualAdj: 0,
   bossBattlesEarned: 0, bossBattlesFought: 0, bossBattlesWon: 0,
   bossChestsEarned: 0, bossChestsOpened: 0,
-  bossDcScaling: 3, manualBossMinutes: 20,
+  bossDcScaling: 5, manualBossMinutes: 20,
   manualTimeLogs: [], soundtracks: [...DEFAULT_SOUNDTRACKS],
   battleLogs: [], logs: [],
   diceNames: [], currentDiceName: '',

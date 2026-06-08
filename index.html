@@ -626,11 +626,11 @@
 
     <div class="setting-row">
       <div>
-        <div class="setting-label">Boss DC Scaling</div>
-        <div class="setting-sub">How much Boss DC increases per win</div>
+        <div class="setting-label">Boss DC Scaling (Max)</div>
+        <div class="setting-sub">Largest DC bump per win, at low DC. Slides down to +1 as DC nears 20 (−1 per 5 DC).</div>
       </div>
       <div class="setting-control">
-        <input type="number" id="bossDcScalingSetting" value="3" min="0" max="10" onchange="saveSettings()">
+        <input type="number" id="bossDcScalingSetting" value="5" min="1" max="10" onchange="saveSettings()">
       </div>
     </div>
 

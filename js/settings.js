@@ -9,7 +9,7 @@ const SETTINGS_MAP = [
   ['hopeFearDieSetting',      'hopeFearDie',             'int', 20],
   ['soundtrackDieSetting',    'soundtrackDie',           'int', 20],
   ['minionIntervalSetting',   'minionInterval',          'int', 10],
-  ['bossDcScalingSetting',    'bossDcScaling',           'int',  3],
+  ['bossDcScalingSetting',    'bossDcScaling',           'int',  5],
   ['manualBossMinutesSetting','manualBossMinutes',       'int', 20],
   ['tickingToggle',           'tickingEnabled',          'bool'],
   ['startSoundToggle',        'startSoundEnabled',       'bool'],
