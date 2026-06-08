@@ -1609,6 +1609,103 @@
     white-space: nowrap;
     width: 90px;
   }
+  /* "Full Manual" link at the bottom of the Help modal */
+  .manual-open-link {
+    display: block;
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-heading);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text3);
+    text-align: center;
+    padding: 4px 0 12px;
+    transition: color 0.15s;
+  }
+  .manual-open-link:hover { color: var(--gold2); }
+
+  /* Footer MANUAL link (the only interactive token in the footer line) */
+  .footer-manual-link {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: var(--text3);
+    padding: 0;
+    transition: color 0.15s;
+  }
+  .footer-manual-link:hover { color: var(--gold2); }
+
+  /* ============================================================
+     USER MANUAL — accordion modal
+     ============================================================ */
+  .manual-modal {
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    max-height: 85vh;
+    padding-top: 0;
+    padding-bottom: 20px;
+  }
+  .manual-modal-head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 0 12px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+  }
+  .manual-modal-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: var(--gold2);
+  }
+  .manual-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    text-align: left;
+    margin: 0 -4px;
+    padding: 4px;
+  }
+  .manual-sec { border-bottom: 1px solid var(--border); }
+  .manual-sec > summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    margin: 0;
+  }
+  .manual-sec > summary::-webkit-details-marker { display: none; }
+  .manual-caret {
+    color: var(--text3);
+    font-size: 0.7rem;
+    transition: transform 0.15s;
+  }
+  .manual-sec[open] .manual-caret { transform: rotate(180deg); }
+  .manual-body {
+    font-family: var(--font-body);
+    font-size: 0.86rem;
+    line-height: 1.6;
+    color: var(--text2);
+    padding: 2px 0 14px;
+  }
+  .manual-body p { margin: 0 0 10px; }
+  .manual-body p:last-child { margin-bottom: 0; }
+  .manual-body strong { color: var(--text); font-weight: 600; }
+  .manual-body .help-hotkeys { margin: 8px 0 10px; }
+  .manual-body .help-hotkeys td { vertical-align: top; }
+  .manual-body .help-key { width: 84px; font-size: 0.72rem; }
 
   /* INSPIRATION FLASH */
   .inspiration-flash {

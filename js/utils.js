@@ -110,3 +110,10 @@ function getChestLootText() {
 // ============================================================
 function openModal(id) { document.getElementById(id).classList.add('show'); }
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+// User manual — opens the accordion modal scrolled to the top.
+function openManual() {
+  openModal('manualModal');
+  const sc = document.querySelector('#manualModal .manual-scroll');
+  if (sc) sc.scrollTop = 0;
+}

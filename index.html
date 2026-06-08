@@ -627,7 +627,7 @@
     <div class="setting-row">
       <div>
         <div class="setting-label">Boss DC Scaling (Max)</div>
-        <div class="setting-sub">Largest DC bump per win, at low DC. Slides down to +1 as DC nears 20 (−1 per 5 DC).</div>
+        <div class="setting-sub">The largest DC bump (when DC is 1–4). Scales down every 5 DC.</div>
       </div>
       <div class="setting-control">
         <input type="number" id="bossDcScalingSetting" value="5" min="1" max="10" onchange="saveSettings()">
@@ -1183,13 +1183,205 @@
       <tr><td class="help-key">N / Esc</td><td>Fail session / close</td></tr>
     </table>
 
+    <button class="manual-open-link" onclick="closeModal('helpModal'); openManual()">// Full Manual →</button>
+
     <div class="modal-buttons" style="grid-template-columns:1fr;">
       <button class="btn-no" onclick="closeModal('helpModal')">Close</button>
     </div>
   </div>
 </div>
 
-<footer class="app-footer">[ FOCUS.LOOP // NAT_20 ALWAYS ]</footer>
+<!-- ======================== USER MANUAL MODAL ======================== -->
+<div class="modal-overlay" id="manualModal" onclick="if(event.target===this) closeModal('manualModal')">
+  <div class="modal manual-modal">
+    <div class="manual-modal-head">
+      <span class="manual-modal-title">User Manual</span>
+      <button class="header-btn" onclick="closeModal('manualModal')" aria-label="Close manual">✕</button>
+    </div>
+
+    <div class="manual-scroll">
+
+      <details class="manual-sec" open>
+        <summary class="help-section-title">Overview<span class="manual-caret">▾</span></summary>
+        <div class="manual-body">
+          <p>Roll 4 Focus is a dice-themed focus timer. You roll dice to set a session length, work the session, and earn <strong>Inspiration</strong>, <strong>Boss</strong> and <strong>Minion</strong> battles, and <strong>chests</strong>. Completing sessions back-to-back builds a <strong>streak</strong>.</p>
+          <p>Everything lives on three tabs: <strong>Home</strong> (timer, battles, dice stats), <strong>Logs</strong> (history), and <strong>Settings</strong> (⚙). All data is stored in your browser — nothing is uploaded.</p>
+        </div>
+      </details>
+
+      <details class="manual-sec">
+        <summary class="help-section-title">Session Timer<span class="manual-caret">▾</span></summary>
+        <div class="manual-body">
+          <p>The ring in the center counts your session down. The time in the middle is an editable <strong>MM:SS</strong> field — tap it (while stopped) to edit, using any of five methods:</p>
+          <table class="help-hotkeys">
+            <tr><td class="help-key">Type</td><td>Enter digits directly. Clamps to range when you leave the field.</td></tr>
+            <tr><td class="help-key">▴ ▾ click</td><td>Step the value ±1. Wraps past the ends.</td></tr>
+            <tr><td class="help-key">▴ ▾ hold</td><td>Auto-repeats, accelerating, until you let go.</td></tr>
+            <tr><td class="help-key">Wheel</td><td>Scroll over a field to snap to the nearest 5.</td></tr>
+            <tr><td class="help-key">↑ ↓ keys</td><td>Step ±1 while a field is focused.</td></tr>
+          </table>
+          <p>Controls below the ring: <strong>▶ / ⏸</strong> start &amp; pause, <strong>↺</strong> reset to the rolled time, <strong>☕</strong> open the break timer. The duration locks while the timer runs. The session-start sound only plays on a fresh start, not on resume.</p>
+          <p>When the timer hits zero you're asked <strong>"Session Success?"</strong> — answer Yes or No (or press Y/N). Success awards Inspiration, earns a Boss battle, and extends your streak; failure resets the streak to 0.</p>
+        </div>
+      </details>
+
+      <details class="manual-sec">
+        <summary class="help-section-title">Break Timer<span class="manual-caret">▾</span></summary>
+        <div class="manual-body">
+          <p>The <strong>☕</strong> control opens a separate break timer. Set a duration with the same MM:SS editor (default 15:00), then <strong>▶ Start</strong>. It runs independently of the session timer. <strong>↺</strong> resets it, <strong>✕</strong> closes. Optional start/finish sounds can be enabled in Settings.</p>
+        </div>
+      </details>
+
+      <details class="manual-sec">
+        <summary class="help-section-title">Dice &amp; Rolls<span class="manual-caret">▾</span></summary>
+        <div class="manual-body">
+          <p>Each session uses three dice: <strong>Hope (HP)</strong>, <strong>Fear (FR)</strong>, and <strong>Sound (SD)</strong>. <strong>🎲 Roll for Me</strong> rolls all three at once; the soundtrack reroll (↻) rerolls just the Sound die. You can also tap a die chip in the stats strip to enter rolls by hand.</p>
+          <p>Session length is derived from the roll plus your <strong>Base Time</strong> setting (default 10 min):</p>
+          <table class="help-hotkeys">
+            <tr><td class="help-key">Hope = Fear</td><td>Length = Hope + Base Time, and you gain <strong>+1 Inspiration</strong>.</td></tr>
+            <tr><td class="help-key">Otherwise</td><td>Length = max(Hope, Fear) + Base Time.</td></tr>
+          </table>
+          <p>The <strong>Sound</strong> roll maps to a row in your Soundtrack Table (Settings) and mirrors the Hope value unless you set it yourself. Rolls are tagged <strong>auto</strong> (rolled by the app) or <strong>manual</strong> (entered by you); manual rolls can be attributed to a named die via <strong>Dice Names</strong>.</p>
+        </div>
+      </details>
+
+      <details class="manual-sec">
+        <summary class="help-section-title">Inspiration &amp; Penalty<span class="manual-caret">▾</span></summary>
+        <div class="manual-body">
+          <p><strong>Inspiration (INSP)</strong> lowers every battle DC; <strong>Penalty (PEN)</strong> raises it. Both show in the stats strip and persist until reset. Tap either chip to adjust by hand.</p>
+          <p>Inspiration is awarded on session success, scaling with length:</p>
+          <table class="help-hotkeys">
+            <tr><td class="help-key">&lt; 30 min</td><td>+1</td></tr>
+            <tr><td class="help-key">30–34 min</td><td>+2</td></tr>
+            <tr><td class="help-key">35–39 min</td><td>+3</td></tr>
+            <tr><td class="help-key">40+ min</td><td>+4</td></tr>
+          </table>
+          <p>You also gain +1 on a Hope = Fear roll and on a Boss crit, and lose 1 on a Minion/Boss fumble (nat 1).</p>
+        </div>
+      </details>
+
+      <details class="manual-sec">
+        <summary class="help-section-title">Boss &amp; Minion Battles<span class="manual-caret">▾</span></summary>
+        <div class="manual-body">
+          <p>Completing sessions and logging time earns battles, shown as <strong>QUEUED</strong> on each card. Attack by rolling a d20 against the card's <strong>DC</strong>:</p>
+          <table class="help-hotkeys">
+            <tr><td class="help-key">Roll ≥ DC</td><td>Win — earns a chest. Boss DC scales up (see DC Scaling); Minion DC +1.</td></tr>
+            <tr><td class="help-key">Nat 20</td><td>Crit — win + <strong>+1 Inspiration</strong>.</td></tr>
+            <tr><td class="help-key">Nat 1</td><td>Fumble — miss + <strong>−1 Inspiration</strong>.</td></tr>
+            <tr><td class="help-key">Roll &lt; DC</td><td>Miss — no chest.</td></tr>
+          </table>
+          <p>The <strong>⚔ ATK</strong> button auto-rolls; <strong>♦ LOOT</strong> opens one chest. Clicking anywhere else on a card opens its <strong>Manual Entry</strong> modal, where you type the result of a real die roll. Base DCs default to Boss 24 / Minion 18 (Settings).</p>
+        </div>
+      </details>
+
+      <details class="manual-sec">
+        <summary class="help-section-title">Boss DC Scaling<span class="manual-caret">▾</span></summary>
+        <div class="manual-body">
+          <p>Each Boss win raises the Boss DC. The increase shrinks as the DC climbs, so a hard boss ramps slowly and an easy one ramps fast. The <strong>Boss DC Scaling (Max)</strong> setting is the largest step (at low DC); the rest derive from it, flooring at +1 once DC reaches 20. With the default Max of 5:</p>
+          <table class="help-hotkeys">
+            <tr><td class="help-key">DC 1–4</td><td>+5</td></tr>
+            <tr><td class="help-key">DC 5–9</td><td>+4</td></tr>
+            <tr><td class="help-key">DC 10–14</td><td>+3</td></tr>
+            <tr><td class="help-key">DC 15–19</td><td>+2</td></tr>
+            <tr><td class="help-key">DC 20+</td><td>+1</td></tr>
+          </table>
+          <p>The band is read from the <strong>effective</strong> DC (after Inspiration and Penalty), so banking Inspiration both lowers the DC and makes it ramp faster. Minion DC always rises a flat +1 per win.</p>
+        </div>
+      </details>
+
+      <details class="manual-sec">
+        <summary class="help-section-title">Chests &amp; Carryover<span class="manual-caret">▾</span></summary>
+        <div class="manual-body">
+          <p>Every battle win earns a chest. Open them with the <strong>♦ LOOT</strong> button on the card. The card shows chests remaining.</p>
+          <p>When you press <strong>↺ Reset</strong>, any <strong>unopened</strong> chests carry forward into the new period as battles — Boss chests become Boss battles, Minion chests become Minion battles. Everything else (Inspiration, Penalty, streak, counts) clears. Your <strong>best streak</strong> is kept.</p>
+        </div>
+      </details>
+
+      <details class="manual-sec">
+        <summary class="help-section-title">Manual Entry<span class="manual-caret">▾</span></summary>
+        <div class="manual-body">
+          <p>The Boss/Minion Manual Entry modal is for entering real die rolls. Type the d20 result and press <strong>⚔ Attack</strong> (or Enter). Steppers adjust DC, Battles, and Chests. The <strong>// Last Roll</strong> line confirms each result without a pop-up.</p>
+          <p>Turn on <strong>Keep Open</strong> (header) to enter rolls back-to-back. When one side's queue empties, it auto-switches to the other side if battles remain there; when both are empty it closes with a "Queue empty" cue. Press <strong>B</strong> / <strong>M</strong> to open Boss / Minion entry directly.</p>
+        </div>
+      </details>
+
+      <details class="manual-sec">
+        <summary class="help-section-title">Minion Countdown &amp; Time<span class="manual-caret">▾</span></summary>
+        <div class="manual-body">
+          <p>While a session runs, the Minion card counts down to the next earned battle. You earn one Minion battle per <strong>Battle Interval</strong> minutes of session time (default 10). Enable <strong>Auto-Fight</strong> (Settings) to resolve earned Minion battles automatically.</p>
+          <p><strong>+ Add Session Time</strong> (Adventuring Time card) logs time done outside the timer. Logged time earns Minion battles by the same interval, Boss battles per the <strong>Manual Entry — Boss Battle</strong> minutes (default 20), and +1 Inspiration per Boss battle earned.</p>
+        </div>
+      </details>
+
+      <details class="manual-sec">
+        <summary class="help-section-title">Dice Stats<span class="manual-caret">▾</span></summary>
+        <div class="manual-body">
+          <p>The Dice Stats card breaks down your rolls for a chosen period (<strong>Today / 7d / Month / All</strong>, with ‹ › to step back through periods). It has three sections:</p>
+          <table class="help-hotkeys">
+            <tr><td class="help-key">Top Rolls</td><td>Face-frequency bars for your most-rolled dice (d20 battles only). Nat 1 red, nat 20 lime.</td></tr>
+            <tr><td class="help-key">Roll Averages</td><td>Average per die (Auto + named dice) across Boss / Minion / All.</td></tr>
+            <tr><td class="help-key">Most Rolled</td><td>Most-frequent Hope / Fear / Sound from your sessions.</td></tr>
+          </table>
+          <p>The <strong>Filter</strong> dropdown limits which dice (including Auto) appear in Top Rolls and Roll Averages. Unnamed manual rolls aren't shown here — name your die in Dice Names to track it.</p>
+        </div>
+      </details>
+
+      <details class="manual-sec">
+        <summary class="help-section-title">Logs<span class="manual-caret">▾</span></summary>
+        <div class="manual-body">
+          <p>The Logs tab has two sub-tabs. <strong>Battles</strong> summarizes Total / Win / Loss / Nat 20; <strong>Sessions</strong> summarizes Sess / Done / Min / Avg. Each row shows the roll and outcome; the <strong>✎</strong> button edits a row, with a <strong>⌫ Delete</strong> inside the editor.</p>
+          <p>Each sub-tab has <strong>Clear All</strong>, <strong>Export CSV</strong>, and <strong>Import CSV</strong>. Imported rows append and re-sort by time.</p>
+        </div>
+      </details>
+
+      <details class="manual-sec">
+        <summary class="help-section-title">Adventuring Time<span class="manual-caret">▾</span></summary>
+        <div class="manual-body">
+          <p>Shows <strong>Today</strong> and <strong>This Week</strong> totals (timed sessions + logged time), a battle-stats grid (Earned / Fought / Won / Remaining / Chests earned-opened-remaining for Boss and Minion), and your <strong>Streak</strong> (current and best).</p>
+        </div>
+      </details>
+
+      <details class="manual-sec">
+        <summary class="help-section-title">Settings<span class="manual-caret">▾</span></summary>
+        <div class="manual-body">
+          <p>Grouped into colored sections:</p>
+          <table class="help-hotkeys">
+            <tr><td class="help-key">Configuration</td><td>Theme (Classic / Arcade), config export/import, embed sounds, reset.</td></tr>
+            <tr><td class="help-key">Timer</td><td>Base Time (10), Boss DC (24), Minion DC (18), Hope/Fear Die (d20), Soundtrack Die (d20).</td></tr>
+            <tr><td class="help-key">Sound</td><td>Per-sound toggles + custom file uploads (see Sounds).</td></tr>
+            <tr><td class="help-key">Minion</td><td>Countdown on/off, Battle Interval (10), Auto-Fight.</td></tr>
+            <tr><td class="help-key">Boss</td><td>DC Scaling Max (5), Manual Entry minutes per Boss battle (20).</td></tr>
+            <tr><td class="help-key">Dice Names</td><td>Manage the named dice used to tag manual rolls.</td></tr>
+            <tr><td class="help-key">Soundtrack</td><td>20-row table mapping each Sound roll to a soundtrack.</td></tr>
+          </table>
+        </div>
+      </details>
+
+      <details class="manual-sec">
+        <summary class="help-section-title">Sounds &amp; Quiet Mode<span class="manual-caret">▾</span></summary>
+        <div class="manual-body">
+          <p>Most events have an optional sound (start, dice roll, attack hit/miss, chest, inspiration, break start/finish, manual-entry close). Each can be toggled and given a custom <strong>.mp3 / .wav</strong> in Sound Settings. Manual-Entry Close and Minion Countdown are on by default; most others are off.</p>
+          <p>The <strong>🔊 / 🔇</strong> header button (or <strong>Q</strong>) toggles <strong>Quiet Mode</strong>, which mutes everything (the session-end chime uses a quieter variant).</p>
+        </div>
+      </details>
+
+      <details class="manual-sec">
+        <summary class="help-section-title">Saving, Data &amp; Shortcuts<span class="manual-caret">▾</span></summary>
+        <div class="manual-body">
+          <p>Everything saves automatically to your browser's local storage — settings, logs, counters, custom sounds, and your theme. Use <strong>Export / Import Config</strong> (Settings) to move your setup between browsers or back it up. Theme is stored separately, so importing a config won't change it.</p>
+          <p>For keyboard shortcuts, press the <strong>?</strong> button in the header anytime.</p>
+        </div>
+      </details>
+
+    </div>
+
+    <div class="modal-buttons" style="grid-template-columns:1fr;">
+      <button class="btn-no" onclick="closeModal('manualModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<footer class="app-footer">[ FOCUS.LOOP // NAT_20 ALWAYS // <button class="footer-manual-link" onclick="openManual()">MANUAL</button> ]</footer>
 
 <div class="toast" id="toast"></div>
 

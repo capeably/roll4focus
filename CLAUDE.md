@@ -38,6 +38,20 @@ js/app.js         ← Roll logic, init(), keyboard shortcuts, DOMContentLoaded
 - Sound channels are registered with `Sound.register()` and played with `Sound.play(key)`
 - HTML `onclick` handlers call global functions (wrapper aliases for module methods)
 
+## User Manual — keep it in sync (IMPORTANT)
+- The in-app **User Manual** is an accordion modal: `#manualModal` in `index.html`
+  (opened via `openManual()` from the `?` Help modal and the footer `MANUAL`
+  link). It is the canonical, comprehensive reference for every feature.
+- **Whenever a feature is added, removed, or its behavior/defaults change, update
+  the matching `<details class="manual-sec">` section in `#manualModal` in the
+  same change.** Treat the manual like docs that ship with the code — out-of-date
+  manual copy is a bug.
+- Sections map roughly to features (Session Timer, Dice & Rolls, Boss & Minion
+  Battles, Boss DC Scaling, Chests & Carryover, Dice Stats, Logs, Settings,
+  Sounds, etc.). If a change spans a new area, add a new section.
+- Keyboard shortcuts live ONLY in the `?` Help modal (`#helpModal`), not the
+  manual — update them there. The manual points users to `?` for shortcuts.
+
 ## Git & Version Control
 - **Repo:** `capeably/roll4focus` on GitHub
 - **Working directory:** `C:\Users\Adam\Projects\roll4focus\` (NOT the OneDrive copy)
